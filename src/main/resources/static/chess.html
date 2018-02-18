@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="chessApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Chess</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
+    <script src="js/chess.js"></script>
+    <link rel="stylesheet" href="css/chess.css">
+</head>
+<body>
+
+<div class="container" ng-controller="ChessController as chess">
+    <h3>My First Bootstrap Page</h3>
+    <!--<p>This is some text.</p>-->
+
+    <div class="row">
+        <div class="col-sm-4">
+        </div>
+
+        <div class="col-sm-4">
+            <table border="1">
+                <tr ng-repeat="ligne in chess.plateau track by $index">
+                    <td ng-repeat="colonne in ligne track by $index">
+                        <div class="case">
+                        <span ng-if="colonne==null"></span>
+                        <span ng-if="colonne!=null">{{colonne}}</span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col-sm-4">
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
