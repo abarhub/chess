@@ -46,4 +46,8 @@ public class ChessService {
 
 		return plateauDTO;
 	}
+
+	public void nextMove() {
+		moteur.nextMove();
+	}
 }

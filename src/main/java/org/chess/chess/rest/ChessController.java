@@ -19,5 +19,13 @@ public class ChessController {
 		return chessService.getPlateauDto();
 	}
 
+	@RequestMapping("/action")
+	public void action(@RequestParam(value = "nom") String nom) {
+		if(nom!=null){
+			if(nom.equals("next")){
+				chessService.nextMove();
+			}
+		}
+	}
 
 }

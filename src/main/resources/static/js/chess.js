@@ -29,17 +29,18 @@ angular.module('chessApp', [])
 
             chess.initialise = function () {
 
-                for (var i = 0; i < TAILLE; i++) {
-                    for (var j = 0; j < TAILLE; j++) {
-                        chess.plateau[i][j] = null;
-                    }
-                }
-
                 $http.get('/plateau').then(function (response) {
                     if (response.status == 200) {
                         var donnees = response.data;
 
                         if (donnees && donnees.listePieces) {
+
+                            for (var i = 0; i < TAILLE; i++) {
+                                for (var j = 0; j < TAILLE; j++) {
+                                    chess.plateau[i][j] = null;
+                                }
+                            }
+
                             for (var i = 0; i < donnees.listePieces.length; i++) {
                                 var tmp = donnees.listePieces[i];
 
@@ -61,5 +62,23 @@ angular.module('chessApp', [])
                 console.log("test1");
                 chess.initialise();
                 console.log("suite");
+            };
+
+            chess.next = function () {
+                console.log("next ...");
+
+
+                $http.get('/action',
+                        {params:{ name:'next'}})
+                        .then(function (response) {
+                            if (response.status == 200) {
+                                console.error("next ok", response);
+                            } else {
+                                console.error("erreur pour le next : ", response);
+                            }
+                });
+
+                //chess.initialise();
+                console.log("next ok");
             };
         });
