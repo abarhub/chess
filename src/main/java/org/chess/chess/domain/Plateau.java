@@ -20,8 +20,8 @@ public class Plateau {
 		lignePions(1, Couleur.Noir);
 
 
-		lignePions(6, Couleur.Noir);
-		lignePieces(7, Couleur.Noir);
+		lignePions(6, Couleur.Blanc);
+		lignePieces(7, Couleur.Blanc);
 	}
 
 	private void lignePieces(int ligne, Couleur couleur) {
@@ -49,7 +49,7 @@ public class Plateau {
 		tableau[ligne][colonne] = pieceCouleur;
 	}
 
-	private PieceCouleur getCase(int ligne, int colonne) {
+	public PieceCouleur getCase(int ligne, int colonne) {
 		Verify.verify(ligne >= 0);
 		Verify.verify(ligne < NB_LIGNES);
 		Verify.verify(colonne >= 0);

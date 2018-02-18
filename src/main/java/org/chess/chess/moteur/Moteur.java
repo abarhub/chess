@@ -25,4 +25,7 @@ public class Moteur {
 		LOGGER.info("initialisation du moteur OK");
 	}
 
+	public Plateau getPlateau() {
+		return plateau;
+	}
 }
