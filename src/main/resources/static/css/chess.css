@@ -1,6 +1,18 @@
 
 .case {
-    background-color: #04ff2c;
+    background-color: #048c1b;
     height: 50px;
     width: 50px;
+}
+
+.piece-blanche {
+    color: white;
+}
+
+.piece-noire {
+    color: black;
+}
+
+.piece {
+    font-size:40px;
 }

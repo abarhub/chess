@@ -16,5 +16,8 @@ angular.module('chessApp', [])
                 }
             }
 
-            chess.plateau[0][0] = '*';
+            chess.plateau[0][0] = {
+                piece: 'P',
+                couleur: 'B'
+            };
         });
