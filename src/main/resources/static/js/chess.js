@@ -69,13 +69,14 @@ angular.module('chessApp', [])
 
 
                 $http.get('/action',
-                        {params:{ name:'next'}})
+                        {params:{ nom:'next'}})
                         .then(function (response) {
                             if (response.status == 200) {
                                 console.error("next ok", response);
                             } else {
                                 console.error("erreur pour le next : ", response);
                             }
+                            chess.initialise();
                 });
 
                 //chess.initialise();

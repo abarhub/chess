@@ -57,6 +57,17 @@ public class Plateau {
 		return tableau[ligne][colonne];
 	}
 
+	public void move(Position positionSrc, Position positionDest) {
+		Verify.verifyNotNull(positionSrc);
+		Verify.verifyNotNull(positionDest);
+		Verify.verify(!positionSrc.equals(positionDest));
+
+		PieceCouleur p = getCase(positionSrc.getLigne(), positionSrc.getColonne());
+		Verify.verifyNotNull(p, "La case source est vide");
+		setCase(positionSrc.getLigne(), positionSrc.getColonne(), null);
+		setCase(positionDest.getLigne(), positionDest.getColonne(), p);
+	}
+
 	public void afficheConsole() {
 		for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
 			for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
