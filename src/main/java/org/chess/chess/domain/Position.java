@@ -37,4 +37,12 @@ public class Position {
 
 		return Objects.hash(ligne, colonne);
 	}
+
+	@Override
+	public String toString() {
+		return "Position{" +
+				"ligne=" + ligne +
+				", colonne=" + colonne +
+				'}';
+	}
 }

@@ -1,6 +1,11 @@
 package org.chess.chess.domain;
 
 import com.google.common.base.Verify;
+import org.chess.chess.outils.Check;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class Plateau {
 
@@ -11,6 +16,46 @@ public class Plateau {
 
 	public Plateau() {
 
+	}
+
+	public Plateau(Plateau plateau) {
+		tableau = new PieceCouleur[NB_LIGNES][NB_COLONNES];
+		for (int lignes = 0; lignes < NB_LIGNES; lignes++) {
+			for (int colonnes = 0; colonnes < NB_COLONNES; colonnes++) {
+				tableau[lignes][colonnes] = plateau.tableau[lignes][colonnes];
+			}
+		}
+	}
+
+	public Plateau(String str) {
+		tableau = new PieceCouleur[NB_LIGNES][NB_COLONNES];
+
+		if (str != null && !str.isEmpty()) {
+			int pos = 0;
+			while (pos < str.length()) {
+
+				Couleur couleur = null;
+				Piece piece = null;
+				char c = str.charAt(pos);
+				couleur = Couleur.getValue(c);
+				Verify.verifyNotNull(couleur);
+				char p = str.charAt(pos + 1);
+				piece = Piece.getValue(p);
+				Verify.verifyNotNull(piece);
+
+				int ligne = str.charAt(pos + 2) - '0';
+				Verify.verify(str.charAt(pos + 3) == '.');
+				int colonne = str.charAt(pos + 4) - '0';
+				Verify.verify(str.charAt(pos + 5) == ';');
+				Check.isPositionValide(ligne, colonne);
+
+				PieceCouleur pieceCouleur = new PieceCouleur(piece, couleur);
+				Verify.verify(tableau[ligne][colonne] == null);
+				tableau[ligne][colonne] = pieceCouleur;
+
+				pos += 6;
+			}
+		}
 	}
 
 	public void initialise() {
@@ -82,4 +127,56 @@ public class Plateau {
 		}
 		System.out.println();
 	}
+
+	public Stream<PieceCouleur> getStream() {
+		List<PieceCouleur> list = new ArrayList<>();
+
+		for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
+			for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
+				PieceCouleur p = getCase(ligne, colonne);
+				if (p != null) {
+					list.add(p);
+				}
+			}
+		}
+
+		return list.stream();
+	}
+
+	public Stream<PieceCouleurPosition> getStreamPosition() {
+		List<PieceCouleurPosition> list = new ArrayList<>();
+
+		for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
+			for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
+				PieceCouleur p = getCase(ligne, colonne);
+				if (p != null) {
+					PieceCouleurPosition p2 = new PieceCouleurPosition(p.getPiece(), p.getCouleur(), new Position(ligne, colonne));
+					list.add(p2);
+				}
+			}
+		}
+
+		return list.stream();
+	}
+
+	public String getRepresentation() {
+		StringBuilder str = new StringBuilder();
+
+		for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
+			for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
+				PieceCouleur p = getCase(ligne, colonne);
+				if (p != null) {
+					str.append(p.getCouleur().getNomCourt());
+					str.append(p.getPiece().getNomCourt());
+					str.append(ligne);
+					str.append('.');
+					str.append(colonne);
+					str.append(';');
+				}
+			}
+		}
+
+		return str.toString();
+	}
+
 }

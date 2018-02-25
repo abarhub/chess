@@ -2,6 +2,9 @@ package org.chess.chess.moteur;
 
 import com.google.common.base.Verify;
 import org.chess.chess.domain.*;
+import org.chess.chess.joueur.Joueur;
+import org.chess.chess.joueur.JoueurHazard;
+import org.chess.chess.joueur.JoueurNegaMax;
 import org.chess.chess.outils.Check;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class Moteur {
@@ -21,17 +24,34 @@ public class Moteur {
 
 	private Couleur joueurCourant;
 
-	private Random random = new Random(System.currentTimeMillis());
+	private Joueur joueurBlanc;
+
+	private Joueur joueurNoir;
+
+	//private Random random = new Random(System.currentTimeMillis());
+
+	private EtatJeux etatJeux;
 
 	@PostConstruct
 	public void initialise() {
 		LOGGER.info("initialisation du moteur ...");
 
-		plateau = new Plateau();
-		plateau.initialise();
-		plateau.afficheConsole();
+		if (false) {
+			plateau = new Plateau();
+			plateau.initialise();
+			plateau.afficheConsole();
+		} else {
+			String str;
+			str = "NT0.0;NF0.2;ND0.3;NR0.4;NF0.5;NT0.7;NP1.0;NP1.1;NP1.2;NP1.3;NP1.4;NP1.5;NP1.6;NP1.7;NC2.0;BP3.5;BP5.1;BC5.7;BP6.0;NC6.6;BP6.7;BT7.0;BF7.2;BR7.4;BT7.7;";
+			plateau = new Plateau(str);
+			plateau.afficheConsole();
+		}
 
 		joueurCourant = Couleur.Blanc;
+
+		joueurBlanc = new JoueurHazard(Couleur.Blanc);
+		//joueurNoir = new JoueurHazard(Couleur.Noir);
+		joueurNoir = new JoueurNegaMax(Couleur.Noir, 1);
 
 		LOGGER.info("initialisation du moteur OK");
 	}
@@ -42,38 +62,23 @@ public class Moteur {
 
 	public void nextMove() {
 
-		List<Position> listePieces;
-		listePieces = getMovablePieces(joueurCourant);
-
-		if (listePieces != null && !listePieces.isEmpty()) {
-			int no = random.nextInt(listePieces.size());
-
-			Position p = listePieces.get(no);
-
-			List<Position> liste = listMove(p, false);
-
-			Verify.verifyNotNull(liste);
-			Verify.verify(!liste.isEmpty());
-
-			Position deplacement;
-			if (liste.size() == 1) {
-				deplacement = liste.get(0);
-			} else {
-				no = random.nextInt(liste.size());
-				deplacement = liste.get(no);
-			}
-
-			//PieceCouleur p2 = plateau.getCase(p.getLigne(), p.getColonne());
-			plateau.move(p, deplacement);
-
-			joueurCourant = couleurContraire(joueurCourant);
-
+		if (joueurCourant == Couleur.Blanc) {
+			joueurBlanc.nextMove(this);
+			joueurCourant = Couleur.Noir;
 		} else {
-			throw new IllegalStateException("Deplacement impossible !");
+			joueurNoir.nextMove(this);
+			joueurCourant = Couleur.Blanc;
 		}
+
+		LOGGER.info("plateau={}", plateau.getRepresentation());
+
+		etatJeux = calculEtatJeux();
+		LOGGER.info("etat={}", etatJeux);
+
 	}
 
-	private Couleur couleurContraire(Couleur couleur) {
+	public Couleur couleurContraire(Couleur couleur) {
+		Verify.verifyNotNull(couleur);
 		if (couleur == Couleur.Blanc) {
 			return Couleur.Noir;
 		} else {
@@ -81,7 +86,8 @@ public class Moteur {
 		}
 	}
 
-	private List<Position> getMovablePieces(Couleur joueur) {
+	public List<Position> getMovablePieces(Couleur joueur) {
+		Verify.verifyNotNull(joueur);
 		List<Position> listePieces;
 		List<Position> liste = listePieces(joueur);
 		listePieces = new ArrayList<>();
@@ -94,7 +100,7 @@ public class Moteur {
 		return listePieces;
 	}
 
-	private List<Position> listePieces(Couleur couleur) {
+	public List<Position> listePieces(Couleur couleur) {
 		Verify.verifyNotNull(couleur);
 		List<Position> liste = new ArrayList<>();
 		for (int i = 0; i < Plateau.NB_LIGNES; i++) {
@@ -109,7 +115,12 @@ public class Moteur {
 	}
 
 	private boolean caseAttaque(Couleur couleur, int ligne, int colonne) {
+		Verify.verifyNotNull(couleur);
+		Check.checkLigneColonne(ligne, colonne);
+		LOGGER.info("caseAttaque:debut({},{},{})", couleur, ligne, colonne);
 		List<Position> pieces = listePieces(couleurContraire(couleur));
+
+		LOGGER.info("pieces:{}", pieces);
 
 		if (pieces != null) {
 			Position positionRecherche = new Position(ligne, colonne);
@@ -117,19 +128,23 @@ public class Moteur {
 				if (p.getLigne() != ligne && p.getColonne() != colonne) {
 					List<Position> liste = listMove(p, true);
 
+					LOGGER.info("p:{} => listMove:{}", p, liste);
+
 					if (liste != null) {
 						if (liste.contains(positionRecherche)) {
+							LOGGER.info("caseAttaque:fin=true");
 							return true;
 						}
 					}
 				}
 			}
 		}
+		LOGGER.info("caseAttaque:fin=false");
 
 		return false;
 	}
 
-	private List<Position> listMove(Position position, boolean tousMouvementRois) {
+	public List<Position> listMove(Position position, boolean tousMouvementRois) {
 		return listMove(position.getLigne(), position.getColonne(), tousMouvementRois);
 	}
 
@@ -159,7 +174,7 @@ public class Moteur {
 				ajoutePositionPions(liste, ligne + decalage, colonne + 1,
 						piece.getCouleur(), true);
 				if (decalage2 != 0) {
-					ajoutePositionPions(liste, ligne + decalage2, colonne + 1,
+					ajoutePositionPions(liste, ligne + decalage2, colonne,
 							piece.getCouleur(), false);
 				}
 			} else if (piece.getPiece() == Piece.CAVALIER) {
@@ -270,6 +285,8 @@ public class Moteur {
 
 	private void ajouteDecalage(List<Position> liste, int ligne, int colonne,
 	                            int decalageLigne, int decalageColonne, Couleur couleur) {
+		Verify.verifyNotNull(liste);
+		Verify.verifyNotNull(couleur);
 		for (int i = 1; i <= 8; i++) {
 			boolean res = ajoutePositionPiece(liste, ligne + decalageLigne * i,
 					colonne + decalageColonne * i,
@@ -297,6 +314,8 @@ public class Moteur {
 	private boolean ajoutePosition(List<Position> liste, int ligne, int colonne,
 	                               Couleur couleur, boolean peutManger, boolean doitManger,
 	                               boolean deplacementNonAttaquable) {
+		Verify.verifyNotNull(liste);
+		Verify.verifyNotNull(couleur);
 		if (Check.isPositionValide(ligne, colonne)) {
 //			if (deplacementNonAttaquable) {
 //				if (caseAttaque(couleurContraire(couleur), ligne, colonne)) {
@@ -321,5 +340,46 @@ public class Moteur {
 			}
 		}
 		return false;
+	}
+
+	public EtatJeux calculEtatJeux() {
+		List<PieceCouleurPosition> liste = plateau.getStreamPosition()
+				.filter(x -> x.getPiece() == Piece.ROI
+						//&& caseAttaque(couleurContraire(x.getCouleur()),
+						//x.getPosition().getLigne(), x.getPosition().getColonne())
+				)
+				.collect(Collectors.toList());
+
+		LOGGER.info("calculEtatJeux:liste={}", liste);
+
+		for (PieceCouleurPosition p : liste) {
+			if (caseAttaque(p.getCouleur(),
+					p.getPosition().getLigne(), p.getPosition().getColonne())) {
+				LOGGER.info("calculEtatJeux:attaque={}", p);
+			} else {
+				LOGGER.info("calculEtatJeux:pas attaque={}", p);
+			}
+		}
+
+		if (liste == null || liste.isEmpty()) {
+			return EtatJeux.EN_COURS;
+		} else {
+			PieceCouleurPosition p = liste.get(0);
+			List<Position> liste2 = listMove(p.getPosition(), false);
+			LOGGER.info("calculEtatJeux:liste2={}", liste2);
+			if (liste2 == null || liste2.isEmpty()) {
+				if (p.getCouleur() == Couleur.Blanc) {
+					return EtatJeux.ECHECS_ET_MAT_BLANC;
+				} else {
+					return EtatJeux.ECHECS_ET_MAT_NOIR;
+				}
+			} else {
+				if (p.getCouleur() == Couleur.Blanc) {
+					return EtatJeux.ECHECS_BLANC;
+				} else {
+					return EtatJeux.ECHECS_NOIR;
+				}
+			}
+		}
 	}
 }

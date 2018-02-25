@@ -1,6 +1,7 @@
 package org.chess.chess.service;
 
 import org.chess.chess.domain.Couleur;
+import org.chess.chess.domain.EtatJeux;
 import org.chess.chess.domain.PieceCouleur;
 import org.chess.chess.domain.Plateau;
 import org.chess.chess.dto.PieceDTO;
@@ -43,6 +44,9 @@ public class ChessService {
 				}
 			}
 		}
+
+		EtatJeux etat = moteur.calculEtatJeux();
+		plateauDTO.setEtatJeux(etat.name());
 
 		return plateauDTO;
 	}

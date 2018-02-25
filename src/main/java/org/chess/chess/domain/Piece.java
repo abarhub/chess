@@ -17,6 +17,15 @@ public enum Piece {
 		this.nomCourtAnglais = nomCourtAnglais;
 	}
 
+	public static Piece getValue(char c) {
+		for (Piece piece : Piece.values()) {
+			if (piece.nomCourt == c) {
+				return piece;
+			}
+		}
+		return null;
+	}
+
 	public char getNomCourt() {
 		return nomCourt;
 	}
