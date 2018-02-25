@@ -2,6 +2,7 @@ package org.chess.chess.moteur;
 
 import com.google.common.base.Verify;
 import org.chess.chess.domain.*;
+import org.chess.chess.evaluateur.ShannonEval;
 import org.chess.chess.joueur.Joueur;
 import org.chess.chess.joueur.JoueurHazard;
 import org.chess.chess.joueur.JoueurNegaMax;
@@ -36,6 +37,10 @@ public class Moteur {
 	public void initialise() {
 		LOGGER.info("initialisation du moteur ...");
 
+		Plateau plateau;
+		Couleur joueurCourant;
+		Joueur joueurBlanc, joueurNoir;
+
 		if (false) {
 			plateau = new Plateau();
 			plateau.initialise();
@@ -51,9 +56,23 @@ public class Moteur {
 
 		joueurBlanc = new JoueurHazard(Couleur.Blanc);
 		//joueurNoir = new JoueurHazard(Couleur.Noir);
-		joueurNoir = new JoueurNegaMax(Couleur.Noir, 1);
+		joueurNoir = new JoueurNegaMax(Couleur.Noir, 1, new ShannonEval());
+
+		initialise(plateau, joueurCourant, joueurBlanc, joueurNoir);
 
 		LOGGER.info("initialisation du moteur OK");
+	}
+
+	public void initialise(Plateau plateau, Couleur joueur, Joueur joueurBlanc, Joueur joueurNoir) {
+		Verify.verifyNotNull(plateau);
+		Verify.verifyNotNull(joueur);
+		Verify.verifyNotNull(joueurBlanc);
+		Verify.verifyNotNull(joueurNoir);
+
+		this.plateau = plateau;
+		this.joueurCourant = joueur;
+		this.joueurBlanc = joueurBlanc;
+		this.joueurNoir = joueurNoir;
 	}
 
 	public Plateau getPlateau() {
@@ -264,14 +283,14 @@ public class Moteur {
 			} else if (piece.getPiece() == Piece.ROI) {
 				for (int ligne2 = -1; ligne2 <= 1; ligne2++) {
 					for (int colonne2 = -1; colonne2 <= 1; colonne2++) {
-						if (ligne2 != colonne2) {
-							if (Check.isPositionValide(ligne2, colonne2)) {
+						if (!(ligne2 == 0 && colonne2 == 0)) {
+							final int ligne3 = ligne + ligne2;
+							final int colonne3 = colonne + colonne2;
+							if (Check.isPositionValide(ligne3, colonne3)) {
 								if (tousMouvementRois) {
-									ajoutePositionRois(liste, ligne + ligne2, colonne + colonne2,
-											joueurCourant);
-								} else if (!caseAttaque(piece.getCouleur(), ligne2, colonne2)) {
-									ajoutePositionRois(liste, ligne + ligne2, colonne + colonne2,
-											joueurCourant);
+									ajoutePositionRois(liste, ligne3, colonne3, joueurCourant);
+								} else if (!caseAttaque(piece.getCouleur(), ligne3, colonne3)) {
+									ajoutePositionRois(liste, ligne3, colonne3, joueurCourant);
 								}
 							}
 						}

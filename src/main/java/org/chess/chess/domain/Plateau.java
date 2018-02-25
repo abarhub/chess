@@ -58,6 +58,18 @@ public class Plateau {
 		}
 	}
 
+	public Plateau(List<PieceCouleurPosition> listePieces) {
+		tableau = new PieceCouleur[NB_LIGNES][NB_COLONNES];
+
+		if (listePieces != null && !listePieces.isEmpty()) {
+			for (PieceCouleurPosition p : listePieces) {
+				tableau[p.getPosition().getLigne()]
+						[p.getPosition().getColonne()] =
+						new PieceCouleur(p.getPiece(), p.getCouleur());
+			}
+		}
+	}
+
 	public void initialise() {
 		tableau = new PieceCouleur[NB_LIGNES][NB_COLONNES];
 
