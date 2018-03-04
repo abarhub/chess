@@ -21,16 +21,6 @@ public class Moteur {
 
 	private Partie partie;
 
-//	private Plateau plateau;
-//
-//	private Couleur joueurCourant;
-//
-//	private Joueur joueurBlanc;
-//
-//	private Joueur joueurNoir;
-
-	//private Random random = new Random(System.currentTimeMillis());
-
 	private EtatJeux etatJeux;
 
 	@Autowired
@@ -75,11 +65,6 @@ public class Moteur {
 		Verify.verifyNotNull(joueurBlanc);
 		Verify.verifyNotNull(joueurNoir);
 
-//		this.plateau = plateau;
-//		this.joueurCourant = joueur;
-//		this.joueurBlanc = joueurBlanc;
-//		this.joueurNoir = joueurNoir;
-
 		partie = new Partie(plateau, joueurBlanc, joueurNoir, joueur);
 	}
 
@@ -91,14 +76,17 @@ public class Moteur {
 
 		Verify.verifyNotNull(partie);
 
-		etatJeux = calculEtatJeux();
+		EtatJeux etatJeuxAvantDeplacement = calculEtatJeux();
 
-		if (etatJeux.isFinPartie()) {
+		if (etatJeuxAvantDeplacement.isFinPartie()) {
 			// fin
+			etatJeux = etatJeuxAvantDeplacement;
 		} else {
 			Couleur joueurAvantDeplacement = partie.getJoueurCourant();
 			Verify.verifyNotNull(joueurAvantDeplacement);
-			if (etatJeux.getCouleur() == Couleur.Blanc) {
+
+
+			if (etatJeuxAvantDeplacement.getCouleur() == Couleur.Blanc) {
 				partie.getJoueurBlanc().nextMove(this);
 			} else {
 				partie.getJoueurNoir().nextMove(this);
@@ -110,6 +98,13 @@ public class Moteur {
 			Verify.verify(joueurAvantDeplacement != partie.getJoueurCourant());
 
 			etatJeux = calculEtatJeux();
+
+			if (etatJeuxAvantDeplacement == EtatJeux.ECHECS_BLANC
+					|| etatJeuxAvantDeplacement == EtatJeux.ECHECS_ET_MAT_NOIR) {
+				LOGGER.info("etat={}", etatJeux);
+				Verify.verify(etatJeux != EtatJeux.ECHECS_BLANC);
+				Verify.verify(etatJeux != EtatJeux.ECHECS_NOIR);
+			}
 		}
 
 		LOGGER.info("etat={}", etatJeux);

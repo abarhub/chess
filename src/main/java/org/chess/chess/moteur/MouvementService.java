@@ -143,7 +143,7 @@ public class MouvementService {
 							if (Check.isPositionValide(ligne3, colonne3)) {
 								if (tousMouvementRois) {
 									ajoutePositionRois(plateau, liste, ligne3, colonne3, joueurCourant);
-								} else if (!caseAttaque(plateau, piece.getCouleur(), ligne3, colonne3)) {
+								} else if (!caseAttaque(plateau, couleurContraire(piece.getCouleur()), ligne3, colonne3)) {
 									ajoutePositionRois(plateau, liste, ligne3, colonne3, joueurCourant);
 								}
 							}
@@ -216,11 +216,14 @@ public class MouvementService {
 	}
 
 
+	// vérifie si la case (ligne/colonne) est attaquée par une piece de couleur
 	public boolean caseAttaque(Plateau plateau, Couleur couleur, int ligne, int colonne) {
 		Verify.verifyNotNull(couleur);
 		Check.checkLigneColonne(ligne, colonne);
+
 		LOGGER.info("caseAttaque:debut({},{},{})", couleur, ligne, colonne);
-		List<Position> pieces = listePieces(plateau, couleurContraire(couleur));
+
+		List<Position> pieces = listePieces(plateau, couleur);
 
 		LOGGER.info("pieces:{}", pieces);
 
@@ -228,7 +231,7 @@ public class MouvementService {
 			Position positionRecherche = new Position(ligne, colonne);
 			for (Position p : pieces) {
 				if (p.getLigne() != ligne && p.getColonne() != colonne) {
-					List<Position> liste = listMove(plateau, p, true, couleur);
+					List<Position> liste = listMove(plateau, p, true, couleurContraire(couleur));
 
 					LOGGER.info("p:{} => listMove:{}", p, liste);
 

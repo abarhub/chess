@@ -1,172 +1,185 @@
 package org.chess.chess.moteur;
 
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
 import org.chess.chess.domain.*;
 import org.chess.chess.joueur.Joueur;
-import org.chess.chess.joueur.JoueurHazard;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
-@RunWith(JUnitParamsRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class MoteurTest {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MoteurTest.class);
 
+	@Mock
+	private MouvementService mouvementService;
 
-	private Object[] listMoveRoiValues() {
-		return new Object[]{
-				new Object[]{4, 4, Couleur.Blanc, createListPosition(3, 3,
-						3, 4,
-						3, 5,
-						4, 5,
-						5, 5,
-						5, 4,
-						5, 3,
-						4, 3)},
-				new Object[]{0, 0, Couleur.Blanc, createListPosition(1, 0,
-						1, 1,
-						0, 1)},
-				new Object[]{0, 5, Couleur.Blanc, createListPosition(1, 4,
-						1, 5,
-						1, 6,
-						0, 4,
-						0, 6)},
-				new Object[]{5, 0, Couleur.Blanc, createListPosition(4, 0,
-						4, 1,
-						5, 1,
-						6, 0,
-						6, 1)},
-		};
+	@InjectMocks
+	private Moteur moteur;
+
+	private Plateau plateau;
+
+	private Partie partie;
+
+	@Mock
+	private Joueur joueurBlanc;
+
+	@Mock
+	private Joueur joueurNoir;
+
+	@Mock
+	private EtatService etatService;
+
+	@Before
+	public void init() {
+
+		plateau = new Plateau();
+
+		partie = new Partie(plateau, joueurBlanc, joueurNoir, Couleur.Blanc);
+
+		ReflectionTestUtils.setField(moteur, "partie", partie);
 	}
 
 	@Test
-	@Parameters(method = "listMoveRoiValues")
-	public void listMoveRoi(int ligne, int colonne, Couleur joueurCourant, List<Position> resultatsAttendus) {
-		LOGGER.info("listMoveRoiCentre");
+	public void couleurContraire() {
 
-		//final int ligne = 4;
-		//final int colonne = 4;
-		//final Couleur joueurCourant = Couleur.Blanc;
-		final Joueur joueurBlanc = new JoueurHazard(Couleur.Blanc);
-		final Joueur joueurNoir = new JoueurHazard(Couleur.Noir);
-
-		Moteur moteur = new Moteur();
-
-		List<PieceCouleurPosition> liste = createPieces(Piece.ROI, joueurCourant, ligne, colonne);
-		Plateau plateau = new Plateau(liste);
-
-		//plateau.afficheConsole();
-		LOGGER.info("plateau={}", plateau.getRepresentation());
-
-		moteur.initialise(plateau, joueurCourant, joueurBlanc, joueurNoir);
+		when(mouvementService.couleurContraire(eq(Couleur.Noir))).thenReturn(Couleur.Blanc);
 
 		// methode testée
-		List<Position> res = moteur.listMove(createPosition(ligne, colonne), false);
+		Couleur res = moteur.couleurContraire(Couleur.Noir);
 
 		// vérifications
-		LOGGER.info("res={}", res);
-		if (resultatsAttendus == null || resultatsAttendus.isEmpty()) {
-			assertTrue(res == null || res.isEmpty());
-		} else {
-			assertNotNull(res);
-			assertEquals(res.toString(), resultatsAttendus.size(), res.size());
-			for (Position p : resultatsAttendus) {
-				assertTrue(res.contains(p));
-			}
-		}
-//		assertNotNull(res);
-//		assertEquals(res.toString(), 8, res.size());
-//		assertTrue(res.contains(createPosition(3, 3)));
-//		assertTrue(res.contains(createPosition(3, 4)));
-//		assertTrue(res.contains(createPosition(3, 5)));
-//		assertTrue(res.contains(createPosition(4, 5)));
-//		assertTrue(res.contains(createPosition(5, 5)));
-//		assertTrue(res.contains(createPosition(5, 4)));
-//		assertTrue(res.contains(createPosition(5, 3)));
-//		assertTrue(res.contains(createPosition(4, 3)));
+		assertEquals(Couleur.Blanc, res);
+
+		verify(mouvementService).couleurContraire(eq(Couleur.Noir));
+
+		verifyNoMoreInteractions(mouvementService);
+		verifyNoMoreInteractions(etatService);
 	}
 
-	private Object[] listMovePionValues() {
-		return new Object[]{
-				new Object[]{6, 0, Couleur.Blanc, createListPosition(5, 0, 4, 0)},
-				new Object[]{4, 5, Couleur.Blanc, createListPosition(3, 5)},
-				new Object[]{4, 0, Couleur.Blanc, createListPosition(3, 0)},
-				new Object[]{1, 0, Couleur.Noir, createListPosition(2, 0, 3, 0)},
-				new Object[]{2, 0, Couleur.Noir, createListPosition(3, 0)},
-				new Object[]{0, 0, Couleur.Blanc, createListPosition()},
-				new Object[]{1, 0, Couleur.Blanc, createListPosition(0, 0)},
-				new Object[]{7, 0, Couleur.Noir, createListPosition()},
-				new Object[]{6, 0, Couleur.Noir, createListPosition(7, 0)},
-				//new Object[]{17, false},
-				//new Object[]{18, true},
-				//new Object[]{22, true}
-		};
+
+	@Test
+	public void getMovablePieces() {
+
+		List<Position> liste = new ArrayList<>();
+
+		when(mouvementService.getMovablePieces(any(Plateau.class), eq(Couleur.Blanc))).thenReturn(liste);
+
+		// methode testée
+		List<Position> res = moteur.getMovablePieces(Couleur.Blanc);
+
+		// vérifications
+		assertNotNull(res);
+		assertEquals(liste, res);
+
+		verify(mouvementService).getMovablePieces(any(Plateau.class), eq(Couleur.Blanc));
+
+		verifyNoMoreInteractions(mouvementService);
+		verifyNoMoreInteractions(etatService);
 	}
 
 	@Test
-	@Parameters(method = "listMovePionValues")
-	public void listMovePion(int ligne, int colonne, Couleur joueurCourant, List<Position> resultats) {
-		LOGGER.info("listMovePion({},{},{},{})", ligne, colonne, joueurCourant, resultats);
+	public void listePieces() {
 
-		final Joueur joueurBlanc = new JoueurHazard(Couleur.Blanc);
-		final Joueur joueurNoir = new JoueurHazard(Couleur.Noir);
+		List<Position> liste = new ArrayList<>();
 
-		Moteur moteur = new Moteur();
-
-		List<PieceCouleurPosition> liste = createPieces(Piece.PION, joueurCourant, ligne, colonne);
-		Plateau plateau = new Plateau(liste);
-
-		//plateau.afficheConsole();
-		LOGGER.info("plateau={}", plateau.getRepresentation());
-
-		moteur.initialise(plateau, joueurCourant, joueurBlanc, joueurNoir);
+		when(mouvementService.listePieces(any(Plateau.class), eq(Couleur.Blanc))).thenReturn(liste);
 
 		// methode testée
-		List<Position> res = moteur.listMove(createPosition(ligne, colonne), false);
+		List<Position> res = moteur.listePieces(Couleur.Blanc);
 
 		// vérifications
-		LOGGER.info("res={}", res);
-		if (resultats == null || resultats.isEmpty()) {
-			assertTrue(res == null || res.isEmpty());
-		} else {
-			assertNotNull(res);
-			assertEquals(res.toString(), resultats.size(), res.size());
-			for (Position p : resultats) {
-				assertTrue(res.contains(p));
-			}
-		}
+		assertNotNull(res);
+		assertEquals(liste, res);
+
+		verify(mouvementService).listePieces(any(Plateau.class), eq(Couleur.Blanc));
+
+		verifyNoMoreInteractions(mouvementService);
+		verifyNoMoreInteractions(etatService);
+	}
+
+	@Test
+	public void listMove() {
+
+		final Position position = createPosition(2, 5);
+		final List<Position> liste = new ArrayList<>();
+		final boolean tousMouvementsRoi = true;
+
+		when(mouvementService.listMove(any(Plateau.class), eq(position), eq(tousMouvementsRoi),
+				eq(Couleur.Blanc))).thenReturn(liste);
+
+
+		// methode testée
+		List<Position> res = moteur.listMove(position, tousMouvementsRoi);
+
+		// vérifications
+		assertNotNull(res);
+		assertEquals(liste, res);
+
+		verify(mouvementService).listMove(any(Plateau.class), eq(position), eq(tousMouvementsRoi),
+				eq(Couleur.Blanc));
+
+		verifyNoMoreInteractions(mouvementService);
+		verifyNoMoreInteractions(etatService);
+	}
+
+	@Test
+	public void calculEtatJeux() {
+
+		final EtatJeux etatJeux = EtatJeux.MOUVEMENT_BLANC;
+
+		when(etatService.calculEtatJeux(any(Partie.class))).thenReturn(etatJeux);
+
+		// methode testée
+		EtatJeux res = moteur.calculEtatJeux();
+
+		// vérifications
+		assertNotNull(res);
+		assertEquals(etatJeux, res);
+
+		verify(etatService).calculEtatJeux(any(Partie.class));
+		verifyNoMoreInteractions(etatService);
+		verifyNoMoreInteractions(mouvementService);
+	}
+
+	@Test
+	public void move() {
+
+		final Position src = createPosition(2, 5);
+		final Position dest = createPosition(4, 5);
+
+		Partie partie = Mockito.mock(Partie.class);
+		ReflectionTestUtils.setField(moteur, "partie", partie);
+
+		// methode testée
+		moteur.move(src, dest);
+
+		verify(partie).setMove(src, dest);
+
+		verifyNoMoreInteractions(partie);
+		verifyNoMoreInteractions(mouvementService);
+		verifyNoMoreInteractions(etatService);
 	}
 
 	// methodes utilitaires
 
-
-	private List<PieceCouleurPosition> createPieces(Piece roi, Couleur couleur, int ligne, int colonne) {
-		List<PieceCouleurPosition> liste = new ArrayList<>();
-		liste.add(new PieceCouleurPosition(roi, couleur, new Position(ligne, colonne)));
-		return liste;
-	}
-
 	private Position createPosition(int ligne, int colonne) {
 		return new Position(ligne, colonne);
-	}
-
-	private List<Position> createListPosition(int... tab) {
-		List<Position> liste = new ArrayList<>();
-		if (tab != null && tab.length > 0) {
-			assertTrue(tab.length % 2 == 0);
-			for (int i = 0; i < tab.length; i += 2) {
-				Position p = new Position(tab[i], tab[i + 1]);
-				liste.add(p);
-			}
-		}
-		return liste;
 	}
 }
