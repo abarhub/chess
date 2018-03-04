@@ -34,7 +34,7 @@ public class JoueurNegaMax extends Joueur {
 
 		Verify.verifyNotNull(deplacement);
 
-		moteur.getPlateau().move(deplacement.getPositionSrc(), deplacement.getPositionDest());
+		moteur.move(deplacement.getPositionSrc(), deplacement.getPositionDest());
 	}
 
 	private Deplacement calculNegaMax(Moteur moteur, Couleur couleur, int profondeur) {

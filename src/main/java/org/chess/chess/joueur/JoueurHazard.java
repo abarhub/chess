@@ -49,7 +49,7 @@ public class JoueurHazard extends Joueur {
 			}
 
 			//PieceCouleur p2 = plateau.getCase(p.getLigne(), p.getColonne());
-			moteur.getPlateau().move(p, deplacement);
+			moteur.move(p, deplacement);
 
 			//joueurCourant = couleurContraire(joueurCourant);
 
