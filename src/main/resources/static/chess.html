@@ -25,15 +25,17 @@
             <table border="1">
                 <tr ng-repeat="ligne in chess.plateau track by $index">
                     <td ng-repeat="colonne in ligne track by $index">
-                        <div class="case">
-                            <span ng-if="colonne!=null" ng-class="(colonne.couleur=='B')?'piece-blanche':'piece-noire'">
-                            <span class="glyphicon glyphicon-king piece" ng-if="colonne.piece=='R'"></span>
-                            <span class="glyphicon glyphicon-queen piece" ng-if="colonne.piece=='D'"></span>
-                            <span class="glyphicon glyphicon-bishop piece" ng-if="colonne.piece=='F'"></span>
-                            <span class="glyphicon glyphicon-knight piece" ng-if="colonne.piece=='C'"></span>
-                            <span class="glyphicon glyphicon-pawn piece" ng-if="colonne.piece=='P'"></span>
-                            <span class="glyphicon glyphicon-tower piece" ng-if="colonne.piece=='T'"></span>
-                        </span>
+                        <div class="case" ng-click="chess.clickCase(colonne,$index)"
+                             ng-class="chess.couleurCase(colonne)">
+                            <span ng-if="colonne!=null && colonne.piece!=null"
+                                  ng-class="(colonne.couleur=='B')?'piece-blanche':'piece-noire'">
+                                <span class="glyphicon glyphicon-king piece" ng-if="colonne.piece=='R'"></span>
+                                <span class="glyphicon glyphicon-queen piece" ng-if="colonne.piece=='D'"></span>
+                                <span class="glyphicon glyphicon-bishop piece" ng-if="colonne.piece=='F'"></span>
+                                <span class="glyphicon glyphicon-knight piece" ng-if="colonne.piece=='C'"></span>
+                                <span class="glyphicon glyphicon-pawn piece" ng-if="colonne.piece=='P'"></span>
+                                <span class="glyphicon glyphicon-tower piece" ng-if="colonne.piece=='T'"></span>
+                            </span>
                         </div>
                     </td>
                 </tr>

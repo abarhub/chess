@@ -1,18 +1,18 @@
 package org.chess.chess.service;
 
-import org.chess.chess.domain.Couleur;
-import org.chess.chess.domain.EtatJeux;
-import org.chess.chess.domain.PieceCouleur;
-import org.chess.chess.domain.Plateau;
+import org.chess.chess.domain.*;
 import org.chess.chess.dto.PieceDTO;
 import org.chess.chess.dto.PlateauDTO;
+import org.chess.chess.dto.PositionDTO;
 import org.chess.chess.moteur.Moteur;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ChessService {
@@ -53,5 +53,23 @@ public class ChessService {
 
 	public void nextMove() {
 		moteur.nextMove();
+	}
+
+	public List<PositionDTO> getDeplacements(int ligne, int colonne) {
+		Position position = new Position(ligne, colonne);
+		List<Position> res = moteur.listMove(position, true);
+
+		List<PositionDTO> liste = new ArrayList<>();
+
+		if (!CollectionUtils.isEmpty(res)) {
+			for (Position p : res) {
+				PositionDTO positionDTO = new PositionDTO(p.getLigne(), p.getColonne());
+				liste.add(positionDTO);
+			}
+		}
+
+		LOGGER.info("positions: {}", liste);
+
+		return liste;
 	}
 }

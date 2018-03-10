@@ -1,8 +1,19 @@
 
 .case {
-    background-color: #048c1b;
     height: 50px;
     width: 50px;
+}
+
+.couleur-case-defaut {
+    background-color: #048c1b;
+}
+
+.couleur-case-selectione {
+    background-color: #8c0601;
+}
+
+.couleur-case-deplacement {
+    background-color: #0c1f8c;
 }
 
 .piece-blanche {
@@ -14,5 +25,5 @@
 }
 
 .piece {
-    font-size:40px;
+    font-size: 40px;
 }
