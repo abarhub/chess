@@ -4,6 +4,7 @@ import org.chess.chess.domain.*;
 import org.chess.chess.dto.PieceDTO;
 import org.chess.chess.dto.PlateauDTO;
 import org.chess.chess.dto.PositionDTO;
+import org.chess.chess.moteur.CalculMouvementsService;
 import org.chess.chess.moteur.Moteur;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,9 @@ public class ChessService {
 
 	@Autowired
 	private Moteur moteur;
+
+	@Autowired
+	private CalculMouvementsService calculMouvementsService;
 
 	public PlateauDTO getPlateauDto() {
 
@@ -56,6 +60,14 @@ public class ChessService {
 	}
 
 	public List<PositionDTO> getDeplacements(int ligne, int colonne) {
+		if (false) {
+			return getDeplacements0(ligne, colonne);
+		} else {
+			return getDeplacements2(ligne, colonne);
+		}
+	}
+
+	public List<PositionDTO> getDeplacements0(int ligne, int colonne) {
 		Position position = new Position(ligne, colonne);
 		List<Position> res = moteur.listMove(position, true);
 
@@ -71,5 +83,25 @@ public class ChessService {
 		LOGGER.info("positions: {}", liste);
 
 		return liste;
+	}
+
+	public List<PositionDTO> getDeplacements2(int ligne, int colonne) {
+		List<PositionDTO> list = new ArrayList<>();
+
+		ListeMouvements listeMouvements = calculMouvementsService.calculMouvements(moteur.getPlateau());
+
+		if (listeMouvements != null) {
+			List<Mouvement> mouvementList = listeMouvements.getMouvements(new Position(ligne, colonne));
+
+			LOGGER.info("mouvementList: {}", mouvementList);
+
+			if (!CollectionUtils.isEmpty(mouvementList)) {
+				for (Mouvement mouvement : mouvementList) {
+					list.add(new PositionDTO(mouvement.getPosition()));
+				}
+			}
+		}
+
+		return list;
 	}
 }
