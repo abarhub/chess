@@ -37,7 +37,7 @@ public class Moteur {
 		Couleur joueurCourant;
 		Joueur joueurBlanc, joueurNoir;
 
-		if (false) {
+		if (true) {
 			plateau = new Plateau();
 			plateau.initialise();
 			plateau.afficheConsole();

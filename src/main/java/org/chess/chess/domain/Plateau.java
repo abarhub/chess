@@ -63,12 +63,29 @@ public class Plateau {
 
 		if (listePieces != null && !listePieces.isEmpty()) {
 			for (PieceCouleurPosition p : listePieces) {
+				Verify.verify(tableau[p.getPosition().getLigne()]
+						[p.getPosition().getColonne()] == null);
 				tableau[p.getPosition().getLigne()]
 						[p.getPosition().getColonne()] =
 						new PieceCouleur(p.getPiece(), p.getCouleur());
 			}
 		}
 	}
+
+//	public Plateau(String str, NotationEnum notation) {
+//
+//		Verify.verifyNotNull(notation);
+//
+//		if (notation == NotationEnum.FEN) {
+//			tableau = new PieceCouleur[NB_LIGNES][NB_COLONNES];
+//
+//			if (str != null && !str.isEmpty()) {
+//				int pos = 0;
+//			}
+//		} else {
+//			throw new IllegalArgumentException("Type de notation non géré : " + notation);
+//		}
+//	}
 
 	public void initialise() {
 		tableau = new PieceCouleur[NB_LIGNES][NB_COLONNES];

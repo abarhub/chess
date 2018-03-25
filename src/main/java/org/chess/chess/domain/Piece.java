@@ -3,7 +3,7 @@ package org.chess.chess.domain;
 public enum Piece {
 
 	ROI('R', 'K'),
-	REINE('D', 'D'),
+	REINE('D', 'Q'),
 	TOUR('T', 'R'),
 	FOU('F', 'B'),
 	CAVALIER('C', 'N'),

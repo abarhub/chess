@@ -1,7 +1,9 @@
 package org.chess.chess.rest;
 
-import org.chess.chess.dto.PositionDTO;
+import org.chess.chess.dto.FenDTO;
 import org.chess.chess.dto.PlateauDTO;
+import org.chess.chess.dto.PositionDTO;
+import org.chess.chess.joueur.TypeJoueur;
 import org.chess.chess.service.ChessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +37,23 @@ public class ChessController {
 	public List<PositionDTO> getDeplacements(@PathVariable("ligne") int ligne,
 	                                         @PathVariable("colonne") int colonne) {
 		return chessService.getDeplacements(ligne, colonne);
+	}
+
+	@RequestMapping("/plateauFen")
+	public FenDTO plateauFen() {
+		return chessService.getPlateauFenDto();
+	}
+
+	@RequestMapping("/listeTypeJoueur")
+	public List<TypeJoueur> typeJoueurs() {
+		return chessService.getListeTypeJoueur();
+	}
+
+
+	@RequestMapping("/demarrage")
+	public void demarrage(@RequestParam(value = "joueurBlanc") String joueurBlanc,
+	                      @RequestParam(value = "joueurNoir") String joueurNoir) {
+		chessService.demarrage(joueurBlanc, joueurNoir);
 	}
 
 }
