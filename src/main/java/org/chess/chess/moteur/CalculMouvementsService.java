@@ -33,6 +33,7 @@ public class CalculMouvementsService {
 		if (str != null) {
 			List<Mouvement> list;
 
+			// calcul des déplacements possibles
 			for (PieceCouleurPosition piece : str.collect(Collectors.toList())) {
 				list = null;
 				switch (piece.getPiece()) {
@@ -60,11 +61,27 @@ public class CalculMouvementsService {
 				}
 			}
 
+			boolean echecRoiBlanc = false;
+			boolean echecRoiNoir = false;
+
+			// suppression des mouvements des rois interdits
 			for (Map.Entry<PieceCouleurPosition, List<Mouvement>> pieceCouleurPositionListEntry : mapMouvements.entrySet()) {
 
 				PieceCouleurPosition piece = pieceCouleurPositionListEntry.getKey();
 
 				if (piece.getPiece() == Piece.ROI) {
+
+					boolean roiAttaque = listeMouvements.caseAttaque(piece.getPosition(), piece.getCouleur());
+
+					if (roiAttaque) {
+						if (piece.getCouleur() == Couleur.Blanc) {
+							echecRoiBlanc = true;
+							listeMouvements.setRoiBlancEchecs(true);
+						} else {
+							echecRoiNoir = true;
+							listeMouvements.setRoiNoirEchecs(true);
+						}
+					}
 
 					List<Mouvement> liste = mapMouvements.get(piece);
 
@@ -72,19 +89,7 @@ public class CalculMouvementsService {
 
 					for (Mouvement mouvement : liste) {
 
-						boolean caseAttaque = false;
-
-						for (PieceCouleurPosition pieceAttaquante : mapMouvements.keySet()) {
-
-							if (pieceAttaquante != piece && pieceAttaquante.getCouleur() != piece.getCouleur()) {
-
-								if (mouvement.getPosition().equals(pieceAttaquante.getPosition())) {
-									caseAttaque = true;
-									break;
-								}
-							}
-
-						}
+						boolean caseAttaque = listeMouvements.caseAttaque(mouvement.getPosition(), piece.getCouleur());
 
 						if (!caseAttaque) {
 							listeResultat.add(mouvement);
@@ -94,6 +99,30 @@ public class CalculMouvementsService {
 
 					pieceCouleurPositionListEntry.setValue(listeResultat);
 				}
+			}
+
+			// vérification s'il y a echecs d'un des rois
+
+			Verify.verify(!echecRoiBlanc || !echecRoiNoir);
+
+			if (echecRoiBlanc) {
+
+				List<Mouvement> liste2 = listeMouvements.getMouvements(new PieceCouleur(Piece.ROI, Couleur.Blanc));
+
+				if (CollectionUtils.isEmpty(liste2)) {
+					listeMouvements.setRoiBlancEchecsMat(true);
+				}
+
+			}
+
+			if (echecRoiNoir) {
+
+				List<Mouvement> liste2 = listeMouvements.getMouvements(new PieceCouleur(Piece.ROI, Couleur.Noir));
+
+				if (CollectionUtils.isEmpty(liste2)) {
+					listeMouvements.setRoiNoirEchecs(true);
+				}
+
 			}
 		}
 
@@ -381,7 +410,7 @@ public class CalculMouvementsService {
 
 		if (listeMouvements != null) {
 
-			return listeMouvements.caseAttaque(ligne, colonne, couleur);
+			return listeMouvements.caseAttaque(new Position(ligne, colonne), couleur);
 
 		}
 
