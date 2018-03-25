@@ -3,17 +3,38 @@
 var board;
 
 function loadPieces() {
-
-
     $.ajax({
         type: "GET",
         dataType: 'json',
         url: "http://localhost:8080/plateauFen",
         success: function (data) {
-            console.log("data", data);
+            console.log("loadPieces data :", data);
             //alert(data);
             //board.position('r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R');
             board.position(data.fen);
+            loadEtat();
+        },
+        error: function (resultat, statut, erreur) {
+            console.error("loadPieces : error", resultat, statut, erreur);
+
+        }
+    });
+}
+
+
+function loadEtat() {
+    $.ajax({
+        type: "GET",
+        dataType: 'json',
+        url: "http://localhost:8080/status",
+        success: function (data) {
+            console.log("loadEtat data :", data);
+            $('#joueur').html(data.joueur);
+            $('#etatJeux').html(data.etat);
+        },
+        error: function (resultat, statut, erreur) {
+            console.error("loadEtat : error", resultat, statut, erreur);
+
         }
     });
 }
@@ -22,11 +43,15 @@ function nextMove() {
 
     $.ajax({
         type: "GET",
-        //dataType: "jsonp",
+        //dataType: 'json',
         url: "http://localhost:8080/action?nom=next",
         success: function (data) {
-            console.log("data", data);
+            console.log("nextMove data:", data);
             loadPieces();
+        },
+        error: function (resultat, statut, erreur) {
+            console.error("nextMove : error", resultat, statut, erreur);
+
         }
     });
 }
@@ -47,6 +72,10 @@ function loadListeJoueurs() {
             $('#joueurBlanc').html(txt);
             $('#joueurNoir').html(txt);
 
+        },
+        error: function (resultat, statut, erreur) {
+            console.error("loadListeJoueurs : error", resultat, statut, erreur);
+
         }
     });
 }
@@ -57,20 +86,43 @@ function demarrage() {
     var blanc = $("#joueurBlanc").val();
     var noir = $("#joueurNoir").val();
 
-    console.info("blanc:", blanc, "noir:", noir);
+    var valeursInitiales = $("#valeursInitiales").val();
+
+    console.info("blanc:", blanc, "noir:", noir, "valeurInitiales:", valeursInitiales);
 
     $.ajax({
         type: "GET",
-        //dataType: "jsonp",
+        //dataType: 'json',
         url: "http://localhost:8080/demarrage?" +
-        "joueurBlanc=" + blanc + "&joueurNoir=" + noir,
+        "joueurBlanc=" + blanc + "&joueurNoir=" + noir +
+        "&valeursInitiales=" + valeursInitiales,
         success: function (data) {
             console.log("demarrage : data", data);
 
             loadPieces();
+        },
+        error: function (resultat, statut, erreur) {
+            console.error("demarrage : error", resultat, statut, erreur);
+
         }
     });
 
+}
+
+function logInfos() {
+    $.ajax({
+        type: "GET",
+        //dataType: 'json',
+        url: "http://localhost:8080/logInfos",
+        success: function (data) {
+            console.log("logInfos : data", data);
+
+        },
+        error: function (resultat, statut, erreur) {
+            console.error("logInfos : error", resultat, statut, erreur);
+
+        }
+    });
 }
 
 function init() {
@@ -79,10 +131,10 @@ function init() {
     // board = Chessboard('#myBoard', 'start');
     board = Chessboard('#myBoard');
 
-    $('#startPositionBtn').on('click', function () {
-        //board.position('r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R');
-        loadPieces();
-    });
+    // $('#startPositionBtn').on('click', function () {
+    //     //board.position('r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R');
+    //     loadPieces();
+    // });
 
     $('#nextBtn').on('click', function () {
         nextMove();
@@ -90,6 +142,10 @@ function init() {
 
     $('#StartBtn').on('click', function () {
         demarrage();
+    });
+
+    $('#logBtn').on('click', function () {
+        logInfos();
     });
 
     loadListeJoueurs();

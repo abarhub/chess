@@ -62,18 +62,26 @@
                 <option>4</option>
             </select>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-1">
+            <input type="text" id="valeursInitiales" value=""/>
+        </div>
+        <div class="col-sm-1">
             <input type="button" id="StartBtn" value="Demarrer"/>
         </div>
     </div>
 
     <div class="row">
-        <div id="myBoard" style="width: 400px"></div>
-        <!--<div id="myBoard2" style="width: 400px"></div>-->
+        <div class="col-sm-6">
+            <div id="myBoard" style="width: 400px"></div>
+        </div>
 
-        <input type="button" id="startPositionBtn" value="Start Position"/>
-        <input type="button" id="nextBtn" value="Next"/>
-
+        <div class="col-sm-6">
+            <!--<input type="button" id="startPositionBtn" value="Start Position"/>-->
+            <input type="button" id="nextBtn" value="Next"/>
+            <input type="button" id="logBtn" value="Log tableau"/>
+            <span>Joueur :</span><span id="joueur"></span>
+            <span>Etat :</span><span id="etatJeux"></span>
+        </div>
     </div>
 
 </div>

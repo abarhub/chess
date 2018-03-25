@@ -145,7 +145,7 @@ public class CalculMouvementsService {
 					final int ligne3 = ligne + ligne2;
 					final int colonne3 = colonne + colonne2;
 					if (Check.isPositionValide(ligne3, colonne3)) {
-						ajoutePositionPiece(mouvements, ligne3, colonne3, piece, plateau);
+						ajoutePositionPiece(mouvements, new Position(ligne3, colonne3), piece, plateau);
 //						if (tousMouvementRois) {
 //							ajoutePositionRois(plateau, liste, ligne3, colonne3, joueurCourant);
 //						} else if (!caseAttaque(plateau, couleurContraire(piece.getCouleur()), ligne3, colonne3)) {
@@ -271,9 +271,12 @@ public class CalculMouvementsService {
 		Verify.verifyNotNull(piece);
 		Verify.verifyNotNull(plateau);
 		for (int i = 1; i <= 8; i++) {
-			boolean res = ajoutePositionPiece(mouvements, ligne + decalageLigne * i,
-					colonne + decalageColonne * i,
-					piece, plateau);
+			boolean res = false;
+			if (Check.isPositionValide(ligne + decalageLigne * i, colonne + decalageColonne * i)) {
+				ajoutePositionPiece(mouvements, new Position(ligne + decalageLigne * i,
+								colonne + decalageColonne * i),
+						piece, plateau);
+			}
 			if (!res) {
 				break;
 			}
@@ -289,32 +292,48 @@ public class CalculMouvementsService {
 		final int ligne = piece.getPosition().getLigne();
 		final int colonne = piece.getPosition().getColonne();
 
-		ajoutePositionPiece(mouvements, ligne - 2, colonne - 1, piece, plateau);
-		ajoutePositionPiece(mouvements, ligne - 2, colonne + 1, piece, plateau);
-		ajoutePositionPiece(mouvements, ligne + 1, colonne - 2, piece, plateau);
-		ajoutePositionPiece(mouvements, ligne - 1, colonne - 2, piece, plateau);
-		ajoutePositionPiece(mouvements, ligne + 1, colonne + 2, piece, plateau);
-		ajoutePositionPiece(mouvements, ligne - 1, colonne + 2, piece, plateau);
-		ajoutePositionPiece(mouvements, ligne + 2, colonne - 1, piece, plateau);
-		ajoutePositionPiece(mouvements, ligne + 2, colonne + 1, piece, plateau);
+		if (Check.isPositionValide(ligne - 2, colonne - 1)) {
+			ajoutePositionPiece(mouvements, new Position(ligne - 2, colonne - 1), piece, plateau);
+		}
+		if (Check.isPositionValide(ligne - 2, colonne + 1)) {
+			ajoutePositionPiece(mouvements, new Position(ligne - 2, colonne + 1), piece, plateau);
+		}
+		if (Check.isPositionValide(ligne + 1, colonne - 2)) {
+			ajoutePositionPiece(mouvements, new Position(ligne + 1, colonne - 2), piece, plateau);
+		}
+		if (Check.isPositionValide(ligne - 1, colonne - 2)) {
+			ajoutePositionPiece(mouvements, new Position(ligne - 1, colonne - 2), piece, plateau);
+		}
+		if (Check.isPositionValide(ligne + 1, colonne + 2)) {
+			ajoutePositionPiece(mouvements, new Position(ligne + 1, colonne + 2), piece, plateau);
+		}
+		if (Check.isPositionValide(ligne - 1, colonne + 2)) {
+			ajoutePositionPiece(mouvements, new Position(ligne - 1, colonne + 2), piece, plateau);
+		}
+		if (Check.isPositionValide(ligne + 2, colonne - 1)) {
+			ajoutePositionPiece(mouvements, new Position(ligne + 2, colonne - 1), piece, plateau);
+		}
+		if (Check.isPositionValide(ligne + 2, colonne + 1)) {
+			ajoutePositionPiece(mouvements, new Position(ligne + 2, colonne + 1), piece, plateau);
+		}
 
 		return mouvements;
 	}
 
-	private boolean ajoutePositionPiece(List<Mouvement> mouvements, int ligne, int colonne,
+	private boolean ajoutePositionPiece(List<Mouvement> mouvements, Position position,
 	                                    PieceCouleurPosition piece, Plateau plateau) {
 		Verify.verifyNotNull(mouvements);
 		Verify.verifyNotNull(piece);
 		Verify.verifyNotNull(plateau);
 
-		if (Check.isPositionValide(ligne, colonne)) {
-			PieceCouleur caseCible = plateau.getCase(ligne, colonne);
+		if (Check.isPositionValide(position.getLigne(), position.getColonne())) {
+			PieceCouleur caseCible = plateau.getCase(position);
 			if (caseCible == null) {
-				Mouvement mouvement = new Mouvement(new Position(ligne, colonne), false);
+				Mouvement mouvement = new Mouvement(position, false);
 				mouvements.add(mouvement);
 				return true;
 			} else if (caseCible.getCouleur() != piece.getCouleur()) {
-				Mouvement mouvement = new Mouvement(new Position(ligne, colonne), true);
+				Mouvement mouvement = new Mouvement(position, true);
 				mouvements.add(mouvement);
 				return false;
 			}
@@ -344,40 +363,49 @@ public class CalculMouvementsService {
 				decalage2 = 2;
 			}
 		}
-		ajoutePositionPions(mouvements, ligne + decalage, colonne, piece, plateau, false);
-		ajoutePositionPions(mouvements, ligne + decalage, colonne - 1, piece, plateau, true);
-		ajoutePositionPions(mouvements, ligne + decalage, colonne + 1, piece, plateau, true);
+		if (Check.isPositionValide(ligne + decalage, colonne)) {
+			ajoutePositionPions(mouvements, new Position(ligne + decalage, colonne), piece, plateau, false);
+		}
+		if (Check.isPositionValide(ligne + decalage, colonne - 1)) {
+			ajoutePositionPions(mouvements, new Position(ligne + decalage, colonne - 1), piece, plateau, true);
+		}
+		if (Check.isPositionValide(ligne + decalage, colonne + 1)) {
+			ajoutePositionPions(mouvements, new Position(ligne + decalage, colonne + 1), piece, plateau, true);
+		}
 		if (decalage2 != 0) {
 			PieceCouleur caseIntermediaire;
 			if (decalage2 > 0) {
-				caseIntermediaire = plateau.getCase(ligne + decalage2 - 1, colonne);
+				caseIntermediaire = plateau.getCase(new Position(ligne + decalage2 - 1, colonne));
 			} else {
-				caseIntermediaire = plateau.getCase(ligne + decalage2 + 1, colonne);
+				caseIntermediaire = plateau.getCase(new Position(ligne + decalage2 + 1, colonne));
 			}
 			if (caseIntermediaire == null) {
-				ajoutePositionPions(mouvements, ligne + decalage2, colonne, piece, plateau, false);
+				if (Check.isPositionValide(ligne + decalage2, colonne)) {
+					ajoutePositionPions(mouvements, new Position(ligne + decalage2, colonne), piece, plateau, false);
+				}
 			}
 		}
 
 		return mouvements;
 	}
 
-	private void ajoutePositionPions(List<Mouvement> mouvements, int ligne, int colonne,
+	private void ajoutePositionPions(List<Mouvement> mouvements, Position position,
 	                                 PieceCouleurPosition piece, Plateau plateau, boolean mangePiece) {
 		Verify.verifyNotNull(mouvements);
 		Verify.verifyNotNull(piece);
 		Verify.verifyNotNull(plateau);
+		Verify.verifyNotNull(position);
 
-		if (Check.isPositionValide(ligne, colonne)) {
-			PieceCouleur caseCible = plateau.getCase(ligne, colonne);
+		if (Check.isPositionValide(position.getLigne(), position.getColonne())) {
+			PieceCouleur caseCible = plateau.getCase(position);
 			if (mangePiece) {
 				if (caseCible != null && caseCible.getCouleur() != piece.getCouleur()) {
-					Mouvement mouvement = new Mouvement(new Position(ligne, colonne), true);
+					Mouvement mouvement = new Mouvement(position, true);
 					mouvements.add(mouvement);
 				}
 			} else {
 				if (caseCible == null) {
-					Mouvement mouvement = new Mouvement(new Position(ligne, colonne), false);
+					Mouvement mouvement = new Mouvement(position, false);
 					mouvements.add(mouvement);
 				}
 			}
@@ -404,13 +432,13 @@ public class CalculMouvementsService {
 		return list;
 	}
 
-	public boolean caseAttaque(Plateau plateau, Couleur couleur, int ligne, int colonne) {
+	public boolean caseAttaque(Plateau plateau, Couleur couleur, Position position) {
 
 		ListeMouvements listeMouvements = calculMouvements(plateau);
 
 		if (listeMouvements != null) {
 
-			return listeMouvements.caseAttaque(new Position(ligne, colonne), couleur);
+			return listeMouvements.caseAttaque(position, couleur);
 
 		}
 

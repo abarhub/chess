@@ -8,6 +8,7 @@ import org.chess.chess.domain.EtatJeux;
 import org.chess.chess.domain.Partie;
 import org.chess.chess.domain.Plateau;
 import org.chess.chess.joueur.JoueurHazard;
+import org.chess.chess.notation.NotationFEN;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,9 +27,18 @@ public class EtatServiceTest {
 
 	private EtatService etatService;
 
+	private CalculMouvementsService calculMouvementsService;
+
+	private NotationFEN notationFEN;
+
 	@Before
 	public void setUp() throws Exception {
+		notationFEN = new NotationFEN();
+
 		mouvementService = new MouvementService();
+
+		calculMouvementsService = new CalculMouvementsService();
+		ReflectionTestUtils.setField(mouvementService, "calculMouvementsService", calculMouvementsService);
 
 		etatService = new EtatService();
 		ReflectionTestUtils.setField(etatService, "mouvementService", mouvementService);
@@ -49,6 +59,38 @@ public class EtatServiceTest {
 	                           final EtatJeux etatJeuxRef) throws IOException {
 
 		Plateau plateau = getPlateau(nomFichier);
+
+		Partie partie = new Partie(plateau, new JoueurHazard(Couleur.Blanc),
+				new JoueurHazard(Couleur.Noir),
+				joueurCourant);
+
+		// methode testée
+		final EtatJeux etatJeux = etatService.calculEtatJeux(partie);
+
+		// vérifications
+		assertNotNull(etatJeux);
+		assertEquals(etatJeuxRef, etatJeux);
+	}
+
+
+	private Object[] calculEtatJeuxFenValues() {
+		return new Object[]{
+				new Object[]{"rnb2b1r/pp1qp1pp/P4k1n/3pP3/1P1P1p1P/R1p2NP1/2PNKP2/2BQ1B1R",
+						Couleur.Blanc, EtatJeux.ECHECS_BLANC},
+				new Object[]{"r1b1kb1r/pp1pp1pp/nqp2p2/5P2/8/PP5N/R4KnP/2B4R",
+						Couleur.Blanc, EtatJeux.ECHECS_BLANC},
+				new Object[]{"r1b1kb1r/pp1pp1pp/nqp2p2/5P2/8/PP5N/R5nP/2B3KR",
+						Couleur.Blanc, EtatJeux.ECHECS_BLANC},
+		};
+	}
+
+	@Test
+	@Parameters(method = "calculEtatJeuxFenValues")
+	public void calculEtatJeuxFen(final String formatFen,
+	                              final Couleur joueurCourant,
+	                              final EtatJeux etatJeuxRef) throws IOException {
+
+		Plateau plateau = notationFEN.createPlateau(formatFen);
 
 		Partie partie = new Partie(plateau, new JoueurHazard(Couleur.Blanc),
 				new JoueurHazard(Couleur.Noir),

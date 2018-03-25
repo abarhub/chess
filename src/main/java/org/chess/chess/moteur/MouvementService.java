@@ -37,12 +37,12 @@ public class MouvementService {
 
 
 	// vérifie si la case (ligne/colonne) est attaquée par une piece de couleur
-	public boolean caseAttaque(Plateau plateau, Couleur couleur, int ligne, int colonne) {
+	public boolean caseAttaque(Plateau plateau, Couleur couleur, Position position) {
 
 		if (methode2) {
-			return calculMouvementsService.caseAttaque(plateau, couleur, ligne, colonne);
+			return calculMouvementsService.caseAttaque(plateau, couleur, position);
 		} else {
-			return mouvementService2.caseAttaque(plateau, couleur, ligne, colonne);
+			return mouvementService2.caseAttaque(plateau, couleur, position);
 		}
 	}
 
@@ -62,7 +62,7 @@ public class MouvementService {
 		List<Position> liste = new ArrayList<>();
 		for (int i = 0; i < Plateau.NB_LIGNES; i++) {
 			for (int j = 0; j < Plateau.NB_COLONNES; j++) {
-				PieceCouleur piece = plateau.getCase(i, j);
+				PieceCouleur piece = plateau.getCase(new Position(i, j));
 				if (piece != null && piece.getCouleur() == couleur) {
 					liste.add(new Position(i, j));
 				}

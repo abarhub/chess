@@ -99,36 +99,28 @@ public class Plateau {
 	}
 
 	private void lignePieces(int ligne, Couleur couleur) {
-		setCase(ligne, 0, new PieceCouleur(Piece.TOUR, couleur));
-		setCase(ligne, 1, new PieceCouleur(Piece.CAVALIER, couleur));
-		setCase(ligne, 2, new PieceCouleur(Piece.FOU, couleur));
-		setCase(ligne, 3, new PieceCouleur(Piece.REINE, couleur));
-		setCase(ligne, 4, new PieceCouleur(Piece.ROI, couleur));
-		setCase(ligne, 5, new PieceCouleur(Piece.FOU, couleur));
-		setCase(ligne, 6, new PieceCouleur(Piece.CAVALIER, couleur));
-		setCase(ligne, 7, new PieceCouleur(Piece.TOUR, couleur));
+		setCase(new Position(ligne, 0), new PieceCouleur(Piece.TOUR, couleur));
+		setCase(new Position(ligne, 1), new PieceCouleur(Piece.CAVALIER, couleur));
+		setCase(new Position(ligne, 2), new PieceCouleur(Piece.FOU, couleur));
+		setCase(new Position(ligne, 3), new PieceCouleur(Piece.REINE, couleur));
+		setCase(new Position(ligne, 4), new PieceCouleur(Piece.ROI, couleur));
+		setCase(new Position(ligne, 5), new PieceCouleur(Piece.FOU, couleur));
+		setCase(new Position(ligne, 6), new PieceCouleur(Piece.CAVALIER, couleur));
+		setCase(new Position(ligne, 7), new PieceCouleur(Piece.TOUR, couleur));
 	}
 
 	private void lignePions(int ligne, Couleur couleur) {
 		for (int i = 0; i < NB_COLONNES; i++) {
-			setCase(ligne, i, new PieceCouleur(Piece.PION, couleur));
+			setCase(new Position(ligne, i), new PieceCouleur(Piece.PION, couleur));
 		}
 	}
 
-	private void setCase(int ligne, int colonne, PieceCouleur pieceCouleur) {
-		Verify.verify(ligne >= 0);
-		Verify.verify(ligne < NB_LIGNES);
-		Verify.verify(colonne >= 0);
-		Verify.verify(colonne < NB_COLONNES);
-		tableau[ligne][colonne] = pieceCouleur;
+	private void setCase(Position position, PieceCouleur pieceCouleur) {
+		tableau[position.getLigne()][position.getColonne()] = pieceCouleur;
 	}
 
-	public PieceCouleur getCase(int ligne, int colonne) {
-		Verify.verify(ligne >= 0);
-		Verify.verify(ligne < NB_LIGNES);
-		Verify.verify(colonne >= 0);
-		Verify.verify(colonne < NB_COLONNES);
-		return tableau[ligne][colonne];
+	public PieceCouleur getCase(Position position) {
+		return tableau[position.getLigne()][position.getColonne()];
 	}
 
 	public void move(Position positionSrc, Position positionDest) {
@@ -136,16 +128,16 @@ public class Plateau {
 		Verify.verifyNotNull(positionDest);
 		Verify.verify(!positionSrc.equals(positionDest));
 
-		PieceCouleur p = getCase(positionSrc.getLigne(), positionSrc.getColonne());
+		PieceCouleur p = getCase(positionSrc);
 		Verify.verifyNotNull(p, "La case source est vide");
-		setCase(positionSrc.getLigne(), positionSrc.getColonne(), null);
-		setCase(positionDest.getLigne(), positionDest.getColonne(), p);
+		setCase(positionSrc, null);
+		setCase(positionDest, p);
 	}
 
 	public void afficheConsole() {
 		for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
 			for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
-				PieceCouleur p = getCase(ligne, colonne);
+				PieceCouleur p = getCase(new Position(ligne, colonne));
 				if (p == null) {
 					System.out.print(' ');
 				} else {
@@ -162,7 +154,7 @@ public class Plateau {
 
 		for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
 			for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
-				PieceCouleur p = getCase(ligne, colonne);
+				PieceCouleur p = getCase(new Position(ligne, colonne));
 				if (p != null) {
 					list.add(p);
 				}
@@ -177,7 +169,7 @@ public class Plateau {
 
 		for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
 			for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
-				PieceCouleur p = getCase(ligne, colonne);
+				PieceCouleur p = getCase(new Position(ligne, colonne));
 				if (p != null) {
 					PieceCouleurPosition p2 = new PieceCouleurPosition(p.getPiece(), p.getCouleur(), new Position(ligne, colonne));
 					list.add(p2);
@@ -193,7 +185,7 @@ public class Plateau {
 
 		for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
 			for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
-				PieceCouleur p = getCase(ligne, colonne);
+				PieceCouleur p = getCase(new Position(ligne, colonne));
 				if (p != null) {
 					str.append(p.getCouleur().getNomCourt());
 					str.append(p.getPiece().getNomCourt());

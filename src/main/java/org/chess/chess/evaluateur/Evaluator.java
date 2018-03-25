@@ -21,7 +21,7 @@ public abstract class Evaluator {
 		for (int colonne = 0; colonne < Plateau.NB_COLONNES; colonne++) {
 			int nbPions = 0;
 			for (int ligne = 0; ligne < Plateau.NB_LIGNES; ligne++) {
-				PieceCouleur p = plateau.getCase(ligne, colonne);
+				PieceCouleur p = plateau.getCase(new Position(ligne, colonne));
 				if (p != null && p.getCouleur() == couleur) {
 					if (p.getPiece() == Piece.PION) {
 						nbPions++;
@@ -39,11 +39,11 @@ public abstract class Evaluator {
 		int res = 0;
 		for (int ligne = 0; ligne < Plateau.NB_LIGNES; ligne++) {
 			for (int colonne = 0; colonne < Plateau.NB_COLONNES; colonne++) {
-				PieceCouleur p = plateau.getCase(ligne, colonne);
+				PieceCouleur p = plateau.getCase(new Position(ligne, colonne));
 				if (p != null && p.getCouleur() == couleur) {
 					if (p.getPiece() == Piece.PION) {
 						if (Check.isPositionValide(ligne - 1, colonne)) {
-							PieceCouleur p2 = plateau.getCase(ligne - 1, colonne);
+							PieceCouleur p2 = plateau.getCase(new Position(ligne - 1, colonne));
 							if (p2 != null) {
 								res++;
 							}
@@ -59,20 +59,20 @@ public abstract class Evaluator {
 		int res = 0;
 		for (int ligne = 0; ligne < Plateau.NB_LIGNES; ligne++) {
 			for (int colonne = 0; colonne < Plateau.NB_COLONNES; colonne++) {
-				PieceCouleur p = plateau.getCase(ligne, colonne);
+				PieceCouleur p = plateau.getCase(new Position(ligne, colonne));
 				if (p != null && p.getCouleur() == couleur) {
 					if (p.getPiece() == Piece.PION) {
 						boolean trouve = false;
 						for (int i = -1; i <= 1; i++) {
 							if (Check.isPositionValide(ligne + i, colonne - 1)) {
-								PieceCouleur p2 = plateau.getCase(ligne + i, colonne - 1);
+								PieceCouleur p2 = plateau.getCase(new Position(ligne + i, colonne - 1));
 								if (p2 != null && p2.getCouleur() == couleur && p2.getPiece() == Piece.PION) {
 									trouve = true;
 									break;
 								}
 							}
 							if (Check.isPositionValide(ligne + i, colonne + 1)) {
-								PieceCouleur p2 = plateau.getCase(ligne + i, colonne + 1);
+								PieceCouleur p2 = plateau.getCase(new Position(ligne + i, colonne + 1));
 								if (p2 != null && p2.getCouleur() == couleur && p2.getPiece() == Piece.PION) {
 									trouve = true;
 									break;

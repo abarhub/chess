@@ -28,7 +28,7 @@ public class EtatService {
 				.peek(x -> LOGGER.info("pos2={}", x))
 				.filter(x -> mouvementService.caseAttaque(plateau,
 						mouvementService.couleurContraire(x.getCouleur()),
-						x.getPosition().getLigne(), x.getPosition().getColonne())
+						x.getPosition())
 				)
 				.peek(x -> LOGGER.info("pos3={}", x))
 				.collect(Collectors.toList());

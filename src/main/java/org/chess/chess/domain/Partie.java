@@ -42,7 +42,7 @@ public class Partie {
 		Verify.verifyNotNull(dest);
 
 		PieceCouleur pieceSource;
-		pieceSource = plateau.getCase(src.getLigne(), src.getColonne());
+		pieceSource = plateau.getCase(src);
 
 		Verify.verifyNotNull(pieceSource, "la piece source n'existe pas");
 		Verify.verify(pieceSource.getCouleur() == joueurCourant,
@@ -52,7 +52,7 @@ public class Partie {
 			Verify.verify(pieceSource.getCouleur() == joueurCourant);
 		}
 
-		PieceCouleur pieceDestination = plateau.getCase(dest.getLigne(), dest.getColonne());
+		PieceCouleur pieceDestination = plateau.getCase(dest);
 
 		if (pieceDestination != null) {
 			Verify.verify(pieceDestination.getCouleur() != joueurCourant);

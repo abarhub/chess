@@ -3,6 +3,7 @@ package org.chess.chess.rest;
 import org.chess.chess.dto.FenDTO;
 import org.chess.chess.dto.PlateauDTO;
 import org.chess.chess.dto.PositionDTO;
+import org.chess.chess.dto.StatusDTO;
 import org.chess.chess.joueur.TypeJoueur;
 import org.chess.chess.service.ChessService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +53,20 @@ public class ChessController {
 
 	@RequestMapping("/demarrage")
 	public void demarrage(@RequestParam(value = "joueurBlanc") String joueurBlanc,
-	                      @RequestParam(value = "joueurNoir") String joueurNoir) {
-		chessService.demarrage(joueurBlanc, joueurNoir);
+	                      @RequestParam(value = "joueurNoir") String joueurNoir,
+	                      @RequestParam(value = "valeursInitiales", required = false) String valeursInitiales) {
+		chessService.demarrage(joueurBlanc, joueurNoir, valeursInitiales);
 	}
+
+	@RequestMapping("/status")
+	public StatusDTO status() {
+		return chessService.getStatus();
+	}
+
+	@RequestMapping("/logInfos")
+	public void logInfos() {
+		chessService.logInfos();
+	}
+
 
 }

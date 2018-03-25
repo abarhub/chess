@@ -59,7 +59,7 @@ public class NotationCustom implements INotation {
 
 		for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
 			for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
-				PieceCouleur p = plateau.getCase(ligne, colonne);
+				PieceCouleur p = plateau.getCase(new Position(ligne, colonne));
 				if (p != null) {
 					str.append(p.getCouleur().getNomCourt());
 					str.append(p.getPiece().getNomCourt());

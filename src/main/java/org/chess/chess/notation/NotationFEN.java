@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
+import static org.chess.chess.domain.Plateau.NB_COLONNES;
+import static org.chess.chess.domain.Plateau.NB_LIGNES;
+
 @Service
 public class NotationFEN implements INotation {
 
@@ -33,8 +36,8 @@ public class NotationFEN implements INotation {
 		ListIterator<Character> iterator = Lists.charactersOf(str).listIterator();
 
 
-		for (int ligne = 0; ligne < 7; ligne++) {
-			for (int colonne = 0; colonne < 7; colonne++) {
+		for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
+			for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
 				char c = getChar(iterator);
 				if (estPiece(c, Piece.ROI)) {
 					ajouteCase(listePieces, c, Piece.ROI, ligne, colonne);
@@ -49,7 +52,11 @@ public class NotationFEN implements INotation {
 				} else if (estPiece(c, Piece.PION)) {
 					ajouteCase(listePieces, c, Piece.PION, ligne, colonne);
 				} else if (Character.isDigit(c)) {
-
+					int nbCasesVides = c - '0';
+					if (nbCasesVides == 0 || nbCasesVides > 8) {
+						throw new IllegalArgumentException("Le nombre de cases vide est invalide à la position : " + iterator.previousIndex());
+					}
+					colonne += nbCasesVides - 1;
 				} else {
 					throw new IllegalArgumentException("Caractere '" + c + "' invalide à la position : " + iterator.previousIndex());
 				}
@@ -100,12 +107,12 @@ public class NotationFEN implements INotation {
 
 		StringBuilder str = new StringBuilder();
 
-		for (int ligne = 0; ligne < 8; ligne++) {
+		for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
 
 			int nbCaseVide = 0;
 
-			for (int colonne = 0; colonne < 8; colonne++) {
-				PieceCouleur piece = plateau.getCase(ligne, colonne);
+			for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
+				PieceCouleur piece = plateau.getCase(new Position(ligne, colonne));
 
 				if (piece == null) {
 					nbCaseVide++;
