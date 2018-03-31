@@ -140,29 +140,29 @@ var greySquare = function (square) {
     squareEl.css('background', background);
 };
 
-var onDragStart = function (source, piece) {
-    // // do not pick up pieces if the game is over
-    // // or if it's not that side's turn
-    // if (game.game_over() === true ||
-    //         (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
-    //         (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
-    //     return false;
-    // }
-};
-
-var onDrop = function (source, target) {
-    // removeGreySquares();
-    //
-    // // see if the move is legal
-    // var move = game.move({
-    //     from: source,
-    //     to: target,
-    //     promotion: 'q' // NOTE: always promote to a queen for example simplicity
-    // });
-    //
-    // // illegal move
-    // if (move === null) return 'snapback';
-};
+// var onDragStart = function (source, piece) {
+//     // // do not pick up pieces if the game is over
+//     // // or if it's not that side's turn
+//     // if (game.game_over() === true ||
+//     //         (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
+//     //         (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+//     //     return false;
+//     // }
+// };
+//
+// var onDrop = function (source, target) {
+//     // removeGreySquares();
+//     //
+//     // // see if the move is legal
+//     // var move = game.move({
+//     //     from: source,
+//     //     to: target,
+//     //     promotion: 'q' // NOTE: always promote to a queen for example simplicity
+//     // });
+//     //
+//     // // illegal move
+//     // if (move === null) return 'snapback';
+// };
 
 var getMoves = function (ligne, colonne, success) {
     console.log("getMoves", ligne, colonne);
@@ -196,7 +196,7 @@ var onMouseoverSquare = function (square, piece) {
     //     square: square,
     //     verbose: true
     // });
-    var moves = [''];
+    //var moves = [''];
 
     if (!!square && square.length == 2) {
 
@@ -241,9 +241,9 @@ var onMouseoutSquare = function (square, piece) {
     removeGreySquares();
 };
 
-var onSnapEnd = function () {
-    //board.position(game.fen());
-};
+// var onSnapEnd = function () {
+//     //board.position(game.fen());
+// };
 
 function init() {
     //alert('reload cart called');
