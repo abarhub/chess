@@ -2,6 +2,7 @@ package org.chess.chess.domain;
 
 import com.google.common.base.Verify;
 import org.chess.chess.outils.Check;
+import org.chess.chess.outils.IteratorPlateau;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +21,10 @@ public class Plateau {
 
 	public Plateau(Plateau plateau) {
 		tableau = new PieceCouleur[NB_LIGNES][NB_COLONNES];
-		for (int lignes = 0; lignes < NB_LIGNES; lignes++) {
-			for (int colonnes = 0; colonnes < NB_COLONNES; colonnes++) {
-				tableau[lignes][colonnes] = plateau.tableau[lignes][colonnes];
+		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
+			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+				setTableau(rangee, colonne, plateau.getTableau(rangee, colonne));
+				//tableau[lignes][colonnes] = plateau.tableau[lignes][colonnes];
 			}
 		}
 	}
@@ -63,11 +65,12 @@ public class Plateau {
 
 		if (listePieces != null && !listePieces.isEmpty()) {
 			for (PieceCouleurPosition p : listePieces) {
-				Verify.verify(tableau[p.getPosition().getLigne()]
-						[p.getPosition().getColonne()] == null);
-				tableau[p.getPosition().getLigne()]
-						[p.getPosition().getColonne()] =
-						new PieceCouleur(p.getPiece(), p.getCouleur());
+				Verify.verify(getTableau(p.getPosition().getRangee(),
+						p.getPosition().getColonne()) == null);
+				setCase(p.getPosition(), new PieceCouleur(p.getPiece(), p.getCouleur()));
+//				tableau[p.getPosition().getLigne()]
+//						[p.getPosition().getColonne()] =
+//						new PieceCouleur(p.getPiece(), p.getCouleur());
 			}
 		}
 	}
@@ -90,40 +93,43 @@ public class Plateau {
 	public void initialise() {
 		tableau = new PieceCouleur[NB_LIGNES][NB_COLONNES];
 
-		lignePieces(0, Couleur.Noir);
-		lignePions(1, Couleur.Noir);
+		lignePieces(RangeeEnum.RANGEE8, Couleur.Noir);
+		lignePions(RangeeEnum.RANGEE7, Couleur.Noir);
 
 
-		lignePions(6, Couleur.Blanc);
-		lignePieces(7, Couleur.Blanc);
+		lignePions(RangeeEnum.RANGEE2, Couleur.Blanc);
+		lignePieces(RangeeEnum.RANGEE1, Couleur.Blanc);
 	}
 
-	private void lignePieces(int ligne, Couleur couleur) {
-		setCase(new Position(ligne, 0), new PieceCouleur(Piece.TOUR, couleur));
-		setCase(new Position(ligne, 1), new PieceCouleur(Piece.CAVALIER, couleur));
-		setCase(new Position(ligne, 2), new PieceCouleur(Piece.FOU, couleur));
-		setCase(new Position(ligne, 3), new PieceCouleur(Piece.REINE, couleur));
-		setCase(new Position(ligne, 4), new PieceCouleur(Piece.ROI, couleur));
-		setCase(new Position(ligne, 5), new PieceCouleur(Piece.FOU, couleur));
-		setCase(new Position(ligne, 6), new PieceCouleur(Piece.CAVALIER, couleur));
-		setCase(new Position(ligne, 7), new PieceCouleur(Piece.TOUR, couleur));
+	private void lignePieces(RangeeEnum rangee, Couleur couleur) {
+		setCase(new Position2(rangee, ColonneEnum.COLONNEA), new PieceCouleur(Piece.TOUR, couleur));
+		setCase(new Position2(rangee, ColonneEnum.COLONNEB), new PieceCouleur(Piece.CAVALIER, couleur));
+		setCase(new Position2(rangee, ColonneEnum.COLONNEC), new PieceCouleur(Piece.FOU, couleur));
+		setCase(new Position2(rangee, ColonneEnum.COLONNED), new PieceCouleur(Piece.REINE, couleur));
+		setCase(new Position2(rangee, ColonneEnum.COLONNEE), new PieceCouleur(Piece.ROI, couleur));
+		setCase(new Position2(rangee, ColonneEnum.COLONNEF), new PieceCouleur(Piece.FOU, couleur));
+		setCase(new Position2(rangee, ColonneEnum.COLONNEG), new PieceCouleur(Piece.CAVALIER, couleur));
+		setCase(new Position2(rangee, ColonneEnum.COLONNEH), new PieceCouleur(Piece.TOUR, couleur));
 	}
 
-	private void lignePions(int ligne, Couleur couleur) {
-		for (int i = 0; i < NB_COLONNES; i++) {
-			setCase(new Position(ligne, i), new PieceCouleur(Piece.PION, couleur));
+	private void lignePions(RangeeEnum rangee, Couleur couleur) {
+		//for (int i = 0; i < NB_COLONNES; i++) {
+		for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+			setCase(new Position2(rangee, colonne), new PieceCouleur(Piece.PION, couleur));
 		}
 	}
 
-	private void setCase(Position position, PieceCouleur pieceCouleur) {
-		tableau[position.getLigne()][position.getColonne()] = pieceCouleur;
+	private void setCase(Position2 position, PieceCouleur pieceCouleur) {
+		setTableau(position.getRangee(), position.getColonne(), pieceCouleur);
+		//tableau[position.getLigne()][position.getColonne()] = pieceCouleur;
 	}
 
-	public PieceCouleur getCase(Position position) {
-		return tableau[position.getLigne()][position.getColonne()];
+	public PieceCouleur getCase(Position2 position) {
+		return getTableau(position.getRangee(), position.getColonne());
+		//return tableau[position.getLigne()][position.getColonne()];
 	}
 
-	public void move(Position positionSrc, Position positionDest) {
+	public void move(Position2 positionSrc, Position2 positionDest) {
 		Verify.verifyNotNull(positionSrc);
 		Verify.verifyNotNull(positionDest);
 		Verify.verify(!positionSrc.equals(positionDest));
@@ -135,9 +141,11 @@ public class Plateau {
 	}
 
 	public void afficheConsole() {
-		for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
-			for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
-				PieceCouleur p = getCase(new Position(ligne, colonne));
+		//for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
+		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
+			//for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
+			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+				PieceCouleur p = getCase(new Position2(rangee, colonne));
 				if (p == null) {
 					System.out.print(' ');
 				} else {
@@ -152,9 +160,11 @@ public class Plateau {
 	public Stream<PieceCouleur> getStream() {
 		List<PieceCouleur> list = new ArrayList<>();
 
-		for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
-			for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
-				PieceCouleur p = getCase(new Position(ligne, colonne));
+		//for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
+		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
+			//for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
+			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+				PieceCouleur p = getCase(new Position2(rangee, colonne));
 				if (p != null) {
 					list.add(p);
 				}
@@ -167,11 +177,14 @@ public class Plateau {
 	public Stream<PieceCouleurPosition> getStreamPosition() {
 		List<PieceCouleurPosition> list = new ArrayList<>();
 
-		for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
-			for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
-				PieceCouleur p = getCase(new Position(ligne, colonne));
+		//for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
+		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
+			//for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
+			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+				PieceCouleur p = getCase(new Position2(rangee, colonne));
 				if (p != null) {
-					PieceCouleurPosition p2 = new PieceCouleurPosition(p.getPiece(), p.getCouleur(), new Position(ligne, colonne));
+					PieceCouleurPosition p2 = new PieceCouleurPosition(p.getPiece(),
+							p.getCouleur(), new Position2(rangee, colonne));
 					list.add(p2);
 				}
 			}
@@ -183,13 +196,15 @@ public class Plateau {
 	public String getRepresentation() {
 		StringBuilder str = new StringBuilder();
 
-		for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
-			for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
-				PieceCouleur p = getCase(new Position(ligne, colonne));
+		//for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
+		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
+			//for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
+			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+				PieceCouleur p = getCase(new Position2(rangee, colonne));
 				if (p != null) {
 					str.append(p.getCouleur().getNomCourt());
 					str.append(p.getPiece().getNomCourt());
-					str.append(ligne);
+					str.append(rangee.getText());
 					str.append('.');
 					str.append(colonne);
 					str.append(';');
@@ -198,6 +213,18 @@ public class Plateau {
 		}
 
 		return str.toString();
+	}
+
+	private void setTableau(RangeeEnum rangee, ColonneEnum colonne, PieceCouleur pieceCouleur) {
+		Verify.verifyNotNull(rangee);
+		Verify.verifyNotNull(colonne);
+		tableau[rangee.getNo() - 1][colonne.getNo() - 1] = pieceCouleur;
+	}
+
+	private PieceCouleur getTableau(RangeeEnum rangee, ColonneEnum colonne) {
+		Verify.verifyNotNull(rangee);
+		Verify.verifyNotNull(colonne);
+		return tableau[rangee.getNo() - 1][colonne.getNo() - 1];
 	}
 
 }

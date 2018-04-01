@@ -3,6 +3,7 @@ package org.chess.chess.moteur;
 import com.google.common.base.Verify;
 import org.chess.chess.domain.*;
 import org.chess.chess.outils.Check;
+import org.chess.chess.outils.PositionTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -136,8 +137,8 @@ public class CalculMouvementsService {
 
 		List<Mouvement> mouvements = new ArrayList<>();
 
-		final int ligne = piece.getPosition().getLigne();
-		final int colonne = piece.getPosition().getColonne();
+		final int ligne = PositionTools.getLigne(piece.getPosition());
+		final int colonne = PositionTools.getColonne(piece.getPosition());
 
 		for (int ligne2 = -1; ligne2 <= 1; ligne2++) {
 			for (int colonne2 = -1; colonne2 <= 1; colonne2++) {
@@ -145,7 +146,7 @@ public class CalculMouvementsService {
 					final int ligne3 = ligne + ligne2;
 					final int colonne3 = colonne + colonne2;
 					if (Check.isPositionValide(ligne3, colonne3)) {
-						ajoutePositionPiece(mouvements, new Position(ligne3, colonne3), piece, plateau);
+						ajoutePositionPiece(mouvements, PositionTools.getPosition(ligne3, colonne3), piece, plateau);
 //						if (tousMouvementRois) {
 //							ajoutePositionRois(plateau, liste, ligne3, colonne3, joueurCourant);
 //						} else if (!caseAttaque(plateau, couleurContraire(piece.getCouleur()), ligne3, colonne3)) {
@@ -166,8 +167,8 @@ public class CalculMouvementsService {
 
 		List<Mouvement> mouvements = new ArrayList<>();
 
-		final int ligne = piece.getPosition().getLigne();
-		final int colonne = piece.getPosition().getColonne();
+		final int ligne = PositionTools.getLigne(piece.getPosition());
+		final int colonne = PositionTools.getColonne(piece.getPosition());
 
 		for (int j = 0; j < 8; j++) {
 			int decalageLigne, decalageColonne;
@@ -209,8 +210,8 @@ public class CalculMouvementsService {
 
 		List<Mouvement> mouvements = new ArrayList<>();
 
-		final int ligne = piece.getPosition().getLigne();
-		final int colonne = piece.getPosition().getColonne();
+		final int ligne = PositionTools.getLigne(piece.getPosition());
+		final int colonne = PositionTools.getColonne(piece.getPosition());
 
 		for (int j = 0; j < 4; j++) {
 			int decalageLigne, decalageColonne;
@@ -239,8 +240,8 @@ public class CalculMouvementsService {
 
 		List<Mouvement> mouvements = new ArrayList<>();
 
-		final int ligne = piece.getPosition().getLigne();
-		final int colonne = piece.getPosition().getColonne();
+		final int ligne = PositionTools.getLigne(piece.getPosition());
+		final int colonne = PositionTools.getColonne(piece.getPosition());
 
 		for (int j = 0; j < 4; j++) {
 			int decalageLigne, decalageColonne;
@@ -273,8 +274,8 @@ public class CalculMouvementsService {
 		for (int i = 1; i <= 8; i++) {
 			boolean res = false;
 			if (Check.isPositionValide(ligne + decalageLigne * i, colonne + decalageColonne * i)) {
-				ajoutePositionPiece(mouvements, new Position(ligne + decalageLigne * i,
-								colonne + decalageColonne * i),
+				ajoutePositionPiece(mouvements, PositionTools.getPosition(ligne + decalageLigne * i,
+						colonne + decalageColonne * i),
 						piece, plateau);
 			}
 			if (!res) {
@@ -289,44 +290,44 @@ public class CalculMouvementsService {
 
 		List<Mouvement> mouvements = new ArrayList<>();
 
-		final int ligne = piece.getPosition().getLigne();
-		final int colonne = piece.getPosition().getColonne();
+		final int ligne = PositionTools.getLigne(piece.getPosition());
+		final int colonne = PositionTools.getColonne(piece.getPosition());
 
 		if (Check.isPositionValide(ligne - 2, colonne - 1)) {
-			ajoutePositionPiece(mouvements, new Position(ligne - 2, colonne - 1), piece, plateau);
+			ajoutePositionPiece(mouvements, PositionTools.getPosition(ligne - 2, colonne - 1), piece, plateau);
 		}
 		if (Check.isPositionValide(ligne - 2, colonne + 1)) {
-			ajoutePositionPiece(mouvements, new Position(ligne - 2, colonne + 1), piece, plateau);
+			ajoutePositionPiece(mouvements, PositionTools.getPosition(ligne - 2, colonne + 1), piece, plateau);
 		}
 		if (Check.isPositionValide(ligne + 1, colonne - 2)) {
-			ajoutePositionPiece(mouvements, new Position(ligne + 1, colonne - 2), piece, plateau);
+			ajoutePositionPiece(mouvements, PositionTools.getPosition(ligne + 1, colonne - 2), piece, plateau);
 		}
 		if (Check.isPositionValide(ligne - 1, colonne - 2)) {
-			ajoutePositionPiece(mouvements, new Position(ligne - 1, colonne - 2), piece, plateau);
+			ajoutePositionPiece(mouvements, PositionTools.getPosition(ligne - 1, colonne - 2), piece, plateau);
 		}
 		if (Check.isPositionValide(ligne + 1, colonne + 2)) {
-			ajoutePositionPiece(mouvements, new Position(ligne + 1, colonne + 2), piece, plateau);
+			ajoutePositionPiece(mouvements, PositionTools.getPosition(ligne + 1, colonne + 2), piece, plateau);
 		}
 		if (Check.isPositionValide(ligne - 1, colonne + 2)) {
-			ajoutePositionPiece(mouvements, new Position(ligne - 1, colonne + 2), piece, plateau);
+			ajoutePositionPiece(mouvements, PositionTools.getPosition(ligne - 1, colonne + 2), piece, plateau);
 		}
 		if (Check.isPositionValide(ligne + 2, colonne - 1)) {
-			ajoutePositionPiece(mouvements, new Position(ligne + 2, colonne - 1), piece, plateau);
+			ajoutePositionPiece(mouvements, PositionTools.getPosition(ligne + 2, colonne - 1), piece, plateau);
 		}
 		if (Check.isPositionValide(ligne + 2, colonne + 1)) {
-			ajoutePositionPiece(mouvements, new Position(ligne + 2, colonne + 1), piece, plateau);
+			ajoutePositionPiece(mouvements, PositionTools.getPosition(ligne + 2, colonne + 1), piece, plateau);
 		}
 
 		return mouvements;
 	}
 
-	private boolean ajoutePositionPiece(List<Mouvement> mouvements, Position position,
+	private boolean ajoutePositionPiece(List<Mouvement> mouvements, Position2 position,
 	                                    PieceCouleurPosition piece, Plateau plateau) {
 		Verify.verifyNotNull(mouvements);
 		Verify.verifyNotNull(piece);
 		Verify.verifyNotNull(plateau);
 
-		if (Check.isPositionValide(position.getLigne(), position.getColonne())) {
+		if (Check.isPositionValide(PositionTools.getLigne(position), PositionTools.getColonne(position))) {
 			PieceCouleur caseCible = plateau.getCase(position);
 			if (caseCible == null) {
 				Mouvement mouvement = new Mouvement(position, false);
@@ -348,8 +349,8 @@ public class CalculMouvementsService {
 
 		List<Mouvement> mouvements = new ArrayList<>();
 
-		final int ligne = piece.getPosition().getLigne();
-		final int colonne = piece.getPosition().getColonne();
+		final int ligne = PositionTools.getLigne(piece.getPosition());
+		final int colonne = PositionTools.getColonne(piece.getPosition());
 
 		int decalage, decalage2 = 0;
 		if (piece.getCouleur() == Couleur.Blanc) {
@@ -364,24 +365,24 @@ public class CalculMouvementsService {
 			}
 		}
 		if (Check.isPositionValide(ligne + decalage, colonne)) {
-			ajoutePositionPions(mouvements, new Position(ligne + decalage, colonne), piece, plateau, false);
+			ajoutePositionPions(mouvements, PositionTools.getPosition(ligne + decalage, colonne), piece, plateau, false);
 		}
 		if (Check.isPositionValide(ligne + decalage, colonne - 1)) {
-			ajoutePositionPions(mouvements, new Position(ligne + decalage, colonne - 1), piece, plateau, true);
+			ajoutePositionPions(mouvements, PositionTools.getPosition(ligne + decalage, colonne - 1), piece, plateau, true);
 		}
 		if (Check.isPositionValide(ligne + decalage, colonne + 1)) {
-			ajoutePositionPions(mouvements, new Position(ligne + decalage, colonne + 1), piece, plateau, true);
+			ajoutePositionPions(mouvements, PositionTools.getPosition(ligne + decalage, colonne + 1), piece, plateau, true);
 		}
 		if (decalage2 != 0) {
 			PieceCouleur caseIntermediaire;
 			if (decalage2 > 0) {
-				caseIntermediaire = plateau.getCase(new Position(ligne + decalage2 - 1, colonne));
+				caseIntermediaire = plateau.getCase(PositionTools.getPosition(ligne + decalage2 - 1, colonne));
 			} else {
-				caseIntermediaire = plateau.getCase(new Position(ligne + decalage2 + 1, colonne));
+				caseIntermediaire = plateau.getCase(PositionTools.getPosition(ligne + decalage2 + 1, colonne));
 			}
 			if (caseIntermediaire == null) {
 				if (Check.isPositionValide(ligne + decalage2, colonne)) {
-					ajoutePositionPions(mouvements, new Position(ligne + decalage2, colonne), piece, plateau, false);
+					ajoutePositionPions(mouvements, PositionTools.getPosition(ligne + decalage2, colonne), piece, plateau, false);
 				}
 			}
 		}
@@ -389,14 +390,14 @@ public class CalculMouvementsService {
 		return mouvements;
 	}
 
-	private void ajoutePositionPions(List<Mouvement> mouvements, Position position,
+	private void ajoutePositionPions(List<Mouvement> mouvements, Position2 position,
 	                                 PieceCouleurPosition piece, Plateau plateau, boolean mangePiece) {
 		Verify.verifyNotNull(mouvements);
 		Verify.verifyNotNull(piece);
 		Verify.verifyNotNull(plateau);
 		Verify.verifyNotNull(position);
 
-		if (Check.isPositionValide(position.getLigne(), position.getColonne())) {
+		if (Check.isPositionValide(PositionTools.getLigne(position), PositionTools.getColonne(position))) {
 			PieceCouleur caseCible = plateau.getCase(position);
 			if (mangePiece) {
 				if (caseCible != null && caseCible.getCouleur() != piece.getCouleur()) {
@@ -412,9 +413,9 @@ public class CalculMouvementsService {
 		}
 	}
 
-	public List<Position> listMove(Plateau plateau, Position position, boolean tousMouvementRois, Couleur joueurCourant) {
+	public List<Position2> listMove(Plateau plateau, Position2 position, boolean tousMouvementRois, Couleur joueurCourant) {
 
-		List<Position> list = new ArrayList<>();
+		List<Position2> list = new ArrayList<>();
 
 		ListeMouvements listeMouvements = calculMouvements(plateau);
 
@@ -432,7 +433,7 @@ public class CalculMouvementsService {
 		return list;
 	}
 
-	public boolean caseAttaque(Plateau plateau, Couleur couleur, Position position) {
+	public boolean caseAttaque(Plateau plateau, Couleur couleur, Position2 position) {
 
 		ListeMouvements listeMouvements = calculMouvements(plateau);
 

@@ -117,15 +117,15 @@ public class Moteur {
 		return mouvementService.couleurContraire(couleur);
 	}
 
-	public List<Position> getMovablePieces(Couleur joueur) {
+	public List<Position2> getMovablePieces(Couleur joueur) {
 		return mouvementService.getMovablePieces(partie.getPlateau(), joueur);
 	}
 
-	public List<Position> listePieces(Couleur couleur) {
+	public List<Position2> listePieces(Couleur couleur) {
 		return mouvementService.listePieces(partie.getPlateau(), couleur);
 	}
 
-	public List<Position> listMove(Position position, boolean tousMouvementRois) {
+	public List<Position2> listMove(Position2 position, boolean tousMouvementRois) {
 		return mouvementService.listMove(partie.getPlateau(), position, tousMouvementRois, partie.getJoueurCourant());
 	}
 
@@ -133,7 +133,7 @@ public class Moteur {
 		return etatService.calculEtatJeux(partie);
 	}
 
-	public void move(Position src, Position dest) {
+	public void move(Position2 src, Position2 dest) {
 		partie.setMove(src, dest);
 	}
 }

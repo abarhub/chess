@@ -54,7 +54,7 @@ public class ListeMouvements {
 		this.roiNoirEchecsMat = roiNoirEchecsMat;
 	}
 
-	public List<Mouvement> getMouvements(Position position) {
+	public List<Mouvement> getMouvements(Position2 position) {
 		Verify.verifyNotNull(position);
 
 		List<Mouvement> liste = null;
@@ -101,7 +101,7 @@ public class ListeMouvements {
 				'}';
 	}
 
-	public boolean caseAttaque(Position position, Couleur couleur) {
+	public boolean caseAttaque(Position2 position, Couleur couleur) {
 		Verify.verifyNotNull(position);
 
 		if (mapMouvements != null) {

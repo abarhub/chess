@@ -2,6 +2,7 @@ package org.chess.chess.moteur;
 
 import org.chess.chess.domain.*;
 import org.chess.chess.joueur.Joueur;
+import org.chess.chess.outils.PositionTools;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,12 +78,12 @@ public class MoteurTest {
 	@Test
 	public void getMovablePieces() {
 
-		List<Position> liste = new ArrayList<>();
+		List<Position2> liste = new ArrayList<>();
 
 		when(mouvementService.getMovablePieces(any(Plateau.class), eq(Couleur.Blanc))).thenReturn(liste);
 
 		// methode testée
-		List<Position> res = moteur.getMovablePieces(Couleur.Blanc);
+		List<Position2> res = moteur.getMovablePieces(Couleur.Blanc);
 
 		// vérifications
 		assertNotNull(res);
@@ -97,12 +98,12 @@ public class MoteurTest {
 	@Test
 	public void listePieces() {
 
-		List<Position> liste = new ArrayList<>();
+		List<Position2> liste = new ArrayList<>();
 
 		when(mouvementService.listePieces(any(Plateau.class), eq(Couleur.Blanc))).thenReturn(liste);
 
 		// methode testée
-		List<Position> res = moteur.listePieces(Couleur.Blanc);
+		List<Position2> res = moteur.listePieces(Couleur.Blanc);
 
 		// vérifications
 		assertNotNull(res);
@@ -117,8 +118,8 @@ public class MoteurTest {
 	@Test
 	public void listMove() {
 
-		final Position position = createPosition(2, 5);
-		final List<Position> liste = new ArrayList<>();
+		final Position2 position = createPosition(2, 5);
+		final List<Position2> liste = new ArrayList<>();
 		final boolean tousMouvementsRoi = true;
 
 		when(mouvementService.listMove(any(Plateau.class), eq(position), eq(tousMouvementsRoi),
@@ -126,7 +127,7 @@ public class MoteurTest {
 
 
 		// methode testée
-		List<Position> res = moteur.listMove(position, tousMouvementsRoi);
+		List<Position2> res = moteur.listMove(position, tousMouvementsRoi);
 
 		// vérifications
 		assertNotNull(res);
@@ -161,8 +162,8 @@ public class MoteurTest {
 	@Test
 	public void move() {
 
-		final Position src = createPosition(2, 5);
-		final Position dest = createPosition(4, 5);
+		final Position2 src = createPosition(2, 5);
+		final Position2 dest = createPosition(4, 5);
 
 		Partie partie = Mockito.mock(Partie.class);
 		ReflectionTestUtils.setField(moteur, "partie", partie);
@@ -179,7 +180,7 @@ public class MoteurTest {
 
 	// methodes utilitaires
 
-	private Position createPosition(int ligne, int colonne) {
-		return new Position(ligne, colonne);
+	private Position2 createPosition(int ligne, int colonne) {
+		return PositionTools.getPosition(ligne, colonne);
 	}
 }

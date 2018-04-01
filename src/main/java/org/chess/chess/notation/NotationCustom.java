@@ -3,13 +3,12 @@ package org.chess.chess.notation;
 import com.google.common.base.Verify;
 import org.chess.chess.domain.*;
 import org.chess.chess.outils.Check;
+import org.chess.chess.outils.IteratorPlateau;
+import org.chess.chess.outils.PositionTools;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.chess.chess.domain.Plateau.NB_COLONNES;
-import static org.chess.chess.domain.Plateau.NB_LIGNES;
 
 @Service
 public class NotationCustom implements INotation {
@@ -42,7 +41,7 @@ public class NotationCustom implements INotation {
 				Verify.verify(str.charAt(pos + 5) == ';');
 				Check.isPositionValide(ligne, colonne);
 
-				PieceCouleurPosition pieceCouleur = new PieceCouleurPosition(piece, couleur, new Position(ligne, colonne));
+				PieceCouleurPosition pieceCouleur = new PieceCouleurPosition(piece, couleur, PositionTools.getPosition(ligne, colonne));
 				Verify.verify(!contient(listePieces, pieceCouleur.getPosition()));
 				listePieces.add(pieceCouleur);
 
@@ -57,15 +56,17 @@ public class NotationCustom implements INotation {
 	public String serialize(Plateau plateau) {
 		StringBuilder str = new StringBuilder();
 
-		for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
-			for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
-				PieceCouleur p = plateau.getCase(new Position(ligne, colonne));
+		//for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
+		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
+			//for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
+			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+				PieceCouleur p = plateau.getCase(new Position2(rangee, colonne));
 				if (p != null) {
 					str.append(p.getCouleur().getNomCourt());
 					str.append(p.getPiece().getNomCourt());
-					str.append(ligne);
+					str.append(rangee.getText());
 					str.append('.');
-					str.append(colonne);
+					str.append(colonne.getText());
 					str.append(';');
 				}
 			}
@@ -74,7 +75,7 @@ public class NotationCustom implements INotation {
 		return str.toString();
 	}
 
-	private boolean contient(List<PieceCouleurPosition> listePieces, Position position) {
+	private boolean contient(List<PieceCouleurPosition> listePieces, Position2 position) {
 		return listePieces.stream()
 				.anyMatch(x -> x.getPosition().equals(position));
 	}

@@ -1,6 +1,7 @@
 package org.chess.chess.dto;
 
-import org.chess.chess.domain.Position;
+import org.chess.chess.domain.Position2;
+import org.chess.chess.outils.PositionTools;
 
 public class PositionDTO {
 
@@ -16,8 +17,9 @@ public class PositionDTO {
 		this.colonne = colonne;
 	}
 
-	public PositionDTO(Position position) {
-		this(position.getLigne(), position.getColonne());
+	public PositionDTO(Position2 position) {
+		this(PositionTools.getLigne(position),
+				PositionTools.getColonne(position));
 	}
 
 	public int getLigne() {

@@ -5,7 +5,7 @@ import junitparams.Parameters;
 import org.chess.chess.Tools;
 import org.chess.chess.domain.Couleur;
 import org.chess.chess.domain.Plateau;
-import org.chess.chess.domain.Position;
+import org.chess.chess.outils.PositionTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ public class CalculMouvementsServiceTest {
 
 		Plateau plateau = Tools.createFromFen(fenFormat);
 
-		boolean attaque = calculMouvementsService.caseAttaque(plateau, joueur, new Position(ligne, colonne));
+		boolean attaque = calculMouvementsService.caseAttaque(plateau, joueur, PositionTools.getPosition(ligne, colonne));
 
 		assertEquals(attaqueRef, attaque);
 	}

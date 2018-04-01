@@ -12,6 +12,7 @@ import org.chess.chess.joueur.TypeJoueur;
 import org.chess.chess.moteur.CalculMouvementsService;
 import org.chess.chess.moteur.Moteur;
 import org.chess.chess.notation.NotationService;
+import org.chess.chess.outils.PositionTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ public class ChessService {
 
 		for (int ligne = 0; ligne < Plateau.NB_LIGNES; ligne++) {
 			for (int colonne = 0; colonne < Plateau.NB_COLONNES; colonne++) {
-				PieceCouleur pieceCouleur = plateau.getCase(new Position(ligne, colonne));
+				PieceCouleur pieceCouleur = plateau.getCase(PositionTools.getPosition(ligne, colonne));
 
 				if (pieceCouleur != null) {
 					PieceDTO pieceDTO = new PieceDTO();
@@ -79,14 +80,14 @@ public class ChessService {
 	}
 
 	public List<PositionDTO> getDeplacements0(int ligne, int colonne) {
-		Position position = new Position(ligne, colonne);
-		List<Position> res = moteur.listMove(position, true);
+		Position2 position = PositionTools.getPosition(ligne, colonne);
+		List<Position2> res = moteur.listMove(position, true);
 
 		List<PositionDTO> liste = new ArrayList<>();
 
 		if (!CollectionUtils.isEmpty(res)) {
-			for (Position p : res) {
-				PositionDTO positionDTO = new PositionDTO(p.getLigne(), p.getColonne());
+			for (Position2 p : res) {
+				PositionDTO positionDTO = new PositionDTO(PositionTools.getLigne(p), PositionTools.getColonne(p));
 				liste.add(positionDTO);
 			}
 		}
@@ -102,7 +103,7 @@ public class ChessService {
 		ListeMouvements listeMouvements = calculMouvementsService.calculMouvements(moteur.getPlateau());
 
 		if (listeMouvements != null) {
-			List<Mouvement> mouvementList = listeMouvements.getMouvements(new Position(ligne, colonne));
+			List<Mouvement> mouvementList = listeMouvements.getMouvements(PositionTools.getPosition(ligne, colonne));
 
 			LOGGER.info("mouvementList: {}", mouvementList);
 

@@ -4,6 +4,7 @@ import org.chess.chess.outils.Check;
 
 import java.util.Objects;
 
+@Deprecated
 public class Position {
 
 	private final int ligne;

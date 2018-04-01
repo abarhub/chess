@@ -2,9 +2,11 @@ package org.chess.chess.evaluateur;
 
 import org.chess.chess.domain.*;
 import org.chess.chess.moteur.Moteur;
-import org.chess.chess.outils.Check;
+import org.chess.chess.outils.IteratorPlateau;
+import org.chess.chess.outils.PositionTools;
 
 import java.util.List;
+import java.util.Optional;
 
 public abstract class Evaluator {
 
@@ -18,10 +20,12 @@ public abstract class Evaluator {
 
 	protected int doubled(Plateau plateau, Couleur couleur) {
 		int res = 0;
-		for (int colonne = 0; colonne < Plateau.NB_COLONNES; colonne++) {
+		//for (int colonne = 0; colonne < Plateau.NB_COLONNES; colonne++) {
+		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
 			int nbPions = 0;
-			for (int ligne = 0; ligne < Plateau.NB_LIGNES; ligne++) {
-				PieceCouleur p = plateau.getCase(new Position(ligne, colonne));
+			//for (int ligne = 0; ligne < Plateau.NB_LIGNES; ligne++) {
+			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+				PieceCouleur p = plateau.getCase(new Position2(rangee, colonne));
 				if (p != null && p.getCouleur() == couleur) {
 					if (p.getPiece() == Piece.PION) {
 						nbPions++;
@@ -37,13 +41,17 @@ public abstract class Evaluator {
 
 	protected int blocked(Plateau plateau, Couleur couleur) {
 		int res = 0;
-		for (int ligne = 0; ligne < Plateau.NB_LIGNES; ligne++) {
-			for (int colonne = 0; colonne < Plateau.NB_COLONNES; colonne++) {
-				PieceCouleur p = plateau.getCase(new Position(ligne, colonne));
+		//for (int ligne = 0; ligne < Plateau.NB_LIGNES; ligne++) {
+		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
+			//for (int colonne = 0; colonne < Plateau.NB_COLONNES; colonne++) {
+			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+				PieceCouleur p = plateau.getCase(new Position2(rangee, colonne));
 				if (p != null && p.getCouleur() == couleur) {
 					if (p.getPiece() == Piece.PION) {
-						if (Check.isPositionValide(ligne - 1, colonne)) {
-							PieceCouleur p2 = plateau.getCase(new Position(ligne - 1, colonne));
+						Optional<Position2> pos = PositionTools.getPosition(rangee, -1, colonne, 0);
+						//if (Check.isPositionValide(ligne - 1, colonne)) {
+						if (pos.isPresent()) {
+							PieceCouleur p2 = plateau.getCase(pos.get());
 							if (p2 != null) {
 								res++;
 							}
@@ -57,22 +65,30 @@ public abstract class Evaluator {
 
 	protected int isolated(Plateau plateau, Couleur couleur) {
 		int res = 0;
-		for (int ligne = 0; ligne < Plateau.NB_LIGNES; ligne++) {
-			for (int colonne = 0; colonne < Plateau.NB_COLONNES; colonne++) {
-				PieceCouleur p = plateau.getCase(new Position(ligne, colonne));
+		//for (int ligne = 0; ligne < Plateau.NB_LIGNES; ligne++) {
+		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
+			//for (int colonne = 0; colonne < Plateau.NB_COLONNES; colonne++) {
+			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+				PieceCouleur p = plateau.getCase(new Position2(rangee, colonne));
 				if (p != null && p.getCouleur() == couleur) {
 					if (p.getPiece() == Piece.PION) {
 						boolean trouve = false;
 						for (int i = -1; i <= 1; i++) {
-							if (Check.isPositionValide(ligne + i, colonne - 1)) {
-								PieceCouleur p2 = plateau.getCase(new Position(ligne + i, colonne - 1));
+							Optional<Position2> pos = PositionTools.getPosition(rangee, i, colonne, -1);
+							//if (Check.isPositionValide(ligne + i, colonne - 1)) {
+							if (pos.isPresent()) {
+								//PieceCouleur p2 = plateau.getCase(PositionTools.getPosition(ligne + i, colonne - 1));
+								PieceCouleur p2 = plateau.getCase(pos.get());
 								if (p2 != null && p2.getCouleur() == couleur && p2.getPiece() == Piece.PION) {
 									trouve = true;
 									break;
 								}
 							}
-							if (Check.isPositionValide(ligne + i, colonne + 1)) {
-								PieceCouleur p2 = plateau.getCase(new Position(ligne + i, colonne + 1));
+							Optional<Position2> pos2 = PositionTools.getPosition(rangee, i, colonne, 1);
+							//if (Check.isPositionValide(ligne + i, colonne + 1)) {
+							if (pos2.isPresent()) {
+								//PieceCouleur p2 = plateau.getCase(PositionTools.getPosition(ligne + i, colonne + 1));
+								PieceCouleur p2 = plateau.getCase(pos2.get());
 								if (p2 != null && p2.getCouleur() == couleur && p2.getPiece() == Piece.PION) {
 									trouve = true;
 									break;
@@ -92,10 +108,10 @@ public abstract class Evaluator {
 	protected int moves(Moteur moteur, Plateau plateau, Couleur couleur) {
 		int res = 0;
 
-		List<Position> liste = moteur.listePieces(couleur);
+		List<Position2> liste = moteur.listePieces(couleur);
 		if (liste != null) {
-			for (Position p : liste) {
-				List<Position> liste2 = moteur.listMove(p, false);
+			for (Position2 p : liste) {
+				List<Position2> liste2 = moteur.listMove(p, false);
 				if (liste2 != null) {
 					res += liste2.size();
 				}

@@ -3,27 +3,30 @@ package org.chess.chess.moteur;
 import com.google.common.base.Verify;
 import org.chess.chess.domain.*;
 import org.chess.chess.outils.Check;
+import org.chess.chess.outils.IteratorPlateau;
+import org.chess.chess.outils.PositionTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MouvementService2 {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MouvementService2.class);
 
-	public List<Position> listMove(Plateau plateau, Position position, boolean tousMouvementRois,
-	                               Couleur joueurCourant) {
+	public List<Position2> listMove(Plateau plateau, Position2 position, boolean tousMouvementRois,
+	                                Couleur joueurCourant) {
 		return listMove2(plateau, position, tousMouvementRois, joueurCourant);
 	}
 
-	private List<Position> listMove2(Plateau plateau, Position position, boolean tousMouvementRois,
-	                                 Couleur joueurCourant) {
-		Check.checkLigneColonne(position.getLigne(), position.getColonne());
-		List<Position> liste = new ArrayList<>();
+	private List<Position2> listMove2(Plateau plateau, Position2 position, boolean tousMouvementRois,
+	                                  Couleur joueurCourant) {
+		Check.checkLigneColonne(PositionTools.getLigne(position), PositionTools.getColonne(position));
+		List<Position2> liste = new ArrayList<>();
 
 		PieceCouleur piece = plateau.getCase(position);
 		if (piece != null) {
@@ -31,41 +34,41 @@ public class MouvementService2 {
 				int decalage, decalage2 = 0;
 				if (piece.getCouleur() == Couleur.Blanc) {
 					decalage = -1;
-					if (position.getLigne() == 6) {
+					if (position.getRangee() == RangeeEnum.RANGEE2) {
 						decalage2 = -2;
 					}
 				} else {
 					decalage = 1;
-					if (position.getLigne() == 1) {
+					if (position.getRangee() == RangeeEnum.RANGEE7) {
 						decalage2 = 2;
 					}
 				}
-				ajoutePositionPions(plateau, liste, position.getLigne() + decalage, position.getColonne(),
+				ajoutePositionPions(plateau, liste, position, decalage, 0,
 						piece.getCouleur(), false);
-				ajoutePositionPions(plateau, liste, position.getLigne() + decalage, position.getColonne() - 1,
+				ajoutePositionPions(plateau, liste, position, decalage, -1,
 						piece.getCouleur(), true);
-				ajoutePositionPions(plateau, liste, position.getLigne() + decalage, position.getColonne() + 1,
+				ajoutePositionPions(plateau, liste, position, decalage, 1,
 						piece.getCouleur(), true);
 				if (decalage2 != 0) {
-					ajoutePositionPions(plateau, liste, position.getLigne() + decalage2, position.getColonne(),
+					ajoutePositionPions(plateau, liste, position, decalage2, 0,
 							piece.getCouleur(), false);
 				}
 			} else if (piece.getPiece() == Piece.CAVALIER) {
-				ajoutePositionPiece(plateau, liste, position.getLigne() - 2, position.getColonne() - 1,
+				ajoutePositionPiece(plateau, liste, position, -2, -1,
 						piece.getCouleur());
-				ajoutePositionPiece(plateau, liste, position.getLigne() - 2, position.getColonne() + 1,
+				ajoutePositionPiece(plateau, liste, position, -2, +1,
 						piece.getCouleur());
-				ajoutePositionPiece(plateau, liste, position.getLigne() + 1, position.getColonne() - 2,
+				ajoutePositionPiece(plateau, liste, position, 1, -2,
 						piece.getCouleur());
-				ajoutePositionPiece(plateau, liste, position.getLigne() - 1, position.getColonne() - 2,
+				ajoutePositionPiece(plateau, liste, position, -1, -2,
 						piece.getCouleur());
-				ajoutePositionPiece(plateau, liste, position.getLigne() + 1, position.getColonne() + 2,
+				ajoutePositionPiece(plateau, liste, position, 1, 2,
 						piece.getCouleur());
-				ajoutePositionPiece(plateau, liste, position.getLigne() - 1, position.getColonne() + 2,
+				ajoutePositionPiece(plateau, liste, position, -1, 2,
 						piece.getCouleur());
-				ajoutePositionPiece(plateau, liste, position.getLigne() + 2, position.getColonne() - 1,
+				ajoutePositionPiece(plateau, liste, position, 2, -1,
 						piece.getCouleur());
-				ajoutePositionPiece(plateau, liste, position.getLigne() + 2, position.getColonne() + 1,
+				ajoutePositionPiece(plateau, liste, position, 2, 1,
 						piece.getCouleur());
 			} else if (piece.getPiece() == Piece.FOU) {
 				for (int j = 0; j < 4; j++) {
@@ -83,8 +86,7 @@ public class MouvementService2 {
 						decalageLigne = -1;
 						decalageColonne = -1;
 					}
-					ajouteDecalage(plateau, liste, position.getLigne(), position.getColonne(),
-							decalageLigne, decalageColonne, piece.getCouleur());
+					ajouteDecalage(plateau, liste, position, decalageLigne, decalageColonne, piece.getCouleur());
 				}
 			} else if (piece.getPiece() == Piece.TOUR) {
 				for (int j = 0; j < 4; j++) {
@@ -102,8 +104,7 @@ public class MouvementService2 {
 						decalageLigne = 0;
 						decalageColonne = -1;
 					}
-					ajouteDecalage(plateau, liste, position.getLigne(), position.getColonne(),
-							decalageLigne, decalageColonne, piece.getCouleur());
+					ajouteDecalage(plateau, liste, position, decalageLigne, decalageColonne, piece.getCouleur());
 				}
 			} else if (piece.getPiece() == Piece.REINE) {
 				for (int j = 0; j < 8; j++) {
@@ -133,20 +134,21 @@ public class MouvementService2 {
 						decalageLigne = -1;
 						decalageColonne = -1;
 					}
-					ajouteDecalage(plateau, liste, position.getLigne(), position.getColonne(), decalageLigne, decalageColonne,
-							piece.getCouleur());
+					ajouteDecalage(plateau, liste, position, decalageLigne, decalageColonne, piece.getCouleur());
 				}
 			} else if (piece.getPiece() == Piece.ROI) {
 				for (int ligne2 = -1; ligne2 <= 1; ligne2++) {
 					for (int colonne2 = -1; colonne2 <= 1; colonne2++) {
 						if (!(ligne2 == 0 && colonne2 == 0)) {
-							final int ligne3 = position.getLigne() + ligne2;
-							final int colonne3 = position.getColonne() + colonne2;
-							if (Check.isPositionValide(ligne3, colonne3)) {
+							Optional<Position2> pos = PositionTools.getPosition(position, ligne2, colonne2);
+							//final int ligne3 = position.getLigne() + ligne2;
+							//final int colonne3 = position.getColonne() + colonne2;
+							//if (Check.isPositionValide(ligne3, colonne3)) {
+							if (pos.isPresent()) {
 								if (tousMouvementRois) {
-									ajoutePositionRois(plateau, liste, ligne3, colonne3, joueurCourant);
-								} else if (!caseAttaque(plateau, couleurContraire(piece.getCouleur()), new Position(ligne3, colonne3))) {
-									ajoutePositionRois(plateau, liste, ligne3, colonne3, joueurCourant);
+									ajoutePositionRois(plateau, liste, pos.get(), 0, 0, joueurCourant);
+								} else if (!caseAttaque(plateau, couleurContraire(piece.getCouleur()), pos.get())) {
+									ajoutePositionRois(plateau, liste, pos.get(), 0, 0, joueurCourant);
 								}
 							}
 						}
@@ -158,13 +160,13 @@ public class MouvementService2 {
 		return liste;
 	}
 
-	private void ajouteDecalage(Plateau plateau, List<Position> liste, int ligne, int colonne,
+	private void ajouteDecalage(Plateau plateau, List<Position2> liste, Position2 position,
 	                            int decalageLigne, int decalageColonne, Couleur couleur) {
 		Verify.verifyNotNull(liste);
 		Verify.verifyNotNull(couleur);
 		for (int i = 1; i <= 8; i++) {
-			boolean res = ajoutePositionPiece(plateau, liste, ligne + decalageLigne * i,
-					colonne + decalageColonne * i,
+			boolean res = ajoutePositionPiece(plateau, liste, position, decalageLigne * i,
+					decalageColonne * i,
 					couleur);
 			if (!res) {
 				break;
@@ -172,44 +174,48 @@ public class MouvementService2 {
 		}
 	}
 
-	private void ajoutePositionRois(Plateau plateau, List<Position> liste, int ligne, int colonne, Couleur couleur) {
-		ajoutePosition(plateau, liste, ligne, colonne, couleur, true, false, true);
+	private void ajoutePositionRois(Plateau plateau, List<Position2> liste, Position2 position, int decalageLigne,
+	                                int decalageColonne, Couleur couleur) {
+		ajoutePosition(plateau, liste, position, decalageLigne, decalageColonne, couleur, true, false, true);
 	}
 
-	private void ajoutePositionPions(Plateau plateau, List<Position> liste, int ligne, int colonne,
+	private void ajoutePositionPions(Plateau plateau, List<Position2> liste, Position2 position,
+	                                 int decalageLigne, int decalageColonne,
 	                                 Couleur couleur, boolean doitManger) {
-		ajoutePosition(plateau, liste, ligne, colonne, couleur, false, doitManger, false);
+		ajoutePosition(plateau, liste, position, decalageLigne, decalageColonne, couleur, false, doitManger, false);
 	}
 
-	private boolean ajoutePositionPiece(Plateau plateau, List<Position> liste, int ligne, int colonne,
-	                                    Couleur couleur) {
-		return ajoutePosition(plateau, liste, ligne, colonne, couleur, true, false, false);
+	private boolean ajoutePositionPiece(Plateau plateau, List<Position2> liste, Position2 position, int decalageLigne,
+	                                    int decalageColonne, Couleur couleur) {
+		return ajoutePosition(plateau, liste, position, decalageLigne, decalageColonne, couleur, true, false, false);
 	}
 
-	private boolean ajoutePosition(Plateau plateau, List<Position> liste, int ligne, int colonne,
-	                               Couleur couleur, boolean peutManger, boolean doitManger,
+	private boolean ajoutePosition(Plateau plateau, List<Position2> liste, Position2 position, int decalageLigne,
+	                               int decalageColonne, Couleur couleur, boolean peutManger, boolean doitManger,
 	                               boolean deplacementNonAttaquable) {
 		Verify.verifyNotNull(liste);
 		Verify.verifyNotNull(couleur);
-		if (Check.isPositionValide(ligne, colonne)) {
+		Optional<Position2> pos = PositionTools.getPosition(position, decalageLigne, decalageColonne);
+		//if (Check.isPositionValide(ligne, colonne)) {
+		if (pos.isPresent()) {
 //			if (deplacementNonAttaquable) {
 //				if (caseAttaque(couleurContraire(couleur), ligne, colonne)) {
 //					return false;
 //				}
 //			}
 			if (doitManger) {
-				PieceCouleur piece = plateau.getCase(new Position(ligne, colonne));
+				PieceCouleur piece = plateau.getCase(pos.get());
 				if (piece != null && piece.getCouleur() != couleur) {
-					liste.add(new Position(ligne, colonne));
+					liste.add(pos.get());
 					return true;
 				}
 			} else {
-				PieceCouleur piece = plateau.getCase(new Position(ligne, colonne));
+				PieceCouleur piece = plateau.getCase(pos.get());
 				if (piece == null) {
-					liste.add(new Position(ligne, colonne));
+					liste.add(pos.get());
 					return true;
 				} else if (peutManger && piece.getCouleur() != couleur) {
-					liste.add(new Position(ligne, colonne));
+					liste.add(pos.get());
 					return false;
 				}
 			}
@@ -219,21 +225,23 @@ public class MouvementService2 {
 
 
 	// vérifie si la case (ligne/colonne) est attaquée par une piece de couleur
-	public boolean caseAttaque(Plateau plateau, Couleur couleur, Position position) {
+	public boolean caseAttaque(Plateau plateau, Couleur couleur, Position2 position) {
 		Verify.verifyNotNull(couleur);
-		Check.checkLigneColonne(position.getLigne(), position.getColonne());
+		Verify.verifyNotNull(position);
+		Verify.verifyNotNull(plateau);
+		//Check.checkLigneColonne(position.getLigne(), position.getColonne());
 
-		LOGGER.info("caseAttaque:debut({},{},{})", couleur, position.getLigne(), position.getColonne());
+		LOGGER.info("caseAttaque:debut({},{})", couleur, position);
 
-		List<Position> pieces = listePieces(plateau, couleur);
+		List<Position2> pieces = listePieces(plateau, couleur);
 
 		LOGGER.info("pieces:{}", pieces);
 
 		if (pieces != null) {
-			Position positionRecherche = position;
-			for (Position p : pieces) {
-				if (p.getLigne() != position.getLigne() && p.getColonne() != position.getColonne()) {
-					List<Position> liste = listMove(plateau, p, true, couleurContraire(couleur));
+			Position2 positionRecherche = position;
+			for (Position2 p : pieces) {
+				if (p.getRangee() != position.getRangee() && p.getColonne() != position.getColonne()) {
+					List<Position2> liste = listMove(plateau, p, true, couleurContraire(couleur));
 
 					LOGGER.info("p:{} => listMove:{}", p, liste);
 
@@ -262,14 +270,16 @@ public class MouvementService2 {
 	}
 
 
-	public List<Position> listePieces(Plateau plateau, Couleur couleur) {
+	public List<Position2> listePieces(Plateau plateau, Couleur couleur) {
 		Verify.verifyNotNull(couleur);
-		List<Position> liste = new ArrayList<>();
-		for (int i = 0; i < Plateau.NB_LIGNES; i++) {
-			for (int j = 0; j < Plateau.NB_COLONNES; j++) {
-				PieceCouleur piece = plateau.getCase(new Position(i, j));
+		List<Position2> liste = new ArrayList<>();
+		//for (int i = 0; i < Plateau.NB_LIGNES; i++) {
+		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
+			//for (int j = 0; j < Plateau.NB_COLONNES; j++) {
+			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+				PieceCouleur piece = plateau.getCase(new Position2(rangee, colonne));
 				if (piece != null && piece.getCouleur() == couleur) {
-					liste.add(new Position(i, j));
+					liste.add(new Position2(rangee, colonne));
 				}
 			}
 		}

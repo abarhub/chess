@@ -2,15 +2,15 @@ package org.chess.chess.domain;
 
 public class Mouvement {
 
-	private final Position position;
+	private final Position2 position;
 	private final boolean attaque;
 
-	public Mouvement(Position position, boolean attaque) {
+	public Mouvement(Position2 position, boolean attaque) {
 		this.position = position;
 		this.attaque = attaque;
 	}
 
-	public Position getPosition() {
+	public Position2 getPosition() {
 		return position;
 	}
 

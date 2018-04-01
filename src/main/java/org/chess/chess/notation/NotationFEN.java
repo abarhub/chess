@@ -3,6 +3,7 @@ package org.chess.chess.notation;
 import com.google.common.base.Verify;
 import com.google.common.collect.Lists;
 import org.chess.chess.domain.*;
+import org.chess.chess.outils.PositionTools;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -96,10 +97,10 @@ public class NotationFEN implements INotation {
 	                        char c, Piece piece, int ligne, int colonne) {
 		if (estBlanc(c)) {
 			listePieces.add(new PieceCouleurPosition(piece, Couleur.Blanc,
-					new Position(ligne, colonne)));
+					PositionTools.getPosition(ligne, colonne)));
 		} else {
 			listePieces.add(new PieceCouleurPosition(piece, Couleur.Noir,
-					new Position(ligne, colonne)));
+					PositionTools.getPosition(ligne, colonne)));
 		}
 	}
 
@@ -112,7 +113,7 @@ public class NotationFEN implements INotation {
 			int nbCaseVide = 0;
 
 			for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
-				PieceCouleur piece = plateau.getCase(new Position(ligne, colonne));
+				PieceCouleur piece = plateau.getCase(PositionTools.getPosition(ligne, colonne));
 
 				if (piece == null) {
 					nbCaseVide++;
