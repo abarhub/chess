@@ -33,14 +33,14 @@ public class MouvementService2 {
 			if (piece.getPiece() == Piece.PION) {
 				int decalage, decalage2 = 0;
 				if (piece.getCouleur() == Couleur.Blanc) {
-					decalage = -1;
+					decalage = 1;
 					if (position.getRangee() == RangeeEnum.RANGEE2) {
-						decalage2 = -2;
+						decalage2 = 2;
 					}
 				} else {
-					decalage = 1;
+					decalage = -1;
 					if (position.getRangee() == RangeeEnum.RANGEE7) {
-						decalage2 = 2;
+						decalage2 = -2;
 					}
 				}
 				ajoutePositionPions(plateau, liste, position, decalage, 0,

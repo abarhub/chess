@@ -108,7 +108,7 @@ public class NotationFEN implements INotation {
 
 		StringBuilder str = new StringBuilder();
 
-		for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
+		for (int ligne = NB_LIGNES - 1; ligne >= 0; ligne--) {
 
 			int nbCaseVide = 0;
 
@@ -135,7 +135,7 @@ public class NotationFEN implements INotation {
 				str.append(nbCaseVide);
 			}
 
-			if (ligne < 7) {
+			if (ligne > 0) {
 				str.append('/');
 			}
 		}

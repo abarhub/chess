@@ -354,14 +354,14 @@ public class CalculMouvementsService {
 
 		int decalage, decalage2 = 0;
 		if (piece.getCouleur() == Couleur.Blanc) {
-			decalage = -1;
+			decalage = 1;
 			if (ligne == 6) {
-				decalage2 = -2;
+				decalage2 = 2;
 			}
 		} else {
-			decalage = 1;
+			decalage = -1;
 			if (ligne == 1) {
-				decalage2 = 2;
+				decalage2 = -2;
 			}
 		}
 		if (Check.isPositionValide(ligne + decalage, colonne)) {
