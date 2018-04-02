@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.chess.chess.outils.IteratorPlateau.getIterablePlateau;
+
 public class Plateau {
 
 	public static final int NB_LIGNES = 8;
@@ -21,11 +23,12 @@ public class Plateau {
 
 	public Plateau(Plateau plateau) {
 		tableau = new PieceCouleur[NB_LIGNES][NB_COLONNES];
-		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
-			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
-				setTableau(rangee, colonne, plateau.getTableau(rangee, colonne));
-				//tableau[lignes][colonnes] = plateau.tableau[lignes][colonnes];
-			}
+		for (Position2 position : getIterablePlateau()) {
+			//for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
+			//for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+			setTableau(position.getRangee(), position.getColonne(), plateau.getTableau(position.getRangee(), position.getColonne()));
+			//tableau[lignes][colonnes] = plateau.tableau[lignes][colonnes];
+			//}
 		}
 	}
 
@@ -113,7 +116,6 @@ public class Plateau {
 	}
 
 	private void lignePions(RangeeEnum rangee, Couleur couleur) {
-		//for (int i = 0; i < NB_COLONNES; i++) {
 		for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
 			setCase(new Position2(rangee, colonne), new PieceCouleur(Piece.PION, couleur));
 		}
@@ -121,12 +123,10 @@ public class Plateau {
 
 	private void setCase(Position2 position, PieceCouleur pieceCouleur) {
 		setTableau(position.getRangee(), position.getColonne(), pieceCouleur);
-		//tableau[position.getLigne()][position.getColonne()] = pieceCouleur;
 	}
 
 	public PieceCouleur getCase(Position2 position) {
 		return getTableau(position.getRangee(), position.getColonne());
-		//return tableau[position.getLigne()][position.getColonne()];
 	}
 
 	public void move(Position2 positionSrc, Position2 positionDest) {
@@ -141,9 +141,7 @@ public class Plateau {
 	}
 
 	public void afficheConsole() {
-		//for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
 		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
-			//for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
 			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
 				PieceCouleur p = getCase(new Position2(rangee, colonne));
 				if (p == null) {
@@ -160,15 +158,16 @@ public class Plateau {
 	public Stream<PieceCouleur> getStream() {
 		List<PieceCouleur> list = new ArrayList<>();
 
-		//for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
-		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
+		for (Position2 position : getIterablePlateau()) {
+			//for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
+			//for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
 			//for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
-			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
-				PieceCouleur p = getCase(new Position2(rangee, colonne));
-				if (p != null) {
-					list.add(p);
-				}
+			//for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+			PieceCouleur p = getCase(position);
+			if (p != null) {
+				list.add(p);
 			}
+			//}
 		}
 
 		return list.stream();
@@ -177,17 +176,17 @@ public class Plateau {
 	public Stream<PieceCouleurPosition> getStreamPosition() {
 		List<PieceCouleurPosition> list = new ArrayList<>();
 
-		//for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
-		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
+		for (Position2 position : getIterablePlateau()) {
+			//for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
+			//for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
 			//for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
-			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
-				PieceCouleur p = getCase(new Position2(rangee, colonne));
-				if (p != null) {
-					PieceCouleurPosition p2 = new PieceCouleurPosition(p.getPiece(),
-							p.getCouleur(), new Position2(rangee, colonne));
-					list.add(p2);
-				}
+			//for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+			PieceCouleur p = getCase(position);
+			if (p != null) {
+				PieceCouleurPosition p2 = new PieceCouleurPosition(p.getPiece(), p.getCouleur(), position);
+				list.add(p2);
 			}
+			//}
 		}
 
 		return list.stream();
@@ -196,20 +195,21 @@ public class Plateau {
 	public String getRepresentation() {
 		StringBuilder str = new StringBuilder();
 
-		//for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
-		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
+		for (Position2 position : getIterablePlateau()) {
+			//for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
+			//for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
 			//for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
-			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
-				PieceCouleur p = getCase(new Position2(rangee, colonne));
-				if (p != null) {
-					str.append(p.getCouleur().getNomCourt());
-					str.append(p.getPiece().getNomCourt());
-					str.append(rangee.getText());
-					str.append('.');
-					str.append(colonne);
-					str.append(';');
-				}
+			//for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+			PieceCouleur p = getCase(position);
+			if (p != null) {
+				str.append(p.getCouleur().getNomCourt());
+				str.append(p.getPiece().getNomCourt());
+				str.append(position.getRangee().getText());
+				str.append('.');
+				str.append(position.getColonne());
+				str.append(';');
 			}
+			//}
 		}
 
 		return str.toString();

@@ -3,12 +3,13 @@ package org.chess.chess.notation;
 import com.google.common.base.Verify;
 import org.chess.chess.domain.*;
 import org.chess.chess.outils.Check;
-import org.chess.chess.outils.IteratorPlateau;
 import org.chess.chess.outils.PositionTools;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.chess.chess.outils.IteratorPlateau.getIterablePlateau;
 
 @Service
 public class NotationCustom implements INotation {
@@ -56,20 +57,21 @@ public class NotationCustom implements INotation {
 	public String serialize(Plateau plateau) {
 		StringBuilder str = new StringBuilder();
 
-		//for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
-		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
+		for (Position2 position : getIterablePlateau()) {
+			//for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
+			//for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
 			//for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
-			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
-				PieceCouleur p = plateau.getCase(new Position2(rangee, colonne));
-				if (p != null) {
-					str.append(p.getCouleur().getNomCourt());
-					str.append(p.getPiece().getNomCourt());
-					str.append(rangee.getText());
-					str.append('.');
-					str.append(colonne.getText());
-					str.append(';');
-				}
+			//for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+			PieceCouleur p = plateau.getCase(position);
+			if (p != null) {
+				str.append(p.getCouleur().getNomCourt());
+				str.append(p.getPiece().getNomCourt());
+				str.append(position.getRangee().getText());
+				str.append('.');
+				str.append(position.getColonne().getText());
+				str.append(';');
 			}
+			//}
 		}
 
 		return str.toString();

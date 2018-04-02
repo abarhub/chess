@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.chess.chess.outils.IteratorPlateau.getIterablePlateau;
+
 @Service
 public class ChessService {
 
@@ -45,20 +47,21 @@ public class ChessService {
 
 		Plateau plateau = moteur.getPlateau();
 
-		for (int ligne = 0; ligne < Plateau.NB_LIGNES; ligne++) {
-			for (int colonne = 0; colonne < Plateau.NB_COLONNES; colonne++) {
-				PieceCouleur pieceCouleur = plateau.getCase(PositionTools.getPosition(ligne, colonne));
+		for (Position2 position : getIterablePlateau()) {
+			//for (int ligne = 0; ligne < Plateau.NB_LIGNES; ligne++) {
+			//for (int colonne = 0; colonne < Plateau.NB_COLONNES; colonne++) {
+			PieceCouleur pieceCouleur = plateau.getCase(position);
 
-				if (pieceCouleur != null) {
-					PieceDTO pieceDTO = new PieceDTO();
-					pieceDTO.setLigne(ligne);
-					pieceDTO.setColonne(colonne);
-					pieceDTO.setPiece(pieceCouleur.getPiece().getNomCourt());
-					pieceDTO.setCouleurBlanc(pieceCouleur.getCouleur() == Couleur.Blanc);
+			if (pieceCouleur != null) {
+				PieceDTO pieceDTO = new PieceDTO();
+				pieceDTO.setLigne(position.getRangee().getNo() - 1);
+				pieceDTO.setColonne(position.getColonne().getNo() - 1);
+				pieceDTO.setPiece(pieceCouleur.getPiece().getNomCourt());
+				pieceDTO.setCouleurBlanc(pieceCouleur.getCouleur() == Couleur.Blanc);
 
-					plateauDTO.getListePieces().add(pieceDTO);
-				}
+				plateauDTO.getListePieces().add(pieceDTO);
 			}
+			//}
 		}
 
 		EtatJeux etat = moteur.calculEtatJeux();

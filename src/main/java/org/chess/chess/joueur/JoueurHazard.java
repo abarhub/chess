@@ -48,10 +48,7 @@ public class JoueurHazard extends Joueur {
 				deplacement = liste.get(no);
 			}
 
-			//PieceCouleur p2 = plateau.getCase(p.getLigne(), p.getColonne());
 			moteur.move(p, deplacement);
-
-			//joueurCourant = couleurContraire(joueurCourant);
 
 		} else {
 			throw new IllegalStateException("Deplacement impossible !");

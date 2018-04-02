@@ -3,7 +3,6 @@ package org.chess.chess.moteur;
 import com.google.common.base.Verify;
 import org.chess.chess.domain.*;
 import org.chess.chess.outils.Check;
-import org.chess.chess.outils.IteratorPlateau;
 import org.chess.chess.outils.PositionTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static org.chess.chess.outils.IteratorPlateau.getIterablePlateau;
 
 @Service
 public class MouvementService2 {
@@ -273,32 +274,18 @@ public class MouvementService2 {
 	public List<Position2> listePieces(Plateau plateau, Couleur couleur) {
 		Verify.verifyNotNull(couleur);
 		List<Position2> liste = new ArrayList<>();
-		//for (int i = 0; i < Plateau.NB_LIGNES; i++) {
-		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
+		for (Position2 position : getIterablePlateau()) {
+			//for (int i = 0; i < Plateau.NB_LIGNES; i++) {
+			//for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
 			//for (int j = 0; j < Plateau.NB_COLONNES; j++) {
-			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
-				PieceCouleur piece = plateau.getCase(new Position2(rangee, colonne));
-				if (piece != null && piece.getCouleur() == couleur) {
-					liste.add(new Position2(rangee, colonne));
-				}
+			//for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+			PieceCouleur piece = plateau.getCase(position);
+			if (piece != null && piece.getCouleur() == couleur) {
+				liste.add(position);
 			}
+			//}
 		}
 		return liste;
 	}
-
-
-//	public List<Position> getMovablePieces(Plateau plateau, Couleur joueur) {
-//		Verify.verifyNotNull(joueur);
-//		List<Position> listePieces;
-//		List<Position> liste = listePieces(plateau, joueur);
-//		listePieces = new ArrayList<>();
-//		for (Position p : liste) {
-//			List<Position> liste2 = listMove(plateau, p, false, joueur);
-//			if (liste2 != null && !liste2.isEmpty()) {
-//				listePieces.add(p);
-//			}
-//		}
-//		return listePieces;
-//	}
 
 }

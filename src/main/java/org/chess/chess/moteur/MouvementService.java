@@ -1,8 +1,10 @@
 package org.chess.chess.moteur;
 
 import com.google.common.base.Verify;
-import org.chess.chess.domain.*;
-import org.chess.chess.outils.IteratorPlateau;
+import org.chess.chess.domain.Couleur;
+import org.chess.chess.domain.PieceCouleur;
+import org.chess.chess.domain.Plateau;
+import org.chess.chess.domain.Position2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.chess.chess.outils.IteratorPlateau.getIterablePlateau;
 
 @Service
 public class MouvementService {
@@ -58,15 +62,16 @@ public class MouvementService {
 	public List<Position2> listePieces(Plateau plateau, Couleur couleur) {
 		Verify.verifyNotNull(couleur);
 		List<Position2> liste = new ArrayList<>();
-		//for (int i = 0; i < Plateau.NB_LIGNES; i++) {
-		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
+		for (Position2 position : getIterablePlateau()) {
+			//for (int i = 0; i < Plateau.NB_LIGNES; i++) {
+			//for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
 			//for (int j = 0; j < Plateau.NB_COLONNES; j++) {
-			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
-				PieceCouleur piece = plateau.getCase(new Position2(rangee, colonne));
-				if (piece != null && piece.getCouleur() == couleur) {
-					liste.add(new Position2(rangee, colonne));
-				}
+			//for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+			PieceCouleur piece = plateau.getCase(position);
+			if (piece != null && piece.getCouleur() == couleur) {
+				liste.add(position);
 			}
+			//}
 		}
 		return liste;
 	}

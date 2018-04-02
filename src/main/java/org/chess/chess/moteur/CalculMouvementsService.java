@@ -9,10 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -293,29 +290,45 @@ public class CalculMouvementsService {
 		final int ligne = PositionTools.getLigne(piece.getPosition());
 		final int colonne = PositionTools.getColonne(piece.getPosition());
 
-		if (Check.isPositionValide(ligne - 2, colonne - 1)) {
-			ajoutePositionPiece(mouvements, PositionTools.getPosition(ligne - 2, colonne - 1), piece, plateau);
+		Optional<Position2> optPosition = PositionTools.getPosition(piece.getPosition(), -2, -1);
+		//if (Check.isPositionValide(ligne - 2, colonne - 1)) {
+		if (optPosition.isPresent()) {
+			ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
 		}
-		if (Check.isPositionValide(ligne - 2, colonne + 1)) {
-			ajoutePositionPiece(mouvements, PositionTools.getPosition(ligne - 2, colonne + 1), piece, plateau);
+		optPosition = PositionTools.getPosition(piece.getPosition(), -2, 1);
+		//if (Check.isPositionValide(ligne - 2, colonne + 1)) {
+		if (optPosition.isPresent()) {
+			ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
 		}
-		if (Check.isPositionValide(ligne + 1, colonne - 2)) {
-			ajoutePositionPiece(mouvements, PositionTools.getPosition(ligne + 1, colonne - 2), piece, plateau);
+		optPosition = PositionTools.getPosition(piece.getPosition(), 1, -2);
+		//if (Check.isPositionValide(ligne + 1, colonne - 2)) {
+		if (optPosition.isPresent()) {
+			ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
 		}
-		if (Check.isPositionValide(ligne - 1, colonne - 2)) {
-			ajoutePositionPiece(mouvements, PositionTools.getPosition(ligne - 1, colonne - 2), piece, plateau);
+		optPosition = PositionTools.getPosition(piece.getPosition(), -1, -2);
+		//if (Check.isPositionValide(ligne - 1, colonne - 2)) {
+		if (optPosition.isPresent()) {
+			ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
 		}
-		if (Check.isPositionValide(ligne + 1, colonne + 2)) {
-			ajoutePositionPiece(mouvements, PositionTools.getPosition(ligne + 1, colonne + 2), piece, plateau);
+		optPosition = PositionTools.getPosition(piece.getPosition(), 1, 2);
+		//if (Check.isPositionValide(ligne + 1, colonne + 2)) {
+		if (optPosition.isPresent()) {
+			ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
 		}
-		if (Check.isPositionValide(ligne - 1, colonne + 2)) {
-			ajoutePositionPiece(mouvements, PositionTools.getPosition(ligne - 1, colonne + 2), piece, plateau);
+		optPosition = PositionTools.getPosition(piece.getPosition(), -1, 2);
+		//if (Check.isPositionValide(ligne - 1, colonne + 2)) {
+		if (optPosition.isPresent()) {
+			ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
 		}
-		if (Check.isPositionValide(ligne + 2, colonne - 1)) {
-			ajoutePositionPiece(mouvements, PositionTools.getPosition(ligne + 2, colonne - 1), piece, plateau);
+		optPosition = PositionTools.getPosition(piece.getPosition(), 2, -1);
+		//if (Check.isPositionValide(ligne + 2, colonne - 1)) {
+		if (optPosition.isPresent()) {
+			ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
 		}
-		if (Check.isPositionValide(ligne + 2, colonne + 1)) {
-			ajoutePositionPiece(mouvements, PositionTools.getPosition(ligne + 2, colonne + 1), piece, plateau);
+		optPosition = PositionTools.getPosition(piece.getPosition(), 2, 1);
+		//if (Check.isPositionValide(ligne + 2, colonne + 1)) {
+		if (optPosition.isPresent()) {
+			ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
 		}
 
 		return mouvements;
