@@ -47,7 +47,7 @@ public class MouvementServiceTest {
 
 	@Test
 	@Parameters(method = "listMoveRoiValues")
-	public void listMoveRoi(int ligne, int colonne, Couleur joueurCourant, List<Position2> resultatsAttendus) {
+	public void listMoveRoi(int ligne, int colonne, Couleur joueurCourant, List<Position> resultatsAttendus) {
 		LOGGER.info("listMoveRoiCentre");
 
 		List<PieceCouleurPosition> liste = createPieces(Piece.ROI, joueurCourant, ligne, colonne);
@@ -58,7 +58,7 @@ public class MouvementServiceTest {
 		MouvementService mouvementService = new MouvementService();
 
 		// methode testée
-		List<Position2> res = mouvementService.listMove(plateau, createPosition(ligne, colonne),
+		List<Position> res = mouvementService.listMove(plateau, createPosition(ligne, colonne),
 				false, joueurCourant);
 
 		// vérifications
@@ -68,7 +68,7 @@ public class MouvementServiceTest {
 		} else {
 			assertNotNull(res);
 			assertEquals(res.toString(), resultatsAttendus.size(), res.size());
-			for (Position2 p : resultatsAttendus) {
+			for (Position p : resultatsAttendus) {
 				assertTrue(res.contains(p));
 			}
 		}
@@ -93,7 +93,7 @@ public class MouvementServiceTest {
 
 	@Test
 	@Parameters(method = "listMovePionValues")
-	public void listMovePion(int ligne, int colonne, Couleur joueurCourant, List<Position2> resultats) {
+	public void listMovePion(int ligne, int colonne, Couleur joueurCourant, List<Position> resultats) {
 		LOGGER.info("listMovePion({},{},{},{})", ligne, colonne, joueurCourant, resultats);
 
 		List<PieceCouleurPosition> liste = createPieces(Piece.PION, joueurCourant, ligne, colonne);
@@ -104,7 +104,7 @@ public class MouvementServiceTest {
 		MouvementService mouvementService = new MouvementService();
 
 		// methode testée
-		List<Position2> res = mouvementService.listMove(plateau, createPosition(ligne, colonne), false, joueurCourant);
+		List<Position> res = mouvementService.listMove(plateau, createPosition(ligne, colonne), false, joueurCourant);
 
 		// vérifications
 		LOGGER.info("res={}", res);
@@ -113,7 +113,7 @@ public class MouvementServiceTest {
 		} else {
 			assertNotNull(res);
 			assertEquals(res.toString(), resultats.size(), res.size());
-			for (Position2 p : resultats) {
+			for (Position p : resultats) {
 				assertTrue(res.contains(p));
 			}
 		}
@@ -128,16 +128,16 @@ public class MouvementServiceTest {
 		return liste;
 	}
 
-	private Position2 createPosition(int ligne, int colonne) {
+	private Position createPosition(int ligne, int colonne) {
 		return PositionTools.getPosition(ligne, colonne);
 	}
 
-	private List<Position2> createListPosition(int... tab) {
-		List<Position2> liste = new ArrayList<>();
+	private List<Position> createListPosition(int... tab) {
+		List<Position> liste = new ArrayList<>();
 		if (tab != null && tab.length > 0) {
 			assertTrue(tab.length % 2 == 0);
 			for (int i = 0; i < tab.length; i += 2) {
-				Position2 p = PositionTools.getPosition(tab[i], tab[i + 1]);
+				Position p = PositionTools.getPosition(tab[i], tab[i + 1]);
 				liste.add(p);
 			}
 		}

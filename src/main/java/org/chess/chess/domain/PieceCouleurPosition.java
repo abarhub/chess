@@ -2,14 +2,14 @@ package org.chess.chess.domain;
 
 public class PieceCouleurPosition extends PieceCouleur {
 
-	private final Position2 position;
+	private final Position position;
 
-	public PieceCouleurPosition(Piece piece, Couleur couleur, Position2 position) {
+	public PieceCouleurPosition(Piece piece, Couleur couleur, Position position) {
 		super(piece, couleur);
 		this.position = position;
 	}
 
-	public Position2 getPosition() {
+	public Position getPosition() {
 		return position;
 	}
 

@@ -40,12 +40,12 @@ public class JoueurNegaMax extends Joueur {
 		Deplacement meilleurDeplacement = null;
 		float meilleurEval = 0.0f;
 
-		List<Position2> liste = moteur.listePieces(couleur);
+		List<Position> liste = moteur.listePieces(couleur);
 		if (liste != null) {
-			for (Position2 p : liste) {
-				List<Position2> liste2 = moteur.listMove(p, false);
+			for (Position p : liste) {
+				List<Position> liste2 = moteur.listMove(p, false);
 				if (liste2 != null && !liste2.isEmpty()) {
-					for (Position2 p2 : liste2) {
+					for (Position p2 : liste2) {
 						Plateau plateau2 = new Plateau(plateau);
 						plateau2.move(p, p2);
 						float eval = evaluation(moteur, plateau2, couleur);

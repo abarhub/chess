@@ -37,7 +37,7 @@ public class Partie {
 		return joueurCourant;
 	}
 
-	public void setMove(Position2 src, Position2 dest) {
+	public void setMove(Position src, Position dest) {
 		Verify.verifyNotNull(src);
 		Verify.verifyNotNull(dest);
 

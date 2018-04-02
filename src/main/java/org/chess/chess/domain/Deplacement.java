@@ -2,19 +2,19 @@ package org.chess.chess.domain;
 
 public class Deplacement {
 
-	private final Position2 positionSrc;
-	private final Position2 positionDest;
+	private final Position positionSrc;
+	private final Position positionDest;
 
-	public Deplacement(Position2 positionSrc, Position2 positionDest) {
+	public Deplacement(Position positionSrc, Position positionDest) {
 		this.positionSrc = positionSrc;
 		this.positionDest = positionDest;
 	}
 
-	public Position2 getPositionSrc() {
+	public Position getPositionSrc() {
 		return positionSrc;
 	}
 
-	public Position2 getPositionDest() {
+	public Position getPositionDest() {
 		return positionDest;
 	}
 }

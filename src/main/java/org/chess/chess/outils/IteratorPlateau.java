@@ -1,7 +1,7 @@
 package org.chess.chess.outils;
 
 import org.chess.chess.domain.ColonneEnum;
-import org.chess.chess.domain.Position2;
+import org.chess.chess.domain.Position;
 import org.chess.chess.domain.RangeeEnum;
 
 import java.util.ArrayList;
@@ -31,11 +31,11 @@ public class IteratorPlateau {
 		return liste;
 	}
 
-	public static Iterable<Position2> getIterablePlateau() {
-		List<Position2> liste = new ArrayList<>();
+	public static Iterable<Position> getIterablePlateau() {
+		List<Position> liste = new ArrayList<>();
 		for (RangeeEnum range : getIterableRangeeInverse()) {
 			for (ColonneEnum colonne : getIterableColonne()) {
-				liste.add(new Position2(range, colonne));
+				liste.add(new Position(range, colonne));
 			}
 		}
 		return liste;

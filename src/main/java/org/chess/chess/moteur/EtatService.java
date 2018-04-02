@@ -61,7 +61,7 @@ public class EtatService {
 		} else {
 			// il y a des rois qui sont en echecs
 			for (PieceCouleurPosition p : liste) {
-				List<Position2> liste2 = mouvementService.listMove(plateau, p.getPosition(),
+				List<Position> liste2 = mouvementService.listMove(plateau, p.getPosition(),
 						false, p.getCouleur());
 				if (liste2 == null || liste2.isEmpty()) {
 					// le roi n'a pas de mouvement possible

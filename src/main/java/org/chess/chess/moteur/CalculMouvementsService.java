@@ -290,43 +290,35 @@ public class CalculMouvementsService {
 		final int ligne = PositionTools.getLigne(piece.getPosition());
 		final int colonne = PositionTools.getColonne(piece.getPosition());
 
-		Optional<Position2> optPosition = PositionTools.getPosition(piece.getPosition(), -2, -1);
-		//if (Check.isPositionValide(ligne - 2, colonne - 1)) {
+		Optional<Position> optPosition = PositionTools.getPosition(piece.getPosition(), -2, -1);
 		if (optPosition.isPresent()) {
 			ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
 		}
 		optPosition = PositionTools.getPosition(piece.getPosition(), -2, 1);
-		//if (Check.isPositionValide(ligne - 2, colonne + 1)) {
 		if (optPosition.isPresent()) {
 			ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
 		}
 		optPosition = PositionTools.getPosition(piece.getPosition(), 1, -2);
-		//if (Check.isPositionValide(ligne + 1, colonne - 2)) {
 		if (optPosition.isPresent()) {
 			ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
 		}
 		optPosition = PositionTools.getPosition(piece.getPosition(), -1, -2);
-		//if (Check.isPositionValide(ligne - 1, colonne - 2)) {
 		if (optPosition.isPresent()) {
 			ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
 		}
 		optPosition = PositionTools.getPosition(piece.getPosition(), 1, 2);
-		//if (Check.isPositionValide(ligne + 1, colonne + 2)) {
 		if (optPosition.isPresent()) {
 			ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
 		}
 		optPosition = PositionTools.getPosition(piece.getPosition(), -1, 2);
-		//if (Check.isPositionValide(ligne - 1, colonne + 2)) {
 		if (optPosition.isPresent()) {
 			ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
 		}
 		optPosition = PositionTools.getPosition(piece.getPosition(), 2, -1);
-		//if (Check.isPositionValide(ligne + 2, colonne - 1)) {
 		if (optPosition.isPresent()) {
 			ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
 		}
 		optPosition = PositionTools.getPosition(piece.getPosition(), 2, 1);
-		//if (Check.isPositionValide(ligne + 2, colonne + 1)) {
 		if (optPosition.isPresent()) {
 			ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
 		}
@@ -334,7 +326,7 @@ public class CalculMouvementsService {
 		return mouvements;
 	}
 
-	private boolean ajoutePositionPiece(List<Mouvement> mouvements, Position2 position,
+	private boolean ajoutePositionPiece(List<Mouvement> mouvements, Position position,
 	                                    PieceCouleurPosition piece, Plateau plateau) {
 		Verify.verifyNotNull(mouvements);
 		Verify.verifyNotNull(piece);
@@ -403,7 +395,7 @@ public class CalculMouvementsService {
 		return mouvements;
 	}
 
-	private void ajoutePositionPions(List<Mouvement> mouvements, Position2 position,
+	private void ajoutePositionPions(List<Mouvement> mouvements, Position position,
 	                                 PieceCouleurPosition piece, Plateau plateau, boolean mangePiece) {
 		Verify.verifyNotNull(mouvements);
 		Verify.verifyNotNull(piece);
@@ -426,9 +418,9 @@ public class CalculMouvementsService {
 		}
 	}
 
-	public List<Position2> listMove(Plateau plateau, Position2 position, boolean tousMouvementRois, Couleur joueurCourant) {
+	public List<Position> listMove(Plateau plateau, Position position, boolean tousMouvementRois, Couleur joueurCourant) {
 
-		List<Position2> list = new ArrayList<>();
+		List<Position> list = new ArrayList<>();
 
 		ListeMouvements listeMouvements = calculMouvements(plateau);
 
@@ -446,14 +438,12 @@ public class CalculMouvementsService {
 		return list;
 	}
 
-	public boolean caseAttaque(Plateau plateau, Couleur couleur, Position2 position) {
+	public boolean caseAttaque(Plateau plateau, Couleur couleur, Position position) {
 
 		ListeMouvements listeMouvements = calculMouvements(plateau);
 
 		if (listeMouvements != null) {
-
 			return listeMouvements.caseAttaque(position, couleur);
-
 		}
 
 		return false;

@@ -19,15 +19,15 @@ public class MouvementService2 {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MouvementService2.class);
 
-	public List<Position2> listMove(Plateau plateau, Position2 position, boolean tousMouvementRois,
-	                                Couleur joueurCourant) {
+	public List<Position> listMove(Plateau plateau, Position position, boolean tousMouvementRois,
+	                               Couleur joueurCourant) {
 		return listMove2(plateau, position, tousMouvementRois, joueurCourant);
 	}
 
-	private List<Position2> listMove2(Plateau plateau, Position2 position, boolean tousMouvementRois,
-	                                  Couleur joueurCourant) {
+	private List<Position> listMove2(Plateau plateau, Position position, boolean tousMouvementRois,
+	                                 Couleur joueurCourant) {
 		Check.checkLigneColonne(PositionTools.getLigne(position), PositionTools.getColonne(position));
-		List<Position2> liste = new ArrayList<>();
+		List<Position> liste = new ArrayList<>();
 
 		PieceCouleur piece = plateau.getCase(position);
 		if (piece != null) {
@@ -141,10 +141,7 @@ public class MouvementService2 {
 				for (int ligne2 = -1; ligne2 <= 1; ligne2++) {
 					for (int colonne2 = -1; colonne2 <= 1; colonne2++) {
 						if (!(ligne2 == 0 && colonne2 == 0)) {
-							Optional<Position2> pos = PositionTools.getPosition(position, ligne2, colonne2);
-							//final int ligne3 = position.getLigne() + ligne2;
-							//final int colonne3 = position.getColonne() + colonne2;
-							//if (Check.isPositionValide(ligne3, colonne3)) {
+							Optional<Position> pos = PositionTools.getPosition(position, ligne2, colonne2);
 							if (pos.isPresent()) {
 								if (tousMouvementRois) {
 									ajoutePositionRois(plateau, liste, pos.get(), 0, 0, joueurCourant);
@@ -161,7 +158,7 @@ public class MouvementService2 {
 		return liste;
 	}
 
-	private void ajouteDecalage(Plateau plateau, List<Position2> liste, Position2 position,
+	private void ajouteDecalage(Plateau plateau, List<Position> liste, Position position,
 	                            int decalageLigne, int decalageColonne, Couleur couleur) {
 		Verify.verifyNotNull(liste);
 		Verify.verifyNotNull(couleur);
@@ -175,29 +172,28 @@ public class MouvementService2 {
 		}
 	}
 
-	private void ajoutePositionRois(Plateau plateau, List<Position2> liste, Position2 position, int decalageLigne,
+	private void ajoutePositionRois(Plateau plateau, List<Position> liste, Position position, int decalageLigne,
 	                                int decalageColonne, Couleur couleur) {
 		ajoutePosition(plateau, liste, position, decalageLigne, decalageColonne, couleur, true, false, true);
 	}
 
-	private void ajoutePositionPions(Plateau plateau, List<Position2> liste, Position2 position,
+	private void ajoutePositionPions(Plateau plateau, List<Position> liste, Position position,
 	                                 int decalageLigne, int decalageColonne,
 	                                 Couleur couleur, boolean doitManger) {
 		ajoutePosition(plateau, liste, position, decalageLigne, decalageColonne, couleur, false, doitManger, false);
 	}
 
-	private boolean ajoutePositionPiece(Plateau plateau, List<Position2> liste, Position2 position, int decalageLigne,
+	private boolean ajoutePositionPiece(Plateau plateau, List<Position> liste, Position position, int decalageLigne,
 	                                    int decalageColonne, Couleur couleur) {
 		return ajoutePosition(plateau, liste, position, decalageLigne, decalageColonne, couleur, true, false, false);
 	}
 
-	private boolean ajoutePosition(Plateau plateau, List<Position2> liste, Position2 position, int decalageLigne,
+	private boolean ajoutePosition(Plateau plateau, List<Position> liste, Position position, int decalageLigne,
 	                               int decalageColonne, Couleur couleur, boolean peutManger, boolean doitManger,
 	                               boolean deplacementNonAttaquable) {
 		Verify.verifyNotNull(liste);
 		Verify.verifyNotNull(couleur);
-		Optional<Position2> pos = PositionTools.getPosition(position, decalageLigne, decalageColonne);
-		//if (Check.isPositionValide(ligne, colonne)) {
+		Optional<Position> pos = PositionTools.getPosition(position, decalageLigne, decalageColonne);
 		if (pos.isPresent()) {
 //			if (deplacementNonAttaquable) {
 //				if (caseAttaque(couleurContraire(couleur), ligne, colonne)) {
@@ -226,23 +222,22 @@ public class MouvementService2 {
 
 
 	// vérifie si la case (ligne/colonne) est attaquée par une piece de couleur
-	public boolean caseAttaque(Plateau plateau, Couleur couleur, Position2 position) {
+	public boolean caseAttaque(Plateau plateau, Couleur couleur, Position position) {
 		Verify.verifyNotNull(couleur);
 		Verify.verifyNotNull(position);
 		Verify.verifyNotNull(plateau);
-		//Check.checkLigneColonne(position.getLigne(), position.getColonne());
 
 		LOGGER.info("caseAttaque:debut({},{})", couleur, position);
 
-		List<Position2> pieces = listePieces(plateau, couleur);
+		List<Position> pieces = listePieces(plateau, couleur);
 
 		LOGGER.info("pieces:{}", pieces);
 
 		if (pieces != null) {
-			Position2 positionRecherche = position;
-			for (Position2 p : pieces) {
+			Position positionRecherche = position;
+			for (Position p : pieces) {
 				if (p.getRangee() != position.getRangee() && p.getColonne() != position.getColonne()) {
-					List<Position2> liste = listMove(plateau, p, true, couleurContraire(couleur));
+					List<Position> liste = listMove(plateau, p, true, couleurContraire(couleur));
 
 					LOGGER.info("p:{} => listMove:{}", p, liste);
 
@@ -271,19 +266,14 @@ public class MouvementService2 {
 	}
 
 
-	public List<Position2> listePieces(Plateau plateau, Couleur couleur) {
+	public List<Position> listePieces(Plateau plateau, Couleur couleur) {
 		Verify.verifyNotNull(couleur);
-		List<Position2> liste = new ArrayList<>();
-		for (Position2 position : getIterablePlateau()) {
-			//for (int i = 0; i < Plateau.NB_LIGNES; i++) {
-			//for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
-			//for (int j = 0; j < Plateau.NB_COLONNES; j++) {
-			//for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+		List<Position> liste = new ArrayList<>();
+		for (Position position : getIterablePlateau()) {
 			PieceCouleur piece = plateau.getCase(position);
 			if (piece != null && piece.getCouleur() == couleur) {
 				liste.add(position);
 			}
-			//}
 		}
 		return liste;
 	}

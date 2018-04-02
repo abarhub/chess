@@ -21,8 +21,6 @@ public class NotationCustom implements INotation {
 
 		List<PieceCouleurPosition> listePieces = new ArrayList<>();
 
-		//tableau = new PieceCouleur[NB_LIGNES][NB_COLONNES];
-
 		if (str != null && !str.isEmpty()) {
 			int pos = 0;
 			while (pos < str.length()) {
@@ -57,11 +55,7 @@ public class NotationCustom implements INotation {
 	public String serialize(Plateau plateau) {
 		StringBuilder str = new StringBuilder();
 
-		for (Position2 position : getIterablePlateau()) {
-			//for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
-			//for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
-			//for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
-			//for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+		for (Position position : getIterablePlateau()) {
 			PieceCouleur p = plateau.getCase(position);
 			if (p != null) {
 				str.append(p.getCouleur().getNomCourt());
@@ -71,13 +65,12 @@ public class NotationCustom implements INotation {
 				str.append(position.getColonne().getText());
 				str.append(';');
 			}
-			//}
 		}
 
 		return str.toString();
 	}
 
-	private boolean contient(List<PieceCouleurPosition> listePieces, Position2 position) {
+	private boolean contient(List<PieceCouleurPosition> listePieces, Position position) {
 		return listePieces.stream()
 				.anyMatch(x -> x.getPosition().equals(position));
 	}

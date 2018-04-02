@@ -4,7 +4,7 @@ import com.google.common.base.Verify;
 import org.chess.chess.domain.Couleur;
 import org.chess.chess.domain.PieceCouleur;
 import org.chess.chess.domain.Plateau;
-import org.chess.chess.domain.Position2;
+import org.chess.chess.domain.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +28,8 @@ public class MouvementService {
 	@Autowired
 	private CalculMouvementsService calculMouvementsService;
 
-	public List<Position2> listMove(Plateau plateau, Position2 position, boolean tousMouvementRois,
-	                                Couleur joueurCourant) {
+	public List<Position> listMove(Plateau plateau, Position position, boolean tousMouvementRois,
+	                               Couleur joueurCourant) {
 		if (methode2) {
 			return calculMouvementsService.listMove(plateau, position, tousMouvementRois, joueurCourant);
 		} else {
@@ -39,7 +39,7 @@ public class MouvementService {
 
 
 	// vérifie si la case (ligne/colonne) est attaquée par une piece de couleur
-	public boolean caseAttaque(Plateau plateau, Couleur couleur, Position2 position) {
+	public boolean caseAttaque(Plateau plateau, Couleur couleur, Position position) {
 
 		if (methode2) {
 			return calculMouvementsService.caseAttaque(plateau, couleur, position);
@@ -59,31 +59,26 @@ public class MouvementService {
 	}
 
 
-	public List<Position2> listePieces(Plateau plateau, Couleur couleur) {
+	public List<Position> listePieces(Plateau plateau, Couleur couleur) {
 		Verify.verifyNotNull(couleur);
-		List<Position2> liste = new ArrayList<>();
-		for (Position2 position : getIterablePlateau()) {
-			//for (int i = 0; i < Plateau.NB_LIGNES; i++) {
-			//for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
-			//for (int j = 0; j < Plateau.NB_COLONNES; j++) {
-			//for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+		List<Position> liste = new ArrayList<>();
+		for (Position position : getIterablePlateau()) {
 			PieceCouleur piece = plateau.getCase(position);
 			if (piece != null && piece.getCouleur() == couleur) {
 				liste.add(position);
 			}
-			//}
 		}
 		return liste;
 	}
 
 
-	public List<Position2> getMovablePieces(Plateau plateau, Couleur joueur) {
+	public List<Position> getMovablePieces(Plateau plateau, Couleur joueur) {
 		Verify.verifyNotNull(joueur);
-		List<Position2> listePieces;
-		List<Position2> liste = listePieces(plateau, joueur);
+		List<Position> listePieces;
+		List<Position> liste = listePieces(plateau, joueur);
 		listePieces = new ArrayList<>();
-		for (Position2 p : liste) {
-			List<Position2> liste2 = listMove(plateau, p, false, joueur);
+		for (Position p : liste) {
+			List<Position> liste2 = listMove(plateau, p, false, joueur);
 			if (liste2 != null && !liste2.isEmpty()) {
 				listePieces.add(p);
 			}

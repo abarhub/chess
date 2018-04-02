@@ -24,16 +24,6 @@ public class NotationFEN implements INotation {
 
 		List<PieceCouleurPosition> listePieces = new ArrayList<>();
 
-		//if (notation == NotationEnum.FEN) {
-		//tableau = new PieceCouleur[NB_LIGNES][NB_COLONNES];
-
-		//if (str != null && !str.isEmpty()) {
-		//int pos = 0;
-		//}
-//		} else {
-//			throw new IllegalArgumentException("Type de notation non géré : " + notation);
-//		}
-
 		ListIterator<Character> iterator = Lists.charactersOf(str).listIterator();
 
 

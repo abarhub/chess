@@ -4,12 +4,12 @@ import com.google.common.base.Verify;
 
 import java.util.Objects;
 
-public class Position2 {
+public class Position {
 
 	private final RangeeEnum rangee;
 	private final ColonneEnum colonne;
 
-	public Position2(RangeeEnum rangee, ColonneEnum colonne) {
+	public Position(RangeeEnum rangee, ColonneEnum colonne) {
 		Verify.verifyNotNull(rangee);
 		Verify.verifyNotNull(colonne);
 		this.rangee = rangee;
@@ -27,8 +27,8 @@ public class Position2 {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof Position2)) return false;
-		Position2 position2 = (Position2) o;
+		if (!(o instanceof Position)) return false;
+		Position position2 = (Position) o;
 		return rangee == position2.rangee &&
 				colonne == position2.colonne;
 	}

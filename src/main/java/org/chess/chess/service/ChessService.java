@@ -47,9 +47,7 @@ public class ChessService {
 
 		Plateau plateau = moteur.getPlateau();
 
-		for (Position2 position : getIterablePlateau()) {
-			//for (int ligne = 0; ligne < Plateau.NB_LIGNES; ligne++) {
-			//for (int colonne = 0; colonne < Plateau.NB_COLONNES; colonne++) {
+		for (Position position : getIterablePlateau()) {
 			PieceCouleur pieceCouleur = plateau.getCase(position);
 
 			if (pieceCouleur != null) {
@@ -61,7 +59,6 @@ public class ChessService {
 
 				plateauDTO.getListePieces().add(pieceDTO);
 			}
-			//}
 		}
 
 		EtatJeux etat = moteur.calculEtatJeux();
@@ -83,13 +80,13 @@ public class ChessService {
 	}
 
 	public List<PositionDTO> getDeplacements0(int ligne, int colonne) {
-		Position2 position = PositionTools.getPosition(ligne, colonne);
-		List<Position2> res = moteur.listMove(position, true);
+		Position position = PositionTools.getPosition(ligne, colonne);
+		List<Position> res = moteur.listMove(position, true);
 
 		List<PositionDTO> liste = new ArrayList<>();
 
 		if (!CollectionUtils.isEmpty(res)) {
-			for (Position2 p : res) {
+			for (Position p : res) {
 				PositionDTO positionDTO = new PositionDTO(PositionTools.getLigne(p), PositionTools.getColonne(p));
 				liste.add(positionDTO);
 			}
