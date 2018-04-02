@@ -2,7 +2,6 @@ package org.chess.chess.moteur;
 
 import com.google.common.base.Verify;
 import org.chess.chess.domain.*;
-import org.chess.chess.outils.Check;
 import org.chess.chess.outils.PositionTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,10 @@ public class MouvementService2 {
 
 	private List<Position> listMove2(Plateau plateau, Position position, boolean tousMouvementRois,
 	                                 Couleur joueurCourant) {
-		Check.checkLigneColonne(PositionTools.getLigne(position), PositionTools.getColonne(position));
+		Verify.verifyNotNull(plateau);
+		Verify.verifyNotNull(position);
+		Verify.verifyNotNull(joueurCourant);
+		//Check.checkLigneColonne(PositionTools.getLigne(position), PositionTools.getColonne(position));
 		List<Position> liste = new ArrayList<>();
 
 		PieceCouleur piece = plateau.getCase(position);
