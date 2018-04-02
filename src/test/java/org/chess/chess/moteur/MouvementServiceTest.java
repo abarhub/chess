@@ -93,7 +93,7 @@ public class MouvementServiceTest {
 
 	@Test
 	@Parameters(method = "listMovePionValues")
-	public void listMovePion(int ligne, int colonne, Couleur joueurCourant, List<Position> resultats) {
+	public void listMovePion(int ligne, int colonne, Couleur joueurCourant, List<Position2> resultats) {
 		LOGGER.info("listMovePion({},{},{},{})", ligne, colonne, joueurCourant, resultats);
 
 		List<PieceCouleurPosition> liste = createPieces(Piece.PION, joueurCourant, ligne, colonne);
@@ -113,7 +113,7 @@ public class MouvementServiceTest {
 		} else {
 			assertNotNull(res);
 			assertEquals(res.toString(), resultats.size(), res.size());
-			for (Position p : resultats) {
+			for (Position2 p : resultats) {
 				assertTrue(res.contains(p));
 			}
 		}

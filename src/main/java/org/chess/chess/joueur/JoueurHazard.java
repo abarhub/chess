@@ -2,7 +2,6 @@ package org.chess.chess.joueur;
 
 import com.google.common.base.Verify;
 import org.chess.chess.domain.Couleur;
-import org.chess.chess.domain.Position;
 import org.chess.chess.domain.Position2;
 import org.chess.chess.moteur.Moteur;
 import org.slf4j.Logger;
