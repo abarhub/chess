@@ -80,7 +80,7 @@ public class MoteurTest {
 
 		List<Position> liste = new ArrayList<>();
 
-		when(mouvementService.getMovablePieces(any(Plateau.class), eq(Couleur.Blanc))).thenReturn(liste);
+		when(mouvementService.getMovablePieces(any(Partie.class), eq(Couleur.Blanc))).thenReturn(liste);
 
 		// methode testée
 		List<Position> res = moteur.getMovablePieces(Couleur.Blanc);
@@ -89,7 +89,7 @@ public class MoteurTest {
 		assertNotNull(res);
 		assertEquals(liste, res);
 
-		verify(mouvementService).getMovablePieces(any(Plateau.class), eq(Couleur.Blanc));
+		verify(mouvementService).getMovablePieces(any(Partie.class), eq(Couleur.Blanc));
 
 		verifyNoMoreInteractions(mouvementService);
 		verifyNoMoreInteractions(etatService);
@@ -122,7 +122,7 @@ public class MoteurTest {
 		final List<Position> liste = new ArrayList<>();
 		final boolean tousMouvementsRoi = true;
 
-		when(mouvementService.listMove(any(Plateau.class), eq(position), eq(tousMouvementsRoi),
+		when(mouvementService.listMove(any(Partie.class), eq(position), eq(tousMouvementsRoi),
 				eq(Couleur.Blanc))).thenReturn(liste);
 
 
@@ -133,7 +133,7 @@ public class MoteurTest {
 		assertNotNull(res);
 		assertEquals(liste, res);
 
-		verify(mouvementService).listMove(any(Plateau.class), eq(position), eq(tousMouvementsRoi),
+		verify(mouvementService).listMove(any(Partie.class), eq(position), eq(tousMouvementsRoi),
 				eq(Couleur.Blanc));
 
 		verifyNoMoreInteractions(mouvementService);

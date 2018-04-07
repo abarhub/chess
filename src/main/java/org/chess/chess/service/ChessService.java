@@ -100,7 +100,7 @@ public class ChessService {
 	public List<PositionDTO> getDeplacements2(int ligne, int colonne) {
 		List<PositionDTO> list = new ArrayList<>();
 
-		ListeMouvements listeMouvements = calculMouvementsService.calculMouvements(moteur.getPlateau());
+		ListeMouvements listeMouvements = calculMouvementsService.calculMouvements(moteur.getPartie());
 
 		if (listeMouvements != null) {
 			List<Mouvement> mouvementList = listeMouvements.getMouvements(PositionTools.getPosition(ligne, colonne));
@@ -207,7 +207,7 @@ public class ChessService {
 		LOGGER.info("custom={}", notationService.serialize(plateau, NotationEnum.CUSTOM));
 
 
-		ListeMouvements listeMouvements = calculMouvementsService.calculMouvements(moteur.getPlateau());
+		ListeMouvements listeMouvements = calculMouvementsService.calculMouvements(moteur.getPartie());
 
 		LOGGER.info("mouvementList: {}", listeMouvements);
 

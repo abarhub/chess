@@ -2,6 +2,7 @@ package org.chess.chess.moteur;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.chess.chess.TestFixture;
 import org.chess.chess.domain.*;
 import org.chess.chess.outils.PositionTools;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 @RunWith(JUnitParamsRunner.class)
 public class MouvementServiceTest {
@@ -57,8 +59,10 @@ public class MouvementServiceTest {
 
 		MouvementService mouvementService = new MouvementService();
 
+		Partie partie = TestFixture.createPartie(plateau);
+
 		// methode testée
-		List<Position> res = mouvementService.listMove(plateau, createPosition(ligne, colonne),
+		List<Position> res = mouvementService.listMove(partie, createPosition(ligne, colonne),
 				false, joueurCourant);
 
 		// vérifications
@@ -101,10 +105,12 @@ public class MouvementServiceTest {
 
 		LOGGER.info("plateau={}", plateau.getRepresentation());
 
+		Partie partie = TestFixture.createPartie(plateau);
+
 		MouvementService mouvementService = new MouvementService();
 
 		// methode testée
-		List<Position> res = mouvementService.listMove(plateau, createPosition(ligne, colonne), false, joueurCourant);
+		List<Position> res = mouvementService.listMove(partie, createPosition(ligne, colonne), false, joueurCourant);
 
 		// vérifications
 		LOGGER.info("res={}", res);
@@ -118,6 +124,7 @@ public class MouvementServiceTest {
 			}
 		}
 	}
+
 
 	// methodes utilitaires
 

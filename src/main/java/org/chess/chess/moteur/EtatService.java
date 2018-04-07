@@ -26,7 +26,7 @@ public class EtatService {
 				.peek(x -> LOGGER.info("pos={}", x))
 				.filter(x -> x.getPiece() == Piece.ROI)
 				.peek(x -> LOGGER.info("pos2={}", x))
-				.filter(x -> mouvementService.caseAttaque(plateau,
+				.filter(x -> mouvementService.caseAttaque(partie,
 						mouvementService.couleurContraire(x.getCouleur()),
 						x.getPosition())
 				)
@@ -61,7 +61,7 @@ public class EtatService {
 		} else {
 			// il y a des rois qui sont en echecs
 			for (PieceCouleurPosition p : liste) {
-				List<Position> liste2 = mouvementService.listMove(plateau, p.getPosition(),
+				List<Position> liste2 = mouvementService.listMove(partie, p.getPosition(),
 						false, p.getCouleur());
 				if (liste2 == null || liste2.isEmpty()) {
 					// le roi n'a pas de mouvement possible

@@ -2,8 +2,9 @@ package org.chess.chess.moteur;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.chess.chess.Tools;
+import org.chess.chess.TestFixture;
 import org.chess.chess.domain.Couleur;
+import org.chess.chess.domain.Partie;
 import org.chess.chess.domain.Plateau;
 import org.chess.chess.outils.PositionTools;
 import org.junit.Test;
@@ -36,9 +37,11 @@ public class CalculMouvementsServiceTest {
 
 		LOGGER.info("caseAttaque({},{},{},{},{})", fenFormat, ligne, colonne, joueur, attaqueRef);
 
-		Plateau plateau = Tools.createFromFen(fenFormat);
+		Plateau plateau = TestFixture.createFromFen(fenFormat);
 
-		boolean attaque = calculMouvementsService.caseAttaque(plateau, joueur, PositionTools.getPosition(ligne, colonne));
+		Partie partie = TestFixture.createPartie(plateau);
+
+		boolean attaque = calculMouvementsService.caseAttaque(partie, joueur, PositionTools.getPosition(ligne, colonne));
 
 		assertEquals(attaqueRef, attaque);
 	}

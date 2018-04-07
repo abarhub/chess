@@ -72,6 +72,10 @@ public class Moteur {
 		return partie.getPlateau();
 	}
 
+	public Partie getPartie() {
+		return partie;
+	}
+
 	public void nextMove() {
 
 		Verify.verifyNotNull(partie);
@@ -118,7 +122,7 @@ public class Moteur {
 	}
 
 	public List<Position> getMovablePieces(Couleur joueur) {
-		return mouvementService.getMovablePieces(partie.getPlateau(), joueur);
+		return mouvementService.getMovablePieces(partie, joueur);
 	}
 
 	public List<Position> listePieces(Couleur couleur) {
@@ -126,7 +130,7 @@ public class Moteur {
 	}
 
 	public List<Position> listMove(Position position, boolean tousMouvementRois) {
-		return mouvementService.listMove(partie.getPlateau(), position, tousMouvementRois, partie.getJoueurCourant());
+		return mouvementService.listMove(partie, position, tousMouvementRois, partie.getJoueurCourant());
 	}
 
 	public EtatJeux calculEtatJeux() {

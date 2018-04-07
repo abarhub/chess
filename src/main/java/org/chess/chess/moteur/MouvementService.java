@@ -1,10 +1,7 @@
 package org.chess.chess.moteur;
 
 import com.google.common.base.Verify;
-import org.chess.chess.domain.Couleur;
-import org.chess.chess.domain.PieceCouleur;
-import org.chess.chess.domain.Plateau;
-import org.chess.chess.domain.Position;
+import org.chess.chess.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +20,17 @@ public class MouvementService {
 	@Autowired
 	private CalculMouvementsService calculMouvementsService;
 
-	public List<Position> listMove(Plateau plateau, Position position, boolean tousMouvementRois,
+	public List<Position> listMove(Partie partie, Position position, boolean tousMouvementRois,
 	                               Couleur joueurCourant) {
-		return calculMouvementsService.listMove(plateau, position, tousMouvementRois, joueurCourant);
+		Verify.verifyNotNull(partie);
+		Verify.verifyNotNull(position);
+		Verify.verifyNotNull(joueurCourant);
+		return calculMouvementsService.listMove(partie, position, tousMouvementRois, joueurCourant);
 	}
 
 	// vérifie si la case (ligne/colonne) est attaquée par une piece de couleur
-	public boolean caseAttaque(Plateau plateau, Couleur couleur, Position position) {
-		return calculMouvementsService.caseAttaque(plateau, couleur, position);
+	public boolean caseAttaque(Partie partie, Couleur couleur, Position position) {
+		return calculMouvementsService.caseAttaque(partie, couleur, position);
 	}
 
 	public Couleur couleurContraire(Couleur couleur) {
@@ -55,13 +55,14 @@ public class MouvementService {
 	}
 
 
-	public List<Position> getMovablePieces(Plateau plateau, Couleur joueur) {
+	public List<Position> getMovablePieces(Partie partie, Couleur joueur) {
+		Verify.verifyNotNull(partie);
 		Verify.verifyNotNull(joueur);
 		List<Position> listePieces;
-		List<Position> liste = listePieces(plateau, joueur);
+		List<Position> liste = listePieces(partie.getPlateau(), joueur);
 		listePieces = new ArrayList<>();
 		for (Position p : liste) {
-			List<Position> liste2 = listMove(plateau, p, false, joueur);
+			List<Position> liste2 = listMove(partie, p, false, joueur);
 			if (liste2 != null && !liste2.isEmpty()) {
 				listePieces.add(p);
 			}

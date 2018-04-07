@@ -17,8 +17,11 @@ public class CalculMouvementsService {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(CalculMouvementsService.class);
 
-	public ListeMouvements calculMouvements(Plateau plateau) {
+	public ListeMouvements calculMouvements(Partie partie) {
 
+		Verify.verifyNotNull(partie);
+
+		Plateau plateau = partie.getPlateau();
 		Verify.verifyNotNull(plateau);
 
 		ListeMouvements listeMouvements = new ListeMouvements();
@@ -403,11 +406,11 @@ public class CalculMouvementsService {
 		}
 	}
 
-	public List<Position> listMove(Plateau plateau, Position position, boolean tousMouvementRois, Couleur joueurCourant) {
+	public List<Position> listMove(Partie partie, Position position, boolean tousMouvementRois, Couleur joueurCourant) {
 
 		List<Position> list = new ArrayList<>();
 
-		ListeMouvements listeMouvements = calculMouvements(plateau);
+		ListeMouvements listeMouvements = calculMouvements(partie);
 
 		if (listeMouvements != null) {
 			List<Mouvement> liste2 = listeMouvements.getMouvements(position);
@@ -423,9 +426,9 @@ public class CalculMouvementsService {
 		return list;
 	}
 
-	public boolean caseAttaque(Plateau plateau, Couleur couleur, Position position) {
+	public boolean caseAttaque(Partie partie, Couleur couleur, Position position) {
 
-		ListeMouvements listeMouvements = calculMouvements(plateau);
+		ListeMouvements listeMouvements = calculMouvements(partie);
 
 		if (listeMouvements != null) {
 			return listeMouvements.caseAttaque(position, couleur);
