@@ -3,11 +3,16 @@ package org.chess.chess.domain;
 import com.google.common.base.Verify;
 import org.chess.chess.joueur.Joueur;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Partie {
 
 	private final Plateau plateau;
 	private final Joueur joueurBlanc;
 	private final Joueur joueurNoir;
+	private final List<DemiCoup> listeCoupsBlancs;
+	private final List<DemiCoup> listeCoupsNoirs;
 	private Couleur joueurCourant;
 
 	public Partie(Plateau plateau, Joueur joueurBlanc, Joueur joueurNoir, Couleur joueurCourant) {
@@ -19,6 +24,8 @@ public class Partie {
 		this.joueurBlanc = joueurBlanc;
 		this.joueurNoir = joueurNoir;
 		this.joueurCourant = joueurCourant;
+		listeCoupsBlancs = new ArrayList<>();
+		listeCoupsNoirs = new ArrayList<>();
 	}
 
 	public Plateau getPlateau() {
@@ -61,9 +68,13 @@ public class Partie {
 
 		plateau.move(src, dest);
 
+		DemiCoupDeplacement demiCoupDeplacement = new DemiCoupDeplacement(pieceSource.getPiece(), src, dest);
+
 		if (joueurCourant == Couleur.Blanc) {
+			listeCoupsBlancs.add(demiCoupDeplacement);
 			joueurCourant = Couleur.Noir;
 		} else {
+			listeCoupsNoirs.add(demiCoupDeplacement);
 			joueurCourant = Couleur.Blanc;
 		}
 	}

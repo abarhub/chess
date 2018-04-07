@@ -28,7 +28,6 @@ public class MouvementService2 {
 		Verify.verifyNotNull(plateau);
 		Verify.verifyNotNull(position);
 		Verify.verifyNotNull(joueurCourant);
-		//Check.checkLigneColonne(PositionTools.getLigne(position), PositionTools.getColonne(position));
 		List<Position> liste = new ArrayList<>();
 
 		PieceCouleur piece = plateau.getCase(position);

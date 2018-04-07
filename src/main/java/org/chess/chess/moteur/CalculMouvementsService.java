@@ -133,16 +133,10 @@ public class CalculMouvementsService {
 
 		List<Mouvement> mouvements = new ArrayList<>();
 
-		//final int ligne = PositionTools.getLigne(piece.getPosition());
-		//final int colonne = PositionTools.getColonne(piece.getPosition());
-
 		for (int ligne2 = -1; ligne2 <= 1; ligne2++) {
 			for (int colonne2 = -1; colonne2 <= 1; colonne2++) {
 				if (!(ligne2 == 0 && colonne2 == 0)) {
-					//final int ligne3 = ligne + ligne2;
-					//final int colonne3 = colonne + colonne2;
 					Optional<Position> optPosition = PositionTools.getPosition(piece.getPosition(), ligne2, colonne2);
-					//if (Check.isPositionValide(ligne3, colonne3)) {
 					if (optPosition.isPresent()) {
 						ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
 //						if (tousMouvementRois) {
@@ -164,9 +158,6 @@ public class CalculMouvementsService {
 		Verify.verify(piece.getPiece() == Piece.REINE);
 
 		List<Mouvement> mouvements = new ArrayList<>();
-
-		//final int ligne = PositionTools.getLigne(piece.getPosition());
-		//final int colonne = PositionTools.getColonne(piece.getPosition());
 
 		for (int j = 0; j < 8; j++) {
 			int decalageLigne, decalageColonne;
@@ -208,9 +199,6 @@ public class CalculMouvementsService {
 
 		List<Mouvement> mouvements = new ArrayList<>();
 
-		//final int ligne = PositionTools.getLigne(piece.getPosition());
-		//final int colonne = PositionTools.getColonne(piece.getPosition());
-
 		for (int j = 0; j < 4; j++) {
 			int decalageLigne, decalageColonne;
 			if (j == 0) {
@@ -237,9 +225,6 @@ public class CalculMouvementsService {
 		Verify.verify(piece.getPiece() == Piece.FOU);
 
 		List<Mouvement> mouvements = new ArrayList<>();
-
-		//final int ligne = PositionTools.getLigne(piece.getPosition());
-		//final int colonne = PositionTools.getColonne(piece.getPosition());
 
 		for (int j = 0; j < 4; j++) {
 			int decalageLigne, decalageColonne;
@@ -272,9 +257,8 @@ public class CalculMouvementsService {
 		for (int i = 1; i <= 8; i++) {
 			boolean res = false;
 			Optional<Position> optPosition = PositionTools.getPosition(position, decalageLigne * i, decalageColonne * i);
-			//if (Check.isPositionValide(ligne + decalageLigne * i, colonne + decalageColonne * i)) {
 			if (optPosition.isPresent()) {
-				ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
+				res = ajoutePositionPiece(mouvements, optPosition.get(), piece, plateau);
 			}
 			if (!res) {
 				break;
@@ -287,9 +271,6 @@ public class CalculMouvementsService {
 		Verify.verify(piece.getPiece() == Piece.CAVALIER);
 
 		List<Mouvement> mouvements = new ArrayList<>();
-
-		//final int ligne = PositionTools.getLigne(piece.getPosition());
-		//final int colonne = PositionTools.getColonne(piece.getPosition());
 
 		Optional<Position> optPosition = PositionTools.getPosition(piece.getPosition(), -2, -1);
 		if (optPosition.isPresent()) {
@@ -333,7 +314,6 @@ public class CalculMouvementsService {
 		Verify.verifyNotNull(piece);
 		Verify.verifyNotNull(plateau);
 
-		//if (Check.isPositionValide(PositionTools.getLigne(position), PositionTools.getColonne(position))) {
 		PieceCouleur caseCible = plateau.getCase(position);
 		if (caseCible == null) {
 			Mouvement mouvement = new Mouvement(position, false);
@@ -344,7 +324,6 @@ public class CalculMouvementsService {
 			mouvements.add(mouvement);
 			return false;
 		}
-		//}
 
 		return false;
 	}
@@ -354,9 +333,6 @@ public class CalculMouvementsService {
 		Verify.verify(piece.getPiece() == Piece.PION);
 
 		List<Mouvement> mouvements = new ArrayList<>();
-
-		//final int ligne = PositionTools.getLigne(piece.getPosition());
-		//final int colonne = PositionTools.getColonne(piece.getPosition());
 
 		int decalage, decalage2 = 0;
 		if (piece.getCouleur() == Couleur.Blanc) {
@@ -371,17 +347,14 @@ public class CalculMouvementsService {
 			}
 		}
 		Optional<Position> optPosition = PositionTools.getPosition(piece.getPosition(), decalage, 0);
-		//if (Check.isPositionValide(ligne + decalage, colonne)) {
 		if (optPosition.isPresent()) {
 			ajoutePositionPions(mouvements, optPosition.get(), piece, plateau, false);
 		}
 		optPosition = PositionTools.getPosition(piece.getPosition(), decalage, -1);
-		//if (Check.isPositionValide(ligne + decalage, colonne - 1)) {
 		if (optPosition.isPresent()) {
 			ajoutePositionPions(mouvements, optPosition.get(), piece, plateau, true);
 		}
 		optPosition = PositionTools.getPosition(piece.getPosition(), decalage, 1);
-		//if (Check.isPositionValide(ligne + decalage, colonne + 1)) {
 		if (optPosition.isPresent()) {
 			ajoutePositionPions(mouvements, optPosition.get(), piece, plateau, true);
 		}
@@ -400,7 +373,6 @@ public class CalculMouvementsService {
 			}
 			if (caseIntermediaire == null) {
 				optPosition = PositionTools.getPosition(piece.getPosition(), decalage2, 0);
-				//if (Check.isPositionValide(ligne + decalage2, colonne)) {
 				if (optPosition.isPresent()) {
 					ajoutePositionPions(mouvements, optPosition.get(), piece, plateau, false);
 				}
@@ -417,7 +389,6 @@ public class CalculMouvementsService {
 		Verify.verifyNotNull(plateau);
 		Verify.verifyNotNull(position);
 
-		//if (Check.isPositionValide(PositionTools.getLigne(position), PositionTools.getColonne(position))) {
 		PieceCouleur caseCible = plateau.getCase(position);
 		if (mangePiece) {
 			if (caseCible != null && caseCible.getCouleur() != piece.getCouleur()) {
@@ -430,7 +401,6 @@ public class CalculMouvementsService {
 				mouvements.add(mouvement);
 			}
 		}
-		//}
 	}
 
 	public List<Position> listMove(Plateau plateau, Position position, boolean tousMouvementRois, Couleur joueurCourant) {
