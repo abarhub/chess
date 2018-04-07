@@ -337,12 +337,12 @@ public class CalculMouvementsService {
 		int decalage, decalage2 = 0;
 		if (piece.getCouleur() == Couleur.Blanc) {
 			decalage = 1;
-			if (piece.getPosition().getRangee() == RangeeEnum.RANGEE7) {
+			if (piece.getPosition().getRangee() == RangeeEnum.RANGEE2) {
 				decalage2 = 2;
 			}
 		} else {
 			decalage = -1;
-			if (piece.getPosition().getRangee() == RangeeEnum.RANGEE2) {
+			if (piece.getPosition().getRangee() == RangeeEnum.RANGEE7) {
 				decalage2 = -2;
 			}
 		}

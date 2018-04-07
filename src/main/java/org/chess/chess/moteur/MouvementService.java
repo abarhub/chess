@@ -20,34 +20,18 @@ public class MouvementService {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MouvementService.class);
 
-	public static final boolean methode2 = true;
-
-	@Autowired
-	private MouvementService2 mouvementService2;
-
 	@Autowired
 	private CalculMouvementsService calculMouvementsService;
 
 	public List<Position> listMove(Plateau plateau, Position position, boolean tousMouvementRois,
 	                               Couleur joueurCourant) {
-		if (methode2) {
-			return calculMouvementsService.listMove(plateau, position, tousMouvementRois, joueurCourant);
-		} else {
-			return mouvementService2.listMove(plateau, position, tousMouvementRois, joueurCourant);
-		}
+		return calculMouvementsService.listMove(plateau, position, tousMouvementRois, joueurCourant);
 	}
-
 
 	// vérifie si la case (ligne/colonne) est attaquée par une piece de couleur
 	public boolean caseAttaque(Plateau plateau, Couleur couleur, Position position) {
-
-		if (methode2) {
-			return calculMouvementsService.caseAttaque(plateau, couleur, position);
-		} else {
-			return mouvementService2.caseAttaque(plateau, couleur, position);
-		}
+		return calculMouvementsService.caseAttaque(plateau, couleur, position);
 	}
-
 
 	public Couleur couleurContraire(Couleur couleur) {
 		Verify.verifyNotNull(couleur);
@@ -57,7 +41,6 @@ public class MouvementService {
 			return Couleur.Blanc;
 		}
 	}
-
 
 	public List<Position> listePieces(Plateau plateau, Couleur couleur) {
 		Verify.verifyNotNull(couleur);

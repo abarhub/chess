@@ -45,19 +45,12 @@ public class Partie {
 	}
 
 	public void setMove(Position src, Position dest) {
-		Verify.verifyNotNull(src);
-		Verify.verifyNotNull(dest);
+
+		verificationDeplacementCommun(src, dest);
 
 		PieceCouleur pieceSource;
 		pieceSource = plateau.getCase(src);
 
-		Verify.verifyNotNull(pieceSource, "la piece source n'existe pas");
-		Verify.verify(pieceSource.getCouleur() == joueurCourant,
-				"la piece source n'est pas de la couleur du joueur qui doit jouer");
-
-		if (joueurCourant == Couleur.Blanc) {
-			Verify.verify(pieceSource.getCouleur() == joueurCourant);
-		}
 
 		PieceCouleur pieceDestination = plateau.getCase(dest);
 
@@ -77,5 +70,56 @@ public class Partie {
 			listeCoupsNoirs.add(demiCoupDeplacement);
 			joueurCourant = Couleur.Blanc;
 		}
+	}
+
+	public void setRoque(Position src, Position dest) {
+
+		verificationDeplacementCommun(src, dest);
+
+		PieceCouleur pieceSource;
+		pieceSource = plateau.getCase(src);
+
+		Verify.verifyNotNull(pieceSource);
+		Verify.verify(pieceSource.getPiece() == Piece.ROI);
+		Verify.verify(pieceSource.getCouleur() == joueurCourant);
+		if (joueurCourant == Couleur.Blanc) {
+			Verify.verify(src.getRangee() == RangeeEnum.RANGEE1);
+		} else {
+			Verify.verify(src.getRangee() == RangeeEnum.RANGEE8);
+		}
+		Verify.verify(src.getColonne() == ColonneEnum.COLONNEE);
+
+		Verify.verify(dest.getRangee() == dest.getRangee());
+
+		plateau.move(src, dest);
+
+		// TODO: faire les verifications + deplacement de la tour
+		if (true) {
+			throw new UnsupportedOperationException("Le roque n'est pas implementé");
+		}
+
+		DemiCoupRoque demiCoupRoque = new DemiCoupRoque(src, dest);
+
+		if (joueurCourant == Couleur.Blanc) {
+			listeCoupsBlancs.add(demiCoupRoque);
+			joueurCourant = Couleur.Noir;
+		} else {
+			listeCoupsNoirs.add(demiCoupRoque);
+			joueurCourant = Couleur.Blanc;
+		}
+	}
+
+	private void verificationDeplacementCommun(Position src, Position dest) {
+
+		Verify.verifyNotNull(src);
+		Verify.verifyNotNull(dest);
+		Verify.verify(!src.equals(dest));
+
+		PieceCouleur pieceSource;
+		pieceSource = plateau.getCase(src);
+
+		Verify.verifyNotNull(pieceSource, "la piece source n'existe pas");
+		Verify.verify(pieceSource.getCouleur() == joueurCourant,
+				"la piece source n'est pas de la couleur du joueur qui doit jouer");
 	}
 }
