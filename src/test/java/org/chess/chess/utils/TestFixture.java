@@ -1,4 +1,4 @@
-package org.chess.chess;
+package org.chess.chess.utils;
 
 import org.chess.chess.domain.Couleur;
 import org.chess.chess.domain.Partie;
@@ -15,9 +15,13 @@ public class TestFixture {
 		return notationFEN.createPlateau(str);
 	}
 
-	public static Partie createPartie(Plateau plateau){
-		Joueur joueurBlanc = mock(Joueur.class);
-		Joueur joueurNoir = mock(Joueur.class);
+	public static Partie createPartie(Plateau plateau) {
+		Joueur joueurBlanc = createJoueurMock();
+		Joueur joueurNoir = createJoueurMock();
 		return new Partie(plateau, joueurBlanc, joueurNoir, Couleur.Blanc);
+	}
+
+	public static Joueur createJoueurMock() {
+		return mock(Joueur.class);
 	}
 }

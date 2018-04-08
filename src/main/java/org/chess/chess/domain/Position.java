@@ -41,6 +41,6 @@ public class Position {
 
 	@Override
 	public String toString() {
-		return rangee.getText() + colonne;
+		return colonne.getText() + rangee.getText();
 	}
 }

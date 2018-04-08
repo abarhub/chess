@@ -2,7 +2,7 @@ package org.chess.chess.moteur;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.chess.chess.TestFixture;
+import org.chess.chess.utils.TestFixture;
 import org.chess.chess.domain.*;
 import org.chess.chess.outils.PositionTools;
 import org.junit.Test;

@@ -27,7 +27,7 @@ public class NotationFEN implements INotation {
 		ListIterator<Character> iterator = Lists.charactersOf(str).listIterator();
 
 
-		for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
+		for (int ligne = NB_LIGNES - 1; ligne >= 0; ligne--) {
 			for (int colonne = 0; colonne < NB_COLONNES; colonne++) {
 				char c = getChar(iterator);
 				if (estPiece(c, Piece.ROI)) {
@@ -53,7 +53,7 @@ public class NotationFEN implements INotation {
 				}
 			}
 
-			if (ligne < 7) {
+			if (ligne > 0) {
 				char c = getChar(iterator);
 				if (c != '/') {
 					throw new IllegalArgumentException("Caractere '" + c + "' invalide à la position : " + iterator.previousIndex() + " (caractere attendu=/)");

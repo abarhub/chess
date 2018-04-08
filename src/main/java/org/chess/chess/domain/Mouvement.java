@@ -1,5 +1,7 @@
 package org.chess.chess.domain;
 
+import java.util.Objects;
+
 public class Mouvement {
 
 	private final Position position;

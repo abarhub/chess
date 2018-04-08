@@ -31,6 +31,6 @@ public enum ColonneEnum {
 	}
 
 	public String getText() {
-		return "" + (no - 1 + 'a');
+		return "" + (char) (no - 1 + 'a');
 	}
 }

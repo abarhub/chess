@@ -1,9 +1,11 @@
 package org.chess.chess.domain;
 
 import com.google.common.base.Verify;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ListeMouvements {
 
@@ -119,4 +121,23 @@ public class ListeMouvements {
 
 		return false;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof ListeMouvements)) return false;
+		ListeMouvements that = (ListeMouvements) o;
+		return roiBlancEchecs == that.roiBlancEchecs &&
+				roiNoirEchecs == that.roiNoirEchecs &&
+				roiBlancEchecsMat == that.roiBlancEchecsMat &&
+				roiNoirEchecsMat == that.roiNoirEchecsMat &&
+				Objects.equals(mapMouvements, that.mapMouvements);
+	}
+
+	@Override
+	public int hashCode() {
+
+		return Objects.hash(roiBlancEchecs, roiNoirEchecs, roiBlancEchecsMat, roiNoirEchecsMat, mapMouvements);
+	}
+
 }

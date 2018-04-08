@@ -1,5 +1,7 @@
 package org.chess.chess.domain;
 
+import java.util.Objects;
+
 public class PieceCouleurPosition extends PieceCouleur {
 
 	private final Position position;
@@ -14,11 +16,27 @@ public class PieceCouleurPosition extends PieceCouleur {
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof PieceCouleurPosition)) return false;
+		if (!super.equals(o)) return false;
+		PieceCouleurPosition that = (PieceCouleurPosition) o;
+		return Objects.equals(position, that.position);
+	}
+
+	@Override
+	public int hashCode() {
+
+		return Objects.hash(super.hashCode(), position);
+	}
+
+	@Override
 	public String toString() {
-		return "PieceCouleurPosition{" +
-				"position=" + position +
-				",piece=" + getPiece() +
-				",couleur=" + getCouleur() +
-				'}';
+		return super.toString() + " " + position;
+//		return "PieceCouleurPosition{" +
+//				"position=" + position +
+//				",piece=" + getPiece() +
+//				",couleur=" + getCouleur() +
+//				'}';
 	}
 }
