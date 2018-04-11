@@ -17,6 +17,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -30,24 +31,31 @@ public class CalculMouvementsServiceTest {
 
 	private Object[] createSerialisationValues() {
 		return new Object[]{
-				new Object[]{"rnb2b1r/pp1qp1pp/P4k1n/3pP3/1P1P1p1P/R1p2NP1/2PNKP2/2BQ1B1R", 2, 5, Couleur.Blanc, true},
-				new Object[]{"r1b1kb1r/pp1pp1pp/nqp2p2/5P2/8/PP5N/R4KnP/2B4R", 1, 5, Couleur.Blanc, true},
-				new Object[]{"r1b1kb1r/pp1pp1pp/nqp2p2/5P2/8/PP5N/R5nP/2B3KR", 0, 6, Couleur.Blanc, true},
+				//new Object[]{"rnb2b1r/pp1qp1pp/P4k1n/3pP3/1P1P1p1P/R1p2NP1/2PNKP2/2BQ1B1R", getPosition(2, 5), Couleur.Blanc, true},
+				new Object[]{"r1b1kb1r/pp1pp1pp/nqp2p2/5P2/8/PP5N/R4KnP/2B4R", getPosition(1, 5), Couleur.Blanc, true},
+				new Object[]{"r1b1kb1r/pp1pp1pp/nqp2p2/5P2/8/PP5N/R5nP/2B3KR", getPosition(0, 6), Couleur.Blanc, true},
 		};
 	}
 
 	@Test
 	@Parameters(method = "createSerialisationValues")
-	public void caseAttaque(String fenFormat, int ligne, int colonne,
+	public void caseAttaque(String fenFormat, Position position,
 	                        Couleur joueur, boolean attaqueRef) {
 
-		LOGGER.info("caseAttaque({},{},{},{},{})", fenFormat, ligne, colonne, joueur, attaqueRef);
+		LOGGER.info("caseAttaque({},{},{},{})", fenFormat, position, joueur, attaqueRef);
+
+		assertNotNull(fenFormat);
+		assertNotNull(position);
+		assertNotNull(joueur);
 
 		Plateau plateau = TestFixture.createFromFen(fenFormat);
 
+		//plateau.afficheConsole();
+		//LOGGER.info("plateau:{}", plateau.getRepresentation());
+
 		Partie partie = TestFixture.createPartie(plateau);
 
-		boolean attaque = calculMouvementsService.caseAttaque(partie, joueur, PositionTools.getPosition(ligne, colonne));
+		boolean attaque = calculMouvementsService.caseAttaque(partie, joueur, position);
 
 		assertEquals(attaqueRef, attaque);
 	}
@@ -55,6 +63,13 @@ public class CalculMouvementsServiceTest {
 	private Object[] createCalculMouvementsValues() {
 		return new Object[]{
 				new Object[]{PartieFixture.createPartieDebut(), createMouvementDebutPartie()},
+				new Object[]{PartieFixture.createPartieVide(), new ListeMouvements()},
+				new Object[]{PartieFixture.createPartieUnePiece(Piece.PION), createMouvementPiece(Piece.PION)},
+				new Object[]{PartieFixture.createPartieUnePiece(Piece.ROI), createMouvementPiece(Piece.ROI)},
+				new Object[]{PartieFixture.createPartieUnePiece(Piece.TOUR), createMouvementPiece(Piece.TOUR)},
+				new Object[]{PartieFixture.createPartieUnePiece(Piece.FOU), createMouvementPiece(Piece.FOU)},
+				new Object[]{PartieFixture.createPartieUnePiece(Piece.CAVALIER), createMouvementPiece(Piece.CAVALIER)},
+				new Object[]{PartieFixture.createPartieUnePiece(Piece.REINE), createMouvementPiece(Piece.REINE)},
 				//new Object[]{"r1b1kb1r/pp1pp1pp/nqp2p2/5P2/8/PP5N/R4KnP/2B4R", 1, 5, Couleur.Blanc, true},
 				//new Object[]{"r1b1kb1r/pp1pp1pp/nqp2p2/5P2/8/PP5N/R5nP/2B3KR", 0, 6, Couleur.Blanc, true},
 		};
@@ -66,9 +81,12 @@ public class CalculMouvementsServiceTest {
 
 		assertNotNull(listeMouvementsRef);
 
+		LOGGER.info("fen:{}", TestFixture.showFen(partie.getPlateau()));
+
 		ListeMouvements listeMouvement = calculMouvementsService.calculMouvements(partie);
 
 		LOGGER.info("listeMouvement={}", listeMouvement);
+
 
 		assertNotNull(listeMouvement);
 		//assertEquals(listeMouvementsRef, listeMouvement);
@@ -101,11 +119,163 @@ public class CalculMouvementsServiceTest {
 				Lists.newArrayList(createMouvement(RangeeEnum.RANGEE6, ColonneEnum.COLONNEA, false),
 						createMouvement(RangeeEnum.RANGEE6, ColonneEnum.COLONNEC, false)));
 
+		map.put(new PieceCouleurPosition(Piece.CAVALIER, Couleur.Noir, new Position(RangeeEnum.RANGEE8, ColonneEnum.COLONNEG)),
+				Lists.newArrayList(createMouvement(RangeeEnum.RANGEE6, ColonneEnum.COLONNEF, false),
+						createMouvement(RangeeEnum.RANGEE6, ColonneEnum.COLONNEH, false)));
+
 		map.put(new PieceCouleurPosition(Piece.CAVALIER, Couleur.Blanc, new Position(RangeeEnum.RANGEE1, ColonneEnum.COLONNEB)),
 				Lists.newArrayList(createMouvement(RangeeEnum.RANGEE3, ColonneEnum.COLONNEA, false),
 						createMouvement(RangeeEnum.RANGEE3, ColonneEnum.COLONNEC, false)));
 
+		map.put(new PieceCouleurPosition(Piece.CAVALIER, Couleur.Blanc, new Position(RangeeEnum.RANGEE1, ColonneEnum.COLONNEG)),
+				Lists.newArrayList(createMouvement(RangeeEnum.RANGEE3, ColonneEnum.COLONNEF, false),
+						createMouvement(RangeeEnum.RANGEE3, ColonneEnum.COLONNEH, false)));
+
 		listeMouvements.setMapMouvements(map);
+
+		return listeMouvements;
+	}
+
+	private ListeMouvements createMouvementPiece(Piece piece) {
+
+		assertNotNull(piece);
+
+		ListeMouvements listeMouvements = new ListeMouvements();
+
+		Map<PieceCouleurPosition, List<Mouvement>> map = new HashMap<>();
+
+		listeMouvements.setMapMouvements(map);
+
+		Position positionDepart = new Position(RangeeEnum.RANGEE4, ColonneEnum.COLONNED);
+
+		if (piece == Piece.PION) {
+			map.put(new PieceCouleurPosition(Piece.PION, Couleur.Blanc, positionDepart),
+					Lists.newArrayList(createMouvement(RangeeEnum.RANGEE5, ColonneEnum.COLONNED, false)));
+		} else if (piece == Piece.ROI) {
+			map.put(new PieceCouleurPosition(Piece.ROI, Couleur.Blanc, positionDepart),
+					Lists.newArrayList(createMouvement(RangeeEnum.RANGEE5, ColonneEnum.COLONNEC, false),
+							createMouvement(RangeeEnum.RANGEE5, ColonneEnum.COLONNED, false),
+							createMouvement(RangeeEnum.RANGEE5, ColonneEnum.COLONNEE, false),
+							createMouvement(RangeeEnum.RANGEE4, ColonneEnum.COLONNEC, false),
+							createMouvement(RangeeEnum.RANGEE4, ColonneEnum.COLONNEE, false),
+							createMouvement(RangeeEnum.RANGEE3, ColonneEnum.COLONNEC, false),
+							createMouvement(RangeeEnum.RANGEE3, ColonneEnum.COLONNED, false),
+							createMouvement(RangeeEnum.RANGEE3, ColonneEnum.COLONNEE, false)));
+		} else if (piece == Piece.TOUR) {
+
+			List<Mouvement> liste = Lists.newArrayList();
+
+			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+				if (colonne != positionDepart.getColonne()) {
+					liste.add(createMouvement(positionDepart.getRangee(), colonne, false));
+				}
+			}
+
+			for (RangeeEnum rangeeEnum : IteratorPlateau.getIterableRangee()) {
+				if (rangeeEnum != positionDepart.getRangee()) {
+					liste.add(createMouvement(rangeeEnum, positionDepart.getColonne(), false));
+				}
+			}
+
+			map.put(new PieceCouleurPosition(Piece.TOUR, Couleur.Blanc, positionDepart), liste);
+
+		} else if (piece == Piece.FOU) {
+
+			List<Mouvement> liste = Lists.newArrayList();
+
+			for (int j = 0; j < 4; j++) {
+
+				int decalageLigne = 0;
+				int decalageColonne = 0;
+
+				if (j == 0) {
+					decalageLigne = 1;
+					decalageColonne = 1;
+				} else if (j == 1) {
+					decalageLigne = 1;
+					decalageColonne = -1;
+				} else if (j == 2) {
+					decalageLigne = -1;
+					decalageColonne = 1;
+				} else if (j == 3) {
+					decalageLigne = -1;
+					decalageColonne = -1;
+				}
+
+				for (int i = 1; i <= 8; i++) {
+					Optional<Position> optPosition = PositionTools.getPosition(positionDepart,
+							decalageLigne * i, decalageColonne * i);
+					if (optPosition.isPresent()) {
+						liste.add(createMouvement(optPosition.get().getRangee(),
+								optPosition.get().getColonne(), false));
+					}
+				}
+			}
+
+			map.put(new PieceCouleurPosition(Piece.FOU, Couleur.Blanc, positionDepart), liste);
+
+		} else if (piece == Piece.CAVALIER) {
+
+			map.put(new PieceCouleurPosition(Piece.CAVALIER, Couleur.Blanc, positionDepart),
+					Lists.newArrayList(createMouvement(RangeeEnum.RANGEE3, ColonneEnum.COLONNEB, false),
+							createMouvement(RangeeEnum.RANGEE2, ColonneEnum.COLONNEC, false),
+							createMouvement(RangeeEnum.RANGEE5, ColonneEnum.COLONNEB, false),
+							createMouvement(RangeeEnum.RANGEE6, ColonneEnum.COLONNEC, false),
+							createMouvement(RangeeEnum.RANGEE6, ColonneEnum.COLONNEE, false),
+							createMouvement(RangeeEnum.RANGEE5, ColonneEnum.COLONNEF, false),
+							createMouvement(RangeeEnum.RANGEE3, ColonneEnum.COLONNEF, false),
+							createMouvement(RangeeEnum.RANGEE2, ColonneEnum.COLONNEE, false)));
+
+		} else if (piece == Piece.REINE) {
+
+			List<Mouvement> liste = Lists.newArrayList();
+
+			for (int j = 0; j < 4; j++) {
+
+				int decalageLigne = 0;
+				int decalageColonne = 0;
+
+				if (j == 0) {
+					decalageLigne = 1;
+					decalageColonne = 1;
+				} else if (j == 1) {
+					decalageLigne = 1;
+					decalageColonne = -1;
+				} else if (j == 2) {
+					decalageLigne = -1;
+					decalageColonne = 1;
+				} else if (j == 3) {
+					decalageLigne = -1;
+					decalageColonne = -1;
+				}
+
+				for (int i = 1; i <= 8; i++) {
+					Optional<Position> optPosition = PositionTools.getPosition(positionDepart,
+							decalageLigne * i, decalageColonne * i);
+					if (optPosition.isPresent()) {
+						liste.add(createMouvement(optPosition.get().getRangee(),
+								optPosition.get().getColonne(), false));
+					}
+				}
+			}
+
+			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+				if (colonne != positionDepart.getColonne()) {
+					liste.add(createMouvement(positionDepart.getRangee(), colonne, false));
+				}
+			}
+
+			for (RangeeEnum rangeeEnum : IteratorPlateau.getIterableRangee()) {
+				if (rangeeEnum != positionDepart.getRangee()) {
+					liste.add(createMouvement(rangeeEnum, positionDepart.getColonne(), false));
+				}
+			}
+
+			map.put(new PieceCouleurPosition(Piece.REINE, Couleur.Blanc, positionDepart), liste);
+
+		} else {
+			throw new IllegalArgumentException("Piece " + piece + " non géré");
+		}
 
 		return listeMouvements;
 	}
@@ -114,13 +284,13 @@ public class CalculMouvementsServiceTest {
 		return new Mouvement(new Position(rangee, colonne), attaque);
 	}
 
-	public boolean compare(ListeMouvements listeMouvements0, ListeMouvements listeMouvements) {
-		if (listeMouvements0.isRoiBlancEchecs() == listeMouvements.isRoiBlancEchecs() &&
-				listeMouvements0.isRoiNoirEchecs() == listeMouvements.isRoiNoirEchecs() &&
-				listeMouvements0.isRoiBlancEchecsMat() == listeMouvements.isRoiBlancEchecsMat() &&
-				listeMouvements0.isRoiNoirEchecsMat() == listeMouvements.isRoiNoirEchecsMat()) {
+	public boolean compare(ListeMouvements listeMouvementsRef, ListeMouvements listeMouvements) {
+		if (listeMouvementsRef.isRoiBlancEchecs() == listeMouvements.isRoiBlancEchecs() &&
+				listeMouvementsRef.isRoiNoirEchecs() == listeMouvements.isRoiNoirEchecs() &&
+				listeMouvementsRef.isRoiBlancEchecsMat() == listeMouvements.isRoiBlancEchecsMat() &&
+				listeMouvementsRef.isRoiNoirEchecsMat() == listeMouvements.isRoiNoirEchecsMat()) {
 
-			if (CollectionUtils.isEmpty(listeMouvements0.getMapMouvements())) {
+			if (CollectionUtils.isEmpty(listeMouvementsRef.getMapMouvements())) {
 				boolean res = CollectionUtils.isEmpty(listeMouvements.getMapMouvements());
 				if (!res) {
 					LOGGER.error("la 2eme liste a des mouvements");
@@ -135,14 +305,14 @@ public class CalculMouvementsServiceTest {
 					return false;
 				}
 
-				if (!listeMouvements0.getMapMouvements().keySet().equals(map.keySet())) {
+				if (!listeMouvementsRef.getMapMouvements().keySet().equals(map.keySet())) {
 					LOGGER.error("la 2eme liste n'a pas les mêmes cle ({}<>{})",
-							listeMouvements0.getMapMouvements().keySet(),
+							listeMouvementsRef.getMapMouvements().keySet(),
 							map.keySet());
 					return false;
 				}
 
-				for (Map.Entry<PieceCouleurPosition, List<Mouvement>> entry : listeMouvements0.getMapMouvements().entrySet()) {
+				for (Map.Entry<PieceCouleurPosition, List<Mouvement>> entry : listeMouvementsRef.getMapMouvements().entrySet()) {
 
 					PieceCouleurPosition pieceCouleurPosition = entry.getKey();
 
@@ -181,4 +351,11 @@ public class CalculMouvementsServiceTest {
 		}
 	}
 
+	private Position getPosition(int ligne, int colonne) {
+		return PositionTools.getPosition(ligne, colonne);
+	}
+
+	private Position getPosition(RangeeEnum rangeeEnum, ColonneEnum colonneEnum) {
+		return new Position(rangeeEnum, colonneEnum);
+	}
 }

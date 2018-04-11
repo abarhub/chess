@@ -24,4 +24,9 @@ public class TestFixture {
 	public static Joueur createJoueurMock() {
 		return mock(Joueur.class);
 	}
+
+	public static String showFen(Plateau plateau) {
+		NotationFEN notationFEN = new NotationFEN();
+		return notationFEN.serialize(plateau);
+	}
 }
