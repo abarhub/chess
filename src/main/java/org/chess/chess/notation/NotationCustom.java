@@ -52,7 +52,8 @@ public class NotationCustom implements INotation {
 
 		Plateau plateau = new Plateau(listePieces);
 
-		return new Partie(plateau, new JoueurHazard(Couleur.Blanc), new JoueurHazard(Couleur.Noir), Couleur.Blanc);
+		return new Partie(plateau, //new JoueurHazard(Couleur.Blanc), new JoueurHazard(Couleur.Noir),
+				Couleur.Blanc);
 	}
 
 	@Override

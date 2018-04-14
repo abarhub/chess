@@ -10,20 +10,21 @@ import java.util.List;
 public class Partie {
 
 	private final Plateau plateau;
-	private final Joueur joueurBlanc;
-	private final Joueur joueurNoir;
+	//private final Joueur joueurBlanc;
+	//private final Joueur joueurNoir;
 	private final List<DemiCoup> listeCoupsBlancs;
 	private final List<DemiCoup> listeCoupsNoirs;
 	private Couleur joueurCourant;
 
-	public Partie(Plateau plateau, Joueur joueurBlanc, Joueur joueurNoir, Couleur joueurCourant) {
+	public Partie(Plateau plateau, //Joueur joueurBlanc, Joueur joueurNoir,
+	              Couleur joueurCourant) {
 		Verify.verifyNotNull(plateau);
-		Verify.verifyNotNull(joueurBlanc);
-		Verify.verifyNotNull(joueurNoir);
+		//Verify.verifyNotNull(joueurBlanc);
+		//Verify.verifyNotNull(joueurNoir);
 		Verify.verifyNotNull(joueurCourant);
 		this.plateau = plateau;
-		this.joueurBlanc = joueurBlanc;
-		this.joueurNoir = joueurNoir;
+		//this.joueurBlanc = joueurBlanc;
+		//this.joueurNoir = joueurNoir;
 		this.joueurCourant = joueurCourant;
 		listeCoupsBlancs = new ArrayList<>();
 		listeCoupsNoirs = new ArrayList<>();
@@ -33,13 +34,13 @@ public class Partie {
 		return plateau;
 	}
 
-	public Joueur getJoueurBlanc() {
-		return joueurBlanc;
-	}
-
-	public Joueur getJoueurNoir() {
-		return joueurNoir;
-	}
+//	public Joueur getJoueurBlanc() {
+//		return joueurBlanc;
+//	}
+//
+//	public Joueur getJoueurNoir() {
+//		return joueurNoir;
+//	}
 
 	public Couleur getJoueurCourant() {
 		return joueurCourant;

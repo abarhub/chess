@@ -52,7 +52,8 @@ public class MoteurTest {
 
 		plateau = new Plateau();
 
-		partie = new Partie(plateau, joueurBlanc, joueurNoir, Couleur.Blanc);
+		partie = new Partie(plateau, //joueurBlanc, joueurNoir,
+				Couleur.Blanc);
 
 		ReflectionTestUtils.setField(moteur, "partie", partie);
 	}

@@ -16,16 +16,18 @@ public class PartieFixture {
 	public static Partie createPartieDebut() {
 		Plateau plateau = TestFixture.createFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
 		Partie partie = new Partie(plateau,
-				TestFixture.createJoueurMock(),
-				TestFixture.createJoueurMock(), Couleur.Blanc);
+				//TestFixture.createJoueurMock(),
+				//TestFixture.createJoueurMock(),
+				Couleur.Blanc);
 		return partie;
 	}
 
 	public static Partie createPartieVide() {
 		Plateau plateau = TestFixture.createFromFen("8/8/8/8/8/8/8/8");
 		Partie partie = new Partie(plateau,
-				TestFixture.createJoueurMock(),
-				TestFixture.createJoueurMock(), Couleur.Blanc);
+				//TestFixture.createJoueurMock(),
+				//TestFixture.createJoueurMock(),
+				Couleur.Blanc);
 		return partie;
 	}
 
@@ -36,8 +38,9 @@ public class PartieFixture {
 		LOG.info("fen:{}", str);
 		Plateau plateau = TestFixture.createFromFen(str);
 		Partie partie = new Partie(plateau,
-				TestFixture.createJoueurMock(),
-				TestFixture.createJoueurMock(), Couleur.Blanc);
+				//TestFixture.createJoueurMock(),
+				//TestFixture.createJoueurMock(),
+				Couleur.Blanc);
 		return partie;
 	}
 }

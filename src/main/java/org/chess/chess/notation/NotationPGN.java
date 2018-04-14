@@ -50,6 +50,7 @@ public class NotationPGN implements INotation {
 				coup.append('.');
 
 
+
 				DemiCoup coupNoir=null;
 			}
 		}

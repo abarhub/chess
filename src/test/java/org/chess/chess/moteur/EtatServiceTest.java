@@ -60,8 +60,8 @@ public class EtatServiceTest {
 
 		Plateau plateau = getPlateau(nomFichier);
 
-		Partie partie = new Partie(plateau, new JoueurHazard(Couleur.Blanc),
-				new JoueurHazard(Couleur.Noir),
+		Partie partie = new Partie(plateau, //new JoueurHazard(Couleur.Blanc),
+				//new JoueurHazard(Couleur.Noir),
 				joueurCourant);
 
 		// methode testée
@@ -94,8 +94,8 @@ public class EtatServiceTest {
 
 		Plateau plateau = partie2.getPlateau();
 
-		Partie partie = new Partie(plateau, new JoueurHazard(Couleur.Blanc),
-				new JoueurHazard(Couleur.Noir),
+		Partie partie = new Partie(plateau, //new JoueurHazard(Couleur.Blanc),
+				//new JoueurHazard(Couleur.Noir),
 				joueurCourant);
 
 		// methode testée

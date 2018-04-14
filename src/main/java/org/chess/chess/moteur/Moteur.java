@@ -23,6 +23,10 @@ public class Moteur {
 
 	private EtatJeux etatJeux;
 
+	private Joueur joueurBlanc;
+
+	private Joueur joueurNoir;
+
 	@Autowired
 	private MouvementService mouvementService;
 
@@ -65,7 +69,11 @@ public class Moteur {
 		Verify.verifyNotNull(joueurBlanc);
 		Verify.verifyNotNull(joueurNoir);
 
-		partie = new Partie(plateau, joueurBlanc, joueurNoir, joueur);
+		this.joueurBlanc = joueurBlanc;
+		this.joueurNoir = joueurNoir;
+
+		partie = new Partie(plateau, //joueurBlanc, joueurNoir,
+				joueur);
 	}
 
 	public Plateau getPlateau() {
@@ -91,9 +99,9 @@ public class Moteur {
 
 
 			if (etatJeuxAvantDeplacement.getCouleur() == Couleur.Blanc) {
-				partie.getJoueurBlanc().nextMove(this);
+				joueurBlanc.nextMove(this);
 			} else {
-				partie.getJoueurNoir().nextMove(this);
+				joueurNoir.nextMove(this);
 			}
 
 			LOGGER.info("plateau={}", partie.getPlateau().getRepresentation());
