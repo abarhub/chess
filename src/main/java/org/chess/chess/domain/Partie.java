@@ -1,6 +1,7 @@
 package org.chess.chess.domain;
 
 import com.google.common.base.Verify;
+import com.google.common.collect.ImmutableList;
 import org.chess.chess.joueur.Joueur;
 
 import java.util.ArrayList;
@@ -42,6 +43,22 @@ public class Partie {
 
 	public Couleur getJoueurCourant() {
 		return joueurCourant;
+	}
+
+	public List<DemiCoup> getListeCoupsBlancs() {
+		if (listeCoupsBlancs == null) {
+			return ImmutableList.of();
+		} else {
+			return ImmutableList.copyOf(listeCoupsBlancs);
+		}
+	}
+
+	public List<DemiCoup> getListeCoupsNoirs() {
+		if (listeCoupsNoirs == null) {
+			return ImmutableList.of();
+		} else {
+			return ImmutableList.copyOf(listeCoupsNoirs);
+		}
 	}
 
 	public void setMove(Position src, Position dest) {
