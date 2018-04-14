@@ -2,6 +2,7 @@ package org.chess.chess.notation;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.chess.chess.domain.Partie;
 import org.chess.chess.domain.Plateau;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,11 +33,15 @@ public class NotationFENTest {
 
 		LOGGER.info("fenFormat={}", fenFormat);
 
-		Plateau plateau = notationFEN.createPlateau(fenFormat);
+		Partie partie = notationFEN.createPlateau(fenFormat);
+
+		assertNotNull(partie);
+
+		Plateau plateau = partie.getPlateau();
 
 		assertNotNull(plateau);
 
-		String res = notationFEN.serialize(plateau);
+		String res = notationFEN.serialize(partie);
 
 		LOGGER.info("res={}", res);
 

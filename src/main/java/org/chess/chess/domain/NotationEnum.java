@@ -4,5 +4,6 @@ public enum NotationEnum {
 
 	FEN,
 	ALGEBRIQUE,
-	CUSTOM;
+	CUSTOM,
+	PGN;
 }

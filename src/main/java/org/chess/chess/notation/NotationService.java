@@ -1,7 +1,7 @@
 package org.chess.chess.notation;
 
 import org.chess.chess.domain.NotationEnum;
-import org.chess.chess.domain.Plateau;
+import org.chess.chess.domain.Partie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +13,9 @@ public class NotationService {
 
 	@Autowired
 	private NotationCustom notationCustom;
+
+	@Autowired
+	private NotationPGN notationPGN;
 
 	public NotationFEN getNotationFEN() {
 		return notationFEN;
@@ -30,21 +33,25 @@ public class NotationService {
 		this.notationCustom = notationCustom;
 	}
 
-	public Plateau createFromString(String str, NotationEnum notationEnum) {
+	public Partie createFromString(String str, NotationEnum notationEnum) {
 		if (notationEnum == NotationEnum.FEN) {
 			return notationFEN.createPlateau(str);
 		} else if (notationEnum == NotationEnum.CUSTOM) {
 			return notationCustom.createPlateau(str);
+		} else if (notationEnum == NotationEnum.PGN) {
+			return notationPGN.createPlateau(str);
 		} else {
 			throw new IllegalArgumentException("Type de notation non gere : " + notationEnum);
 		}
 	}
 
-	public String serialize(Plateau plateau, NotationEnum notationEnum) {
+	public String serialize(Partie partie, NotationEnum notationEnum) {
 		if (notationEnum == NotationEnum.FEN) {
-			return notationFEN.serialize(plateau);
+			return notationFEN.serialize(partie);
 		} else if (notationEnum == NotationEnum.CUSTOM) {
-			return notationCustom.serialize(plateau);
+			return notationCustom.serialize(partie);
+		} else if (notationEnum == NotationEnum.PGN) {
+			return notationPGN.serialize(partie);
 		} else {
 			throw new IllegalArgumentException("Type de notation non gere : " + notationEnum);
 		}

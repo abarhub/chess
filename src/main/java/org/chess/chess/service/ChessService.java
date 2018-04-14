@@ -120,9 +120,9 @@ public class ChessService {
 	public FenDTO getPlateauFenDto() {
 		FenDTO fenDTO = new FenDTO();
 
-		Plateau plateau = moteur.getPlateau();
+		Partie partie = moteur.getPartie();
 
-		fenDTO.setFen(notationService.serialize(plateau, NotationEnum.FEN));
+		fenDTO.setFen(notationService.serialize(partie, NotationEnum.FEN));
 
 		return fenDTO;
 	}
@@ -146,7 +146,8 @@ public class ChessService {
 
 			plateau.initialise();
 		} else {
-			plateau = notationService.createFromString(valeursInitiales, NotationEnum.FEN);
+			Partie partie = notationService.createFromString(valeursInitiales, NotationEnum.FEN);
+			plateau = partie.getPlateau();
 		}
 
 		TypeJoueur joueurBlanc2 = TypeJoueur.valueOf(joueurBlanc);
@@ -201,13 +202,13 @@ public class ChessService {
 		EtatJeux etatJeux = moteur.calculEtatJeux();
 		LOGGER.info("etatJeux={}", etatJeux);
 
-		Plateau plateau = moteur.getPlateau();
-		LOGGER.info("fen={}", notationService.serialize(plateau, NotationEnum.FEN));
+		Partie partie = moteur.getPartie();
+		LOGGER.info("fen={}", notationService.serialize(partie, NotationEnum.FEN));
 
-		LOGGER.info("custom={}", notationService.serialize(plateau, NotationEnum.CUSTOM));
+		LOGGER.info("custom={}", notationService.serialize(partie, NotationEnum.CUSTOM));
 
 
-		ListeMouvements listeMouvements = calculMouvementsService.calculMouvements(moteur.getPartie());
+		ListeMouvements listeMouvements = calculMouvementsService.calculMouvements(partie);
 
 		LOGGER.info("mouvementList: {}", listeMouvements);
 

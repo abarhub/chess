@@ -90,7 +90,9 @@ public class EtatServiceTest {
 	                              final Couleur joueurCourant,
 	                              final EtatJeux etatJeuxRef) throws IOException {
 
-		Plateau plateau = notationFEN.createPlateau(formatFen);
+		Partie partie2 = notationFEN.createPlateau(formatFen);
+
+		Plateau plateau = partie2.getPlateau();
 
 		Partie partie = new Partie(plateau, new JoueurHazard(Couleur.Blanc),
 				new JoueurHazard(Couleur.Noir),

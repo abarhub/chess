@@ -1,8 +1,10 @@
 package org.chess.chess.notation;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.google.common.collect.Lists;
 import org.chess.chess.domain.*;
+import org.chess.chess.joueur.JoueurHazard;
 import org.chess.chess.outils.PositionTools;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +19,7 @@ import static org.chess.chess.domain.Plateau.NB_LIGNES;
 public class NotationFEN implements INotation {
 
 
-	public Plateau createPlateau(String str) {
+	public Partie createPlateau(String str) {
 
 		Verify.verifyNotNull(str);
 		Verify.verify(!str.isEmpty());
@@ -61,8 +63,8 @@ public class NotationFEN implements INotation {
 			}
 
 		}
-
-		return new Plateau(listePieces);
+		Plateau plateau = new Plateau(listePieces);
+		return new Partie(plateau, new JoueurHazard(Couleur.Blanc), new JoueurHazard(Couleur.Noir), Couleur.Blanc);
 	}
 
 	private char getChar(ListIterator<Character> iterator) {
@@ -94,7 +96,11 @@ public class NotationFEN implements INotation {
 		}
 	}
 
-	public String serialize(Plateau plateau) {
+	public String serialize(Partie partie) {
+
+		Preconditions.checkNotNull(partie);
+		Plateau plateau = partie.getPlateau();
+		Preconditions.checkNotNull(plateau);
 
 		StringBuilder str = new StringBuilder();
 

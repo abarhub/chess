@@ -12,7 +12,7 @@ public class TestFixture {
 
 	public static Plateau createFromFen(String str) {
 		NotationFEN notationFEN = new NotationFEN();
-		return notationFEN.createPlateau(str);
+		return notationFEN.createPlateau(str).getPlateau();
 	}
 
 	public static Partie createPartie(Plateau plateau) {
@@ -27,6 +27,10 @@ public class TestFixture {
 
 	public static String showFen(Plateau plateau) {
 		NotationFEN notationFEN = new NotationFEN();
-		return notationFEN.serialize(plateau);
+		return notationFEN.serialize(createPartieFromPlateau(plateau));
+	}
+
+	public static Partie createPartieFromPlateau(Plateau plateau) {
+		return new Partie(plateau, createJoueurMock(), createJoueurMock(), Couleur.Blanc);
 	}
 }

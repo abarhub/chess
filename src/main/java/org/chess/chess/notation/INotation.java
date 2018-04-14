@@ -1,11 +1,11 @@
 package org.chess.chess.notation;
 
-import org.chess.chess.domain.Plateau;
+import org.chess.chess.domain.Partie;
 
 public interface INotation {
 
-	Plateau createPlateau(String str);
+	Partie createPlateau(String str);
 
-	String serialize(Plateau plateau);
+	String serialize(Partie partie);
 
 }
