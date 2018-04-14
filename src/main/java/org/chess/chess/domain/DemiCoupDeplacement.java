@@ -5,11 +5,21 @@ public class DemiCoupDeplacement implements DemiCoup {
 	private final Piece piece;
 	private final Position src;
 	private final Position dest;
+	private final boolean mangePiece;
+	private final Piece promotion;
+	private final boolean echec;
+	private final boolean echecEtMat;
 
-	public DemiCoupDeplacement(Piece piece, Position src, Position dest) {
+	public DemiCoupDeplacement(Piece piece, Position src, Position dest,
+	                           boolean mangePiece, Piece promotion,
+	                           boolean echec, boolean echecEtMat) {
 		this.src = src;
 		this.dest = dest;
 		this.piece = piece;
+		this.mangePiece = mangePiece;
+		this.promotion = promotion;
+		this.echec = echec;
+		this.echecEtMat = echecEtMat;
 	}
 
 	public Piece getPiece() {
@@ -22,5 +32,21 @@ public class DemiCoupDeplacement implements DemiCoup {
 
 	public Position getDest() {
 		return dest;
+	}
+
+	public boolean isMangePiece() {
+		return mangePiece;
+	}
+
+	public Piece getPromotion() {
+		return promotion;
+	}
+
+	public boolean isEchec() {
+		return echec;
+	}
+
+	public boolean isEchecEtMat() {
+		return echecEtMat;
 	}
 }

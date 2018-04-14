@@ -207,6 +207,7 @@ public class ChessService {
 
 		LOGGER.info("custom={}", notationService.serialize(partie, NotationEnum.CUSTOM));
 
+		LOGGER.info("pgn={}", notationService.serialize(partie, NotationEnum.PGN));
 
 		ListeMouvements listeMouvements = calculMouvementsService.calculMouvements(partie);
 

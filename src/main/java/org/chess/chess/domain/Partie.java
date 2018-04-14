@@ -2,7 +2,6 @@ package org.chess.chess.domain;
 
 import com.google.common.base.Verify;
 import com.google.common.collect.ImmutableList;
-import org.chess.chess.joueur.Joueur;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,9 +76,15 @@ public class Partie {
 			Verify.verify(pieceDestination.getPiece() != Piece.ROI);
 		}
 
+		boolean mangePiece = pieceDestination != null;
+		Piece promotion = null;
+		boolean echec = false;
+		boolean echecEtMat = false;
+
 		plateau.move(src, dest);
 
-		DemiCoupDeplacement demiCoupDeplacement = new DemiCoupDeplacement(pieceSource.getPiece(), src, dest);
+		DemiCoupDeplacement demiCoupDeplacement = new DemiCoupDeplacement(pieceSource.getPiece(),
+				src, dest, mangePiece, promotion, echec, echecEtMat);
 
 		if (joueurCourant == Couleur.Blanc) {
 			listeCoupsBlancs.add(demiCoupDeplacement);
@@ -109,6 +114,9 @@ public class Partie {
 
 		Verify.verify(dest.getRangee() == dest.getRangee());
 
+		boolean echec = false;
+		boolean echecEtMat = false;
+
 		plateau.move(src, dest);
 
 		// TODO: faire les verifications + deplacement de la tour
@@ -116,7 +124,7 @@ public class Partie {
 			throw new UnsupportedOperationException("Le roque n'est pas implementé");
 		}
 
-		DemiCoupRoque demiCoupRoque = new DemiCoupRoque(src, dest);
+		DemiCoupRoque demiCoupRoque = new DemiCoupRoque(src, dest, echec, echecEtMat);
 
 		if (joueurCourant == Couleur.Blanc) {
 			listeCoupsBlancs.add(demiCoupRoque);
