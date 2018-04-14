@@ -49,4 +49,17 @@ public class DemiCoupDeplacement implements DemiCoup {
 	public boolean isEchecEtMat() {
 		return echecEtMat;
 	}
+
+	@Override
+	public String toString() {
+		return "DemiCoupDeplacement{" +
+				"piece=" + piece +
+				", src=" + src +
+				", dest=" + dest +
+				", mangePiece=" + mangePiece +
+				", promotion=" + promotion +
+				", echec=" + echec +
+				", echecEtMat=" + echecEtMat +
+				'}';
+	}
 }

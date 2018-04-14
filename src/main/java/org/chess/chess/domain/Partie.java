@@ -29,6 +29,10 @@ public class Partie {
 		listeCoupsNoirs = new ArrayList<>();
 	}
 
+	public Partie(Partie partie) {
+		this(partie.getPlateau(), partie.getJoueurCourant());
+	}
+
 	public Plateau getPlateau() {
 		return plateau;
 	}

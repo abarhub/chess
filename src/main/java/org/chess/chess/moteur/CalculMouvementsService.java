@@ -35,27 +35,7 @@ public class CalculMouvementsService {
 
 			// calcul des déplacements possibles
 			for (PieceCouleurPosition piece : str.collect(Collectors.toList())) {
-				list = null;
-				switch (piece.getPiece()) {
-					case PION:
-						list = calculPion(piece, plateau);
-						break;
-					case CAVALIER:
-						list = calculCavalier(piece, plateau);
-						break;
-					case FOU:
-						list = calculFou(piece, plateau);
-						break;
-					case TOUR:
-						list = calculTour(piece, plateau);
-						break;
-					case REINE:
-						list = calculReine(piece, plateau);
-						break;
-					case ROI:
-						list = calculRoi(piece, plateau);
-						break;
-				}
+				list = getMouvements(plateau, piece);
 				if (!CollectionUtils.isEmpty(list)) {
 					mapMouvements.put(piece, list);
 				}
@@ -127,6 +107,32 @@ public class CalculMouvementsService {
 		}
 
 		return listeMouvements;
+	}
+
+	public List<Mouvement> getMouvements(Plateau plateau, PieceCouleurPosition piece) {
+		List<Mouvement> list;
+		list = null;
+		switch (piece.getPiece()) {
+			case PION:
+				list = calculPion(piece, plateau);
+				break;
+			case CAVALIER:
+				list = calculCavalier(piece, plateau);
+				break;
+			case FOU:
+				list = calculFou(piece, plateau);
+				break;
+			case TOUR:
+				list = calculTour(piece, plateau);
+				break;
+			case REINE:
+				list = calculReine(piece, plateau);
+				break;
+			case ROI:
+				list = calculRoi(piece, plateau);
+				break;
+		}
+		return list;
 	}
 
 	private List<Mouvement> calculRoi(PieceCouleurPosition piece, Plateau plateau) {

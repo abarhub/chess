@@ -179,6 +179,24 @@ public class Plateau {
 		return str.toString();
 	}
 
+	public String getRepresentation2() {
+		StringBuilder str = new StringBuilder();
+
+		for (RangeeEnum rangee : IteratorPlateau.getIterableRangee()) {
+			for (ColonneEnum colonne : IteratorPlateau.getIterableColonne()) {
+				PieceCouleur p = getCase(new Position(rangee, colonne));
+				if (p == null) {
+					str.append(' ');
+				} else {
+					str.append(p.getPiece().getNomCourt());
+				}
+			}
+			str.append('\n');
+		}
+
+		return str.toString();
+	}
+
 	private void setTableau(RangeeEnum rangee, ColonneEnum colonne, PieceCouleur pieceCouleur) {
 		Verify.verifyNotNull(rangee);
 		Verify.verifyNotNull(colonne);

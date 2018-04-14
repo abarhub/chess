@@ -70,4 +70,17 @@ public class MouvementService {
 		return listePieces;
 	}
 
+	public List<Position> listePieces(Plateau plateau, PieceCouleur pieceCouleur) {
+		Verify.verifyNotNull(pieceCouleur);
+		List<Position> liste = new ArrayList<>();
+		for (Position position : getIterablePlateau()) {
+			PieceCouleur piece = plateau.getCase(position);
+			if (piece != null && piece.getCouleur() == pieceCouleur.getCouleur()
+					&& piece.getPiece() == pieceCouleur.getPiece()) {
+				liste.add(position);
+			}
+		}
+		return liste;
+	}
+
 }
