@@ -3,7 +3,10 @@ package org.chess.chess.notation;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import org.chess.chess.domain.*;
+import org.chess.chess.dto.DemiCoupDTO;
+import org.chess.chess.dto.ListeDemiCoupDTO;
 import org.chess.chess.moteur.CalculMouvementsService;
+import org.chess.chess.moteur.Moteur;
 import org.chess.chess.moteur.MouvementService;
 import org.chess.chess.service.InformationPartieService;
 import org.slf4j.Logger;
@@ -13,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +26,8 @@ import java.util.stream.Collectors;
 public class NotationPGN implements INotation {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(NotationPGN.class);
+
+	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
 	@Autowired
 	private CalculMouvementsService calculMouvementsService;
@@ -38,14 +46,31 @@ public class NotationPGN implements INotation {
 
 	@Override
 	public String serialize(Partie partie) {
+		Preconditions.checkNotNull(partie);
 		StringBuilder stringBuilder = new StringBuilder();
 
-		stringBuilder.append("[Event \"?\"]\n");
-		stringBuilder.append("[Site \"?\"]\n");
-		stringBuilder.append("[Date \"????.??.??\"]\n");
-		stringBuilder.append("[Round \"?\"]\n");
-		stringBuilder.append("[White \"?\"]\n");
-		stringBuilder.append("[Black \"?\"]\n");
+		if (partie.getInformationPartie().getDate() != null) {
+
+		}
+
+		stringBuilder.append("[Event \"");
+		stringBuilder.append(convStr(partie.getInformationPartie().getEvent()));
+		stringBuilder.append("\"]\n");
+		stringBuilder.append("[Site \"");
+		stringBuilder.append(convStr(partie.getInformationPartie().getSite()));
+		stringBuilder.append("\"]\n");
+		stringBuilder.append("[Date \"");
+		stringBuilder.append(convDate(partie.getInformationPartie().getDate()));
+		stringBuilder.append("\"]\n");
+		stringBuilder.append("[Round \"");
+		stringBuilder.append(convStr(partie.getInformationPartie().getRound()));
+		stringBuilder.append("\"]\n");
+		stringBuilder.append("[White \"");
+		stringBuilder.append(convStr(partie.getInformationPartie().getJoueurBlanc()));
+		stringBuilder.append("\"]\n");
+		stringBuilder.append("[Black \"");
+		stringBuilder.append(convStr(partie.getInformationPartie().getJoueurNoir()));
+		stringBuilder.append("\"]\n");
 		stringBuilder.append("[Result \"*\"]\n");
 		stringBuilder.append("\n");
 
@@ -103,6 +128,22 @@ public class NotationPGN implements INotation {
 		}
 
 		return stringBuilder.toString();
+	}
+
+	private String convDate(LocalDate date) {
+		if (date == null) {
+			return "????.??.??";
+		} else {
+			return date.format(formatter);
+		}
+	}
+
+	private String convStr(String s) {
+		if (s == null || s.trim().isEmpty()) {
+			return "?";
+		} else {
+			return s;
+		}
 	}
 
 	private Partie checkCoupValide(Partie partie, DemiCoup coup, Couleur joueur) {
@@ -254,5 +295,64 @@ public class NotationPGN implements INotation {
 				pieceCouleur.getCouleur(), positionPiece));
 
 		return liste.stream().anyMatch(x -> x.getPosition().equals(positionAttaque));
+	}
+
+	public ListeDemiCoupDTO listeCoups(Moteur moteur) {
+		ListeDemiCoupDTO listeDemiCoupDTO = new ListeDemiCoupDTO();
+
+		List<DemiCoupDTO> liste = new ArrayList<>();
+		listeDemiCoupDTO.setList(liste);
+
+		Partie partie = moteur.getPartie();
+
+		List<DemiCoup> coupBlancs = partie.getListeCoupsBlancs();
+		List<DemiCoup> coupNoirs = partie.getListeCoupsNoirs();
+
+		Plateau plateau = new Plateau();
+		plateau.initialise();
+
+		Partie partie2 = new Partie(plateau, Couleur.Blanc, new InformationPartie());
+
+
+		for (int i = 0; i < coupBlancs.size(); i++) {
+			int noCoup = i + 1;
+
+			// blancs
+
+			DemiCoup demiCoup = coupBlancs.get(i);
+
+			DemiCoupDTO demiCoupDTO = new DemiCoupDTO();
+			demiCoupDTO.setBlanc(true);
+			demiCoupDTO.setNoCoup(noCoup);
+
+			StringBuilder str = deplacement(demiCoup, partie2, Couleur.Blanc);
+
+			demiCoupDTO.setDeplacement(str.toString());
+
+			liste.add(demiCoupDTO);
+
+			partie2.setMove(demiCoup);
+
+			// noirs
+
+			if (i < coupNoirs.size()) {
+
+				demiCoup = coupNoirs.get(i);
+
+				demiCoupDTO = new DemiCoupDTO();
+				demiCoupDTO.setBlanc(false);
+				demiCoupDTO.setNoCoup(noCoup);
+
+				str = deplacement(demiCoup, partie2, Couleur.Noir);
+
+				demiCoupDTO.setDeplacement(str.toString());
+
+				liste.add(demiCoupDTO);
+
+				partie2.setMove(demiCoup);
+			}
+		}
+
+		return listeDemiCoupDTO;
 	}
 }

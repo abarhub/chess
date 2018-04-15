@@ -11,6 +11,7 @@ import org.chess.chess.joueur.JoueurNegaMax;
 import org.chess.chess.joueur.TypeJoueur;
 import org.chess.chess.moteur.CalculMouvementsService;
 import org.chess.chess.moteur.Moteur;
+import org.chess.chess.notation.NotationPGN;
 import org.chess.chess.notation.NotationService;
 import org.chess.chess.outils.PositionTools;
 import org.slf4j.Logger;
@@ -39,6 +40,9 @@ public class ChessService {
 
 	@Autowired
 	private NotationService notationService;
+
+	@Autowired
+	private NotationPGN notationPGN;
 
 	public PlateauDTO getPlateauDto() {
 
@@ -214,5 +218,9 @@ public class ChessService {
 		LOGGER.info("mouvementList: {}", listeMouvements);
 
 		LOGGER.info("logInfos fin");
+	}
+
+	public ListeDemiCoupDTO listeCoups() {
+		return notationPGN.listeCoups(moteur);
 	}
 }

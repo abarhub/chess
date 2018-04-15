@@ -1,7 +1,9 @@
 package org.chess.chess.domain;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.google.common.collect.ImmutableList;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,13 +58,23 @@ public class Partie {
 		}
 	}
 
+	public void setMove(DemiCoup demiCoup) {
+		Preconditions.checkNotNull(demiCoup);
+		if (demiCoup instanceof DemiCoupDeplacement) {
+			setMove(((DemiCoupDeplacement) demiCoup).getSrc(), ((DemiCoupDeplacement) demiCoup).getDest());
+		} else if (demiCoup instanceof DemiCoupRoque) {
+			setRoque(((DemiCoupRoque) demiCoup).getSrc(), ((DemiCoupRoque) demiCoup).getDest());
+		} else {
+			throw new NotImplementedException();
+		}
+	}
+
 	public void setMove(Position src, Position dest) {
 
 		verificationDeplacementCommun(src, dest);
 
 		PieceCouleur pieceSource;
 		pieceSource = plateau.getCase(src);
-
 
 		PieceCouleur pieceDestination = plateau.getCase(dest);
 
@@ -78,6 +90,8 @@ public class Partie {
 
 		plateau.move(src, dest);
 
+		//echec=calculEchecs(plateau,couleurContraire(joueurCourant));
+
 		DemiCoupDeplacement demiCoupDeplacement = new DemiCoupDeplacement(pieceSource.getPiece(),
 				src, dest, mangePiece, promotion, echec, echecEtMat);
 
@@ -89,6 +103,12 @@ public class Partie {
 			joueurCourant = Couleur.Blanc;
 		}
 	}
+
+//	private boolean calculEchecs(Plateau plateau, Couleur joueur) {
+//		CalculMouvementsService calculMouvementsService=new CalculMouvementsService();
+//		calculMouvementsService.caseAttaque(new Partie(plateau,joueur,new InformationPartie()),
+//				couleurContraire(joueur),);
+//	}
 
 	public void setRoque(Position src, Position dest) {
 
@@ -127,6 +147,15 @@ public class Partie {
 		} else {
 			listeCoupsNoirs.add(demiCoupRoque);
 			joueurCourant = Couleur.Blanc;
+		}
+	}
+
+	public Couleur couleurContraire(Couleur couleur) {
+		Verify.verifyNotNull(couleur);
+		if (couleur == Couleur.Blanc) {
+			return Couleur.Noir;
+		} else {
+			return Couleur.Blanc;
 		}
 	}
 

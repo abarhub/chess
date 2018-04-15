@@ -1,9 +1,6 @@
 package org.chess.chess.rest;
 
-import org.chess.chess.dto.FenDTO;
-import org.chess.chess.dto.PlateauDTO;
-import org.chess.chess.dto.PositionDTO;
-import org.chess.chess.dto.StatusDTO;
+import org.chess.chess.dto.*;
 import org.chess.chess.joueur.TypeJoueur;
 import org.chess.chess.service.ChessService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +63,12 @@ public class ChessController {
 	@RequestMapping("/logInfos")
 	public void logInfos() {
 		chessService.logInfos();
+	}
+
+
+	@RequestMapping("/listeCoups")
+	public ListeDemiCoupDTO listeCoups() {
+		return chessService.listeCoups();
 	}
 
 

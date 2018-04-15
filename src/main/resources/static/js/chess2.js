@@ -13,6 +13,7 @@ function loadPieces() {
             //board.position('r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R');
             board.position(data.fen);
             loadEtat();
+            loadDeplacements();
         },
         error: function (resultat, statut, erreur) {
             console.error("loadPieces : error", resultat, statut, erreur);
@@ -34,6 +35,39 @@ function loadEtat() {
         },
         error: function (resultat, statut, erreur) {
             console.error("loadEtat : error", resultat, statut, erreur);
+
+        }
+    });
+}
+
+function loadDeplacements() {
+    $.ajax({
+        type: "GET",
+        dataType: 'json',
+        url: "http://localhost:8080/listeCoups",
+        success: function (data) {
+            console.log("loadDeplacements data :", data);
+
+            if (data && data.list) {
+                var str = "";
+                var i;
+                for (i = 0; i < data.list.length; i++) {
+                    var deplacement = data.list[i];
+                    if (deplacement) {
+                        if (deplacement.blanc) {
+                            str += deplacement.noCoup + ". " + deplacement.deplacement;
+                        } else {
+                            str += " " + deplacement.deplacement + " ";
+                        }
+                    }
+                }
+                $('#deplacement').html(str);
+            }
+            //$('#joueur').html(data.joueur);
+            //$('#etatJeux').html(data.etat);
+        },
+        error: function (resultat, statut, erreur) {
+            console.error("loadDeplacements : error", resultat, statut, erreur);
 
         }
     });
