@@ -13,37 +13,28 @@ public class Partie {
 	//private final Joueur joueurNoir;
 	private final List<DemiCoup> listeCoupsBlancs;
 	private final List<DemiCoup> listeCoupsNoirs;
+	private final InformationPartie informationPartie;
 	private Couleur joueurCourant;
 
-	public Partie(Plateau plateau, //Joueur joueurBlanc, Joueur joueurNoir,
-	              Couleur joueurCourant) {
+	public Partie(Plateau plateau,
+	              Couleur joueurCourant, InformationPartie informationPartie) {
 		Verify.verifyNotNull(plateau);
-		//Verify.verifyNotNull(joueurBlanc);
-		//Verify.verifyNotNull(joueurNoir);
 		Verify.verifyNotNull(joueurCourant);
+		Verify.verifyNotNull(informationPartie);
 		this.plateau = plateau;
-		//this.joueurBlanc = joueurBlanc;
-		//this.joueurNoir = joueurNoir;
 		this.joueurCourant = joueurCourant;
 		listeCoupsBlancs = new ArrayList<>();
 		listeCoupsNoirs = new ArrayList<>();
+		this.informationPartie = informationPartie;
 	}
 
 	public Partie(Partie partie) {
-		this(partie.getPlateau(), partie.getJoueurCourant());
+		this(partie.getPlateau(), partie.getJoueurCourant(), partie.informationPartie);
 	}
 
 	public Plateau getPlateau() {
 		return plateau;
 	}
-
-//	public Joueur getJoueurBlanc() {
-//		return joueurBlanc;
-//	}
-//
-//	public Joueur getJoueurNoir() {
-//		return joueurNoir;
-//	}
 
 	public Couleur getJoueurCourant() {
 		return joueurCourant;
@@ -151,5 +142,9 @@ public class Partie {
 		Verify.verifyNotNull(pieceSource, "la piece source n'existe pas");
 		Verify.verify(pieceSource.getCouleur() == joueurCourant,
 				"la piece source n'est pas de la couleur du joueur qui doit jouer");
+	}
+
+	public InformationPartie getInformationPartie() {
+		return informationPartie;
 	}
 }

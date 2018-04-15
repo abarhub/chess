@@ -5,6 +5,7 @@ import com.google.common.base.Verify;
 import org.chess.chess.domain.*;
 import org.chess.chess.moteur.CalculMouvementsService;
 import org.chess.chess.moteur.MouvementService;
+import org.chess.chess.service.InformationPartieService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class NotationPGN implements INotation {
 
 	@Autowired
 	private MouvementService mouvementService;
+
+	@Autowired
+	private InformationPartieService informationPartieService;
 
 	@Override
 	public Partie createPlateau(String str) {
@@ -57,14 +61,13 @@ public class NotationPGN implements INotation {
 			Plateau plateau = new Plateau();
 			plateau.initialise();
 
-			Partie partie2 = new Partie(plateau, Couleur.Blanc);
+			Partie partie2 = new Partie(plateau, Couleur.Blanc, informationPartieService.createInformationPartie());
 
 			for (int noCoup = 0; noCoup < listeBlancs.size(); noCoup++) {
 
 				coup.setLength(0);
 
 				Partie partieResultat;
-				//Partie partie3 = new Partie(partie2);
 
 				DemiCoup coupBlanc = listeBlancs.get(noCoup);
 
@@ -203,13 +206,20 @@ public class NotationPGN implements INotation {
 
 						if (!CollectionUtils.isEmpty(listePieces)) {
 
-							boolean res = listePieces.stream()
-									.anyMatch(x -> x.getColonne().equals(demiCoup2.getSrc().getColonne()));
+							// ne prendre que les pieces qui attaque la même position
+							listePieces = listePieces.stream()
+									.filter(x -> attaque(partie.getPlateau(), x, demiCoup2.getDest()))
+									.collect(Collectors.toList());
 
-							if (res) {
-								ajouteRangeColonne = true;
-							} else {
-								ajouteColonne = true;
+							if (!CollectionUtils.isEmpty(listePieces)) {
+								boolean res = listePieces.stream()
+										.anyMatch(x -> x.getColonne().equals(demiCoup2.getSrc().getColonne()));
+
+								if (res) {
+									ajouteRangeColonne = true;
+								} else {
+									ajouteColonne = true;
+								}
 							}
 						}
 					}
@@ -235,5 +245,14 @@ public class NotationPGN implements INotation {
 		}
 
 		return str;
+	}
+
+	private boolean attaque(Plateau plateau, Position positionPiece, Position positionAttaque) {
+		PieceCouleur pieceCouleur = plateau.getCase(positionPiece);
+		Verify.verifyNotNull(pieceCouleur);
+		List<Mouvement> liste = calculMouvementsService.getMouvements(plateau, new PieceCouleurPosition(pieceCouleur.getPiece(),
+				pieceCouleur.getCouleur(), positionPiece));
+
+		return liste.stream().anyMatch(x -> x.getPosition().equals(positionAttaque));
 	}
 }

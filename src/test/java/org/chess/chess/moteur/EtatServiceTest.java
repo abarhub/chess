@@ -7,8 +7,8 @@ import org.chess.chess.domain.Couleur;
 import org.chess.chess.domain.EtatJeux;
 import org.chess.chess.domain.Partie;
 import org.chess.chess.domain.Plateau;
-import org.chess.chess.joueur.JoueurHazard;
 import org.chess.chess.notation.NotationFEN;
+import org.chess.chess.utils.PartieFixture;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,9 +60,7 @@ public class EtatServiceTest {
 
 		Plateau plateau = getPlateau(nomFichier);
 
-		Partie partie = new Partie(plateau, //new JoueurHazard(Couleur.Blanc),
-				//new JoueurHazard(Couleur.Noir),
-				joueurCourant);
+		Partie partie = new Partie(plateau, joueurCourant, PartieFixture.createInformationService());
 
 		// methode testée
 		final EtatJeux etatJeux = etatService.calculEtatJeux(partie);
@@ -94,9 +92,7 @@ public class EtatServiceTest {
 
 		Plateau plateau = partie2.getPlateau();
 
-		Partie partie = new Partie(plateau, //new JoueurHazard(Couleur.Blanc),
-				//new JoueurHazard(Couleur.Noir),
-				joueurCourant);
+		Partie partie = new Partie(plateau, joueurCourant, PartieFixture.createInformationService());
 
 		// methode testée
 		final EtatJeux etatJeux = etatService.calculEtatJeux(partie);

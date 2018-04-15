@@ -3,6 +3,7 @@ package org.chess.chess.moteur;
 import org.chess.chess.domain.*;
 import org.chess.chess.joueur.Joueur;
 import org.chess.chess.outils.PositionTools;
+import org.chess.chess.utils.PartieFixture;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,8 +53,7 @@ public class MoteurTest {
 
 		plateau = new Plateau();
 
-		partie = new Partie(plateau, //joueurBlanc, joueurNoir,
-				Couleur.Blanc);
+		partie = PartieFixture.createPartie(plateau);
 
 		ReflectionTestUtils.setField(moteur, "partie", partie);
 	}

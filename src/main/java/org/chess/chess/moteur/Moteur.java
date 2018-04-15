@@ -6,6 +6,7 @@ import org.chess.chess.evaluateur.ShannonEval;
 import org.chess.chess.joueur.Joueur;
 import org.chess.chess.joueur.JoueurHazard;
 import org.chess.chess.joueur.JoueurNegaMax;
+import org.chess.chess.service.InformationPartieService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class Moteur {
 
 	@Autowired
 	private EtatService etatService;
+
+	@Autowired
+	private InformationPartieService informationPartieService;
 
 	@PostConstruct
 	public void initialise() {
@@ -72,8 +76,7 @@ public class Moteur {
 		this.joueurBlanc = joueurBlanc;
 		this.joueurNoir = joueurNoir;
 
-		partie = new Partie(plateau, //joueurBlanc, joueurNoir,
-				joueur);
+		partie = new Partie(plateau, joueur, informationPartieService.createInformationPartie());
 	}
 
 	public Plateau getPlateau() {

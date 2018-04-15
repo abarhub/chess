@@ -4,8 +4,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.google.common.collect.Lists;
 import org.chess.chess.domain.*;
-import org.chess.chess.joueur.JoueurHazard;
 import org.chess.chess.outils.PositionTools;
+import org.chess.chess.service.InformationPartieService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ import static org.chess.chess.domain.Plateau.NB_LIGNES;
 @Service
 public class NotationFEN implements INotation {
 
+	@Autowired
+	private InformationPartieService informationPartieService;
 
 	public Partie createPlateau(String str) {
 
@@ -64,8 +67,7 @@ public class NotationFEN implements INotation {
 
 		}
 		Plateau plateau = new Plateau(listePieces);
-		return new Partie(plateau, //new JoueurHazard(Couleur.Blanc), new JoueurHazard(Couleur.Noir),
-				Couleur.Blanc);
+		return new Partie(plateau, Couleur.Blanc, informationPartieService.createInformationPartie());
 	}
 
 	private char getChar(ListIterator<Character> iterator) {

@@ -16,10 +16,7 @@ public class TestFixture {
 	}
 
 	public static Partie createPartie(Plateau plateau) {
-		//Joueur joueurBlanc = createJoueurMock();
-		//Joueur joueurNoir = createJoueurMock();
-		return new Partie(plateau, //joueurBlanc, joueurNoir,
-				Couleur.Blanc);
+		return new Partie(plateau, Couleur.Blanc, PartieFixture.createInformationService());
 	}
 
 	public static Joueur createJoueurMock() {
@@ -32,7 +29,6 @@ public class TestFixture {
 	}
 
 	public static Partie createPartieFromPlateau(Plateau plateau) {
-		return new Partie(plateau, //createJoueurMock(), createJoueurMock(),
-				Couleur.Blanc);
+		return new Partie(plateau, Couleur.Blanc, PartieFixture.createInformationService());
 	}
 }
