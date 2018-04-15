@@ -168,9 +168,10 @@ public class Partie {
 		PieceCouleur pieceSource;
 		pieceSource = plateau.getCase(src);
 
-		Verify.verifyNotNull(pieceSource, "la piece source n'existe pas");
+		Verify.verifyNotNull(pieceSource, "la piece source n'existe pas (pos=" + src + ")");
 		Verify.verify(pieceSource.getCouleur() == joueurCourant,
-				"la piece source n'est pas de la couleur du joueur qui doit jouer");
+				"la piece source n'est pas de la couleur du joueur " +
+						"qui doit jouer (" + pieceSource + "<>" + joueurCourant + ")");
 	}
 
 	public InformationPartie getInformationPartie() {

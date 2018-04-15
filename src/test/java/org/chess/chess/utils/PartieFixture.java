@@ -41,4 +41,10 @@ public class PartieFixture {
 		InformationPartieService informationPartieService = new InformationPartieService();
 		return informationPartieService.createInformationPartie();
 	}
+
+	public static Partie createPartieFromFen(String fen) {
+		Plateau plateau = TestFixture.createFromFen(fen);
+		Partie partie = createPartie(plateau);
+		return partie;
+	}
 }

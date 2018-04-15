@@ -57,7 +57,7 @@ function loadDeplacements() {
                         if (deplacement.blanc) {
                             str += deplacement.noCoup + ". " + deplacement.deplacement;
                         } else {
-                            str += " " + deplacement.deplacement + " ";
+                            str += " " + deplacement.deplacement + "<br/>";
                         }
                     }
                 }

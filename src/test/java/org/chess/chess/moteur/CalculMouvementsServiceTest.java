@@ -14,10 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -70,6 +67,9 @@ public class CalculMouvementsServiceTest {
 				new Object[]{PartieFixture.createPartieUnePiece(Piece.FOU), createMouvementPiece(Piece.FOU)},
 				new Object[]{PartieFixture.createPartieUnePiece(Piece.CAVALIER), createMouvementPiece(Piece.CAVALIER)},
 				new Object[]{PartieFixture.createPartieUnePiece(Piece.REINE), createMouvementPiece(Piece.REINE)},
+				new Object[]{PartieFixture.createPartieFromFen("rnQ1kb2/pp1p1p1r/7n/8/4p3/5P2/PP1PP1P1/R1B1KBN1"),
+						createMouvementPiece(Piece.ROI, getPosition(RangeeEnum.RANGEE8, ColonneEnum.COLONNEE),
+								getPosition(RangeeEnum.RANGEE7, ColonneEnum.COLONNEE))},
 				//new Object[]{"r1b1kb1r/pp1pp1pp/nqp2p2/5P2/8/PP5N/R4KnP/2B4R", 1, 5, Couleur.Blanc, true},
 				//new Object[]{"r1b1kb1r/pp1pp1pp/nqp2p2/5P2/8/PP5N/R5nP/2B3KR", 0, 6, Couleur.Blanc, true},
 		};
@@ -358,4 +358,26 @@ public class CalculMouvementsServiceTest {
 	private Position getPosition(RangeeEnum rangeeEnum, ColonneEnum colonneEnum) {
 		return new Position(rangeeEnum, colonneEnum);
 	}
+
+	private ListeMouvements createMouvementPiece(Piece piece, Position positionDepart, Position... deplacements) {
+
+		ListeMouvements listeMouvements = new ListeMouvements();
+
+		Map<PieceCouleurPosition, List<Mouvement>> map = new HashMap<>();
+
+		listeMouvements.setMapMouvements(map);
+
+		List<Mouvement> mouvementList = new ArrayList<>();
+
+		if (deplacements != null) {
+			for (Position position : deplacements) {
+				mouvementList.add(createMouvement(position.getRangee(), position.getColonne(), false));
+			}
+		}
+
+		map.put(new PieceCouleurPosition(piece, Couleur.Blanc, positionDepart), mouvementList);
+
+		return listeMouvements;
+	}
+
 }

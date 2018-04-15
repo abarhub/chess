@@ -34,12 +34,7 @@ public class MouvementService {
 	}
 
 	public Couleur couleurContraire(Couleur couleur) {
-		Verify.verifyNotNull(couleur);
-		if (couleur == Couleur.Blanc) {
-			return Couleur.Noir;
-		} else {
-			return Couleur.Blanc;
-		}
+		return calculMouvementsService.couleurContraire(couleur);
 	}
 
 	public List<Position> listePieces(Plateau plateau, Couleur couleur) {
@@ -71,16 +66,7 @@ public class MouvementService {
 	}
 
 	public List<Position> listePieces(Plateau plateau, PieceCouleur pieceCouleur) {
-		Verify.verifyNotNull(pieceCouleur);
-		List<Position> liste = new ArrayList<>();
-		for (Position position : getIterablePlateau()) {
-			PieceCouleur piece = plateau.getCase(position);
-			if (piece != null && piece.getCouleur() == pieceCouleur.getCouleur()
-					&& piece.getPiece() == pieceCouleur.getPiece()) {
-				liste.add(position);
-			}
-		}
-		return liste;
+		return calculMouvementsService.listePieces(plateau, pieceCouleur);
 	}
 
 }

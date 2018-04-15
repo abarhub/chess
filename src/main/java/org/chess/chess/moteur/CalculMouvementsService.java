@@ -12,12 +12,18 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.chess.chess.outils.IteratorPlateau.getIterablePlateau;
+
 @Service
 public class CalculMouvementsService {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(CalculMouvementsService.class);
 
 	public ListeMouvements calculMouvements(Partie partie) {
+		return calculMouvements(partie, true);
+	}
+
+	public ListeMouvements calculMouvements(Partie partie, boolean avecSuppressionSiEchecs) {
 
 		Verify.verifyNotNull(partie);
 
@@ -104,9 +110,102 @@ public class CalculMouvementsService {
 				}
 
 			}
+
+			if (avecSuppressionSiEchecs) {
+				if (listeMouvements.isRoiBlancEchecs() || listeMouvements.isRoiNoirEchecs()) {
+					LOGGER.info("echecs : blanc={}, noir={}",
+							listeMouvements.isRoiBlancEchecs(), listeMouvements.isRoiNoirEchecs());
+					if (listeMouvements.isRoiBlancEchecs()) {
+						LOGGER.info("echecs blanc");
+
+						Verify.verify(partie.getJoueurCourant() == Couleur.Noir);
+
+						supprimeMouvementsPourEchecs(listeMouvements, Couleur.Blanc, partie);
+
+					} else if (listeMouvements.isRoiNoirEchecs()) {
+						LOGGER.info("echecs noir");
+
+						Verify.verify(partie.getJoueurCourant() == Couleur.Blanc);
+
+						supprimeMouvementsPourEchecs(listeMouvements, Couleur.Noir, partie);
+
+					} else {
+
+					}
+
+
+				}
+			}
 		}
 
 		return listeMouvements;
+	}
+
+	private void supprimeMouvementsPourEchecs(ListeMouvements listeMouvements, Couleur couleurJoueur, Partie partie) {
+
+		Couleur couleurJoueurEchecs = couleurJoueur;
+		Couleur couleurJoueurAdverse = couleurContraire(couleurJoueur);
+
+		Verify.verify(partie.getJoueurCourant() == couleurJoueurAdverse);
+
+		Map<PieceCouleurPosition, List<Mouvement>> map = listeMouvements.getMapMouvements();
+		for (Map.Entry<PieceCouleurPosition, List<Mouvement>> entry : map.entrySet()) {
+
+			PieceCouleurPosition p = entry.getKey();
+			List<Mouvement> liste = entry.getValue();
+			if (p.getCouleur() == couleurJoueurEchecs) {
+
+				Iterator<Mouvement> iter = liste.iterator();
+
+				while (iter.hasNext()) {
+
+					Mouvement mouvement = iter.next();
+
+					boolean deplacementBloqueEchecs = false;
+
+					Partie partie2 = new Partie(partie.getPlateau(), couleurJoueurEchecs, new InformationPartie());
+
+					partie2.setMove(p.getPosition(), mouvement.getPosition());
+
+					List<Position> liste2 = listePieces(partie2.getPlateau(), new PieceCouleur(Piece.ROI, couleurJoueurEchecs));
+
+					Verify.verify(liste2.size() == 1);
+
+					Position p2 = liste2.get(0);
+
+					if (!caseAttaque(partie2, couleurJoueurEchecs, p2)) {
+						deplacementBloqueEchecs = true;
+					}
+
+					if (!deplacementBloqueEchecs) {
+						iter.remove();
+					}
+				}
+			}
+
+		}
+
+		// suppression des cle qui n'ont plus de valeurs
+		Iterator<Map.Entry<PieceCouleurPosition, List<Mouvement>>> iter2 = map.entrySet().iterator();
+
+		while (iter2.hasNext()) {
+
+			Map.Entry<PieceCouleurPosition, List<Mouvement>> entry = iter2.next();
+
+			if (CollectionUtils.isEmpty(entry.getValue())) {
+				iter2.remove();
+			}
+		}
+
+	}
+
+	public Couleur couleurContraire(Couleur couleur) {
+		Verify.verifyNotNull(couleur);
+		if (couleur == Couleur.Blanc) {
+			return Couleur.Noir;
+		} else {
+			return Couleur.Blanc;
+		}
 	}
 
 	public List<Mouvement> getMouvements(Plateau plateau, PieceCouleurPosition piece) {
@@ -434,12 +533,26 @@ public class CalculMouvementsService {
 
 	public boolean caseAttaque(Partie partie, Couleur couleur, Position position) {
 
-		ListeMouvements listeMouvements = calculMouvements(partie);
+		ListeMouvements listeMouvements = calculMouvements(partie, false);
 
 		if (listeMouvements != null) {
 			return listeMouvements.caseAttaque(position, couleur);
 		}
 
 		return false;
+	}
+
+
+	public List<Position> listePieces(Plateau plateau, PieceCouleur pieceCouleur) {
+		Verify.verifyNotNull(pieceCouleur);
+		List<Position> liste = new ArrayList<>();
+		for (Position position : getIterablePlateau()) {
+			PieceCouleur piece = plateau.getCase(position);
+			if (piece != null && piece.getCouleur() == pieceCouleur.getCouleur()
+					&& piece.getPiece() == pieceCouleur.getPiece()) {
+				liste.add(position);
+			}
+		}
+		return liste;
 	}
 }

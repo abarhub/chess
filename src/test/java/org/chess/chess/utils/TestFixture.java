@@ -5,14 +5,23 @@ import org.chess.chess.domain.Partie;
 import org.chess.chess.domain.Plateau;
 import org.chess.chess.joueur.Joueur;
 import org.chess.chess.notation.NotationFEN;
+import org.chess.chess.service.InformationPartieService;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.mockito.Mockito.mock;
 
 public class TestFixture {
 
 	public static Plateau createFromFen(String str) {
-		NotationFEN notationFEN = new NotationFEN();
+		NotationFEN notationFEN = createNotationFEN();
 		return notationFEN.createPlateau(str).getPlateau();
+	}
+
+	private static NotationFEN createNotationFEN() {
+		NotationFEN notationFEN = new NotationFEN();
+		InformationPartieService informationPartieService = new InformationPartieService();
+		ReflectionTestUtils.setField(notationFEN, "informationPartieService", informationPartieService);
+		return notationFEN;
 	}
 
 	public static Partie createPartie(Plateau plateau) {
@@ -24,7 +33,7 @@ public class TestFixture {
 	}
 
 	public static String showFen(Plateau plateau) {
-		NotationFEN notationFEN = new NotationFEN();
+		NotationFEN notationFEN = createNotationFEN();
 		return notationFEN.serialize(createPartieFromPlateau(plateau));
 	}
 
