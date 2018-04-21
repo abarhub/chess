@@ -67,9 +67,11 @@ public class CalculMouvementsServiceTest {
 				new Object[]{PartieFixture.createPartieUnePiece(Piece.FOU), createMouvementPiece(Piece.FOU)},
 				new Object[]{PartieFixture.createPartieUnePiece(Piece.CAVALIER), createMouvementPiece(Piece.CAVALIER)},
 				new Object[]{PartieFixture.createPartieUnePiece(Piece.REINE), createMouvementPiece(Piece.REINE)},
-				new Object[]{PartieFixture.createPartieFromFen("rnQ1kb2/pp1p1p1r/7n/8/4p3/5P2/PP1PP1P1/R1B1KBN1"),
-						createMouvementPiece(Piece.ROI, getPosition(RangeeEnum.RANGEE8, ColonneEnum.COLONNEE),
-								getPosition(RangeeEnum.RANGEE7, ColonneEnum.COLONNEE))},
+//				new Object[]{PartieFixture.createPartieFromFen("rnQ1kb2/pp1p1p1r/7n/8/4p3/5P2/PP1PP1P1/R1B1KBN1"),
+//						createMouvementPiece(Piece.ROI, false, true,
+//								false, false,
+//								getPosition(RangeeEnum.RANGEE8, ColonneEnum.COLONNEE),
+//								getPosition(RangeeEnum.RANGEE7, ColonneEnum.COLONNEE))},
 				//new Object[]{"r1b1kb1r/pp1pp1pp/nqp2p2/5P2/8/PP5N/R4KnP/2B4R", 1, 5, Couleur.Blanc, true},
 				//new Object[]{"r1b1kb1r/pp1pp1pp/nqp2p2/5P2/8/PP5N/R5nP/2B3KR", 0, 6, Couleur.Blanc, true},
 		};
@@ -79,6 +81,7 @@ public class CalculMouvementsServiceTest {
 	@Parameters(method = "createCalculMouvementsValues")
 	public void calculMouvements(Partie partie, ListeMouvements listeMouvementsRef) {
 
+		assertNotNull(partie);
 		assertNotNull(listeMouvementsRef);
 
 		LOGGER.info("fen:{}", TestFixture.showFen(partie.getPlateau()));
@@ -90,6 +93,46 @@ public class CalculMouvementsServiceTest {
 
 		assertNotNull(listeMouvement);
 		//assertEquals(listeMouvementsRef, listeMouvement);
+		assertTrue(compare(listeMouvementsRef, listeMouvement));
+	}
+
+
+	private Object[] createCalculMouvements2Values() {
+		return new Object[]{
+				new Object[]{PartieFixture.createPartieFromFen("rnQ1kb2/pp1p1p1r/7n/8/4p3/5P2/PP1PP1P1/R1B1KBN1"),
+						createMouvementPiece(Piece.ROI, false, true,
+								false, false, Couleur.Noir,
+								getPosition(RangeeEnum.RANGEE8, ColonneEnum.COLONNEE),
+								getPosition(RangeeEnum.RANGEE7, ColonneEnum.COLONNEE)), Couleur.Noir},
+		};
+	}
+
+	@Test
+	@Parameters(method = "createCalculMouvements2Values")
+	public void calculMouvements2(Partie partie, ListeMouvements listeMouvementsRef, Couleur joueurTester) {
+
+		assertNotNull(partie);
+		assertNotNull(listeMouvementsRef);
+		assertNotNull(joueurTester);
+
+		LOGGER.info("fen:{}", TestFixture.showFen(partie.getPlateau()));
+
+		ListeMouvements listeMouvement = calculMouvementsService.calculMouvements(partie);
+
+		LOGGER.info("listeMouvement={}", listeMouvement);
+
+		Iterator<PieceCouleurPosition> iter = listeMouvement.getMapMouvements().keySet().iterator();
+
+		while (iter.hasNext()) {
+			PieceCouleurPosition tmp = iter.next();
+			if (tmp.getCouleur() != joueurTester) {
+				iter.remove();
+			}
+		}
+
+		LOGGER.info("listeMouvement2={}", listeMouvement);
+
+		assertNotNull(listeMouvement);
 		assertTrue(compare(listeMouvementsRef, listeMouvement));
 	}
 
@@ -359,9 +402,15 @@ public class CalculMouvementsServiceTest {
 		return new Position(rangeeEnum, colonneEnum);
 	}
 
-	private ListeMouvements createMouvementPiece(Piece piece, Position positionDepart, Position... deplacements) {
+	private ListeMouvements createMouvementPiece(Piece piece, boolean echecRoisBlanc, boolean echecRoisNoir,
+	                                             boolean echecMatRoisBlanc, boolean echecMatRoisNoir,
+	                                             Couleur couleur, Position positionDepart, Position... deplacements) {
 
 		ListeMouvements listeMouvements = new ListeMouvements();
+		listeMouvements.setRoiBlancEchecs(echecRoisBlanc);
+		listeMouvements.setRoiNoirEchecs(echecRoisNoir);
+		listeMouvements.setRoiBlancEchecsMat(echecMatRoisBlanc);
+		listeMouvements.setRoiNoirEchecsMat(echecMatRoisNoir);
 
 		Map<PieceCouleurPosition, List<Mouvement>> map = new HashMap<>();
 
@@ -375,7 +424,7 @@ public class CalculMouvementsServiceTest {
 			}
 		}
 
-		map.put(new PieceCouleurPosition(piece, Couleur.Blanc, positionDepart), mouvementList);
+		map.put(new PieceCouleurPosition(piece, couleur, positionDepart), mouvementList);
 
 		return listeMouvements;
 	}

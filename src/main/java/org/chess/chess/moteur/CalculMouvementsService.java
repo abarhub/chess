@@ -2,9 +2,11 @@ package org.chess.chess.moteur;
 
 import com.google.common.base.Verify;
 import org.chess.chess.domain.*;
+import org.chess.chess.notation.NotationService;
 import org.chess.chess.outils.PositionTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -18,6 +20,9 @@ import static org.chess.chess.outils.IteratorPlateau.getIterablePlateau;
 public class CalculMouvementsService {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(CalculMouvementsService.class);
+
+	//@Autowired
+	//private NotationService notationService;
 
 	public ListeMouvements calculMouvements(Partie partie) {
 		return calculMouvements(partie, true);
@@ -122,12 +127,20 @@ public class CalculMouvementsService {
 
 						supprimeMouvementsPourEchecs(listeMouvements, Couleur.Blanc, partie);
 
+						if (CollectionUtils.isEmpty(listeMouvements.getMouvements(Couleur.Blanc))) {
+							listeMouvements.setRoiBlancEchecsMat(true);
+						}
+
 					} else if (listeMouvements.isRoiNoirEchecs()) {
 						LOGGER.info("echecs noir");
 
 						Verify.verify(partie.getJoueurCourant() == Couleur.Blanc);
 
 						supprimeMouvementsPourEchecs(listeMouvements, Couleur.Noir, partie);
+
+						if (CollectionUtils.isEmpty(listeMouvements.getMouvements(Couleur.Noir))) {
+							listeMouvements.setRoiNoirEchecsMat(true);
+						}
 
 					} else {
 
@@ -148,6 +161,9 @@ public class CalculMouvementsService {
 
 		Verify.verify(partie.getJoueurCourant() == couleurJoueurAdverse);
 
+		int i = 0;
+		int j = 0;
+
 		Map<PieceCouleurPosition, List<Mouvement>> map = listeMouvements.getMapMouvements();
 		for (Map.Entry<PieceCouleurPosition, List<Mouvement>> entry : map.entrySet()) {
 
@@ -155,15 +171,27 @@ public class CalculMouvementsService {
 			List<Mouvement> liste = entry.getValue();
 			if (p.getCouleur() == couleurJoueurEchecs) {
 
+				j = 0;
+
 				Iterator<Mouvement> iter = liste.iterator();
 
 				while (iter.hasNext()) {
+
+					//LOGGER.info("obj({},{})={} {}", partie, partie.getPlateau());
+
+					//LOGGER.info("plateau({},{})={}", i, j, partie.getPlateau().getRepresentation2());
 
 					Mouvement mouvement = iter.next();
 
 					boolean deplacementBloqueEchecs = false;
 
-					Partie partie2 = new Partie(partie.getPlateau(), couleurJoueurEchecs, new InformationPartie());
+					Partie partie2 = new Partie(new Plateau(partie.getPlateau()), couleurJoueurEchecs, new InformationPartie());
+
+//					if (LOGGER.isInfoEnabled()) {
+//						LOGGER.info("partie={}", notationService.serialize(partie, NotationEnum.FEN));
+//						LOGGER.info("partie2={}", notationService.serialize(partie2, NotationEnum.FEN));
+//						LOGGER.info("move {} :{}=>{} ", couleurJoueur, p.getPosition(), mouvement.getPosition());
+//					}
 
 					partie2.setMove(p.getPosition(), mouvement.getPosition());
 
@@ -180,8 +208,12 @@ public class CalculMouvementsService {
 					if (!deplacementBloqueEchecs) {
 						iter.remove();
 					}
+
+					j++;
 				}
 			}
+
+			i++;
 
 		}
 

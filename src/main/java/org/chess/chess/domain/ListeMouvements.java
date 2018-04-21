@@ -1,7 +1,6 @@
 package org.chess.chess.domain;
 
 import com.google.common.base.Verify;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -83,6 +82,24 @@ public class ListeMouvements {
 			for (Map.Entry<PieceCouleurPosition, List<Mouvement>> res : mapMouvements.entrySet()) {
 				if (res.getKey().getPiece() == pieceCouleur.getPiece()
 						&& res.getKey().getCouleur() == pieceCouleur.getCouleur()) {
+					return res.getValue();
+				}
+			}
+
+		}
+
+		return liste;
+	}
+
+	public List<Mouvement> getMouvements(Couleur joueur) {
+		Verify.verifyNotNull(joueur);
+
+		List<Mouvement> liste = null;
+
+		if (mapMouvements != null) {
+
+			for (Map.Entry<PieceCouleurPosition, List<Mouvement>> res : mapMouvements.entrySet()) {
+				if (res.getKey().getCouleur() == joueur) {
 					return res.getValue();
 				}
 			}
