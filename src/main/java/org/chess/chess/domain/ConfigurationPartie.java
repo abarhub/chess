@@ -15,6 +15,8 @@ public class ConfigurationPartie {
 	public ConfigurationPartie(Couleur joueurTrait) {
 		Preconditions.checkNotNull(joueurTrait);
 		this.joueurTrait = joueurTrait;
+		nbDemiCoupSansCapture = 0;
+		nbCoup = 1;
 	}
 
 	public ConfigurationPartie(ConfigurationPartie configurationPartie) {

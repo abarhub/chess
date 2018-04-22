@@ -75,7 +75,7 @@ public class NotationFEN implements INotation {
 		boolean roqueBlancRoi = false;
 		boolean priseEnPassant = false;
 		int nbDemiCoup = 0;
-		int nbCoup = 0;
+		int nbCoup = 1;
 
 		if (iterator.hasNext()) {
 			// la couleur qui a le trait
@@ -85,7 +85,7 @@ public class NotationFEN implements INotation {
 					c = getChar(iterator);
 					if (Character.toUpperCase(c) == 'W') {
 						joueurCourant = Couleur.Blanc;
-					} else if (Character.toUpperCase(c) == 'N') {
+					} else if (Character.toUpperCase(c) == 'B') {
 						joueurCourant = Couleur.Noir;
 					} else {
 						throw new IllegalArgumentException("Caractere '" + c + "' invalide à la position : " + iterator.previousIndex() + " (caractere attendu=w/n)");
@@ -104,11 +104,11 @@ public class NotationFEN implements INotation {
 										if (c == 'K') {
 											roqueBlancRoi = true;
 										} else if (c == 'Q') {
-											roqueNoirDame = true;
+											roqueBlancDame = true;
 										} else if (c == 'k') {
 											roqueNoirRoi = true;
 										} else if (c == 'q') {
-											roqueBlancDame = true;
+											roqueNoirDame = true;
 										} else if (c == ' ') {
 											iterator.previous();
 											break;
@@ -116,6 +116,9 @@ public class NotationFEN implements INotation {
 											throw new IllegalArgumentException("Caractere '" + c + "' invalide à la position : " + iterator.previousIndex() + " (caractere attendu=KQkq)");
 										}
 										nbCaractere++;
+										if (iterator.hasNext() && nbCaractere < 4) {
+											c = getChar(iterator);
+										}
 									} while (iterator.hasNext() && nbCaractere < 4);
 								}
 							}
@@ -129,9 +132,9 @@ public class NotationFEN implements INotation {
 						if (c == ' ') {
 							c = getChar(iterator);
 							if (c == '-') {
-								priseEnPassant = true;
+								priseEnPassant = false;
 							} else {
-								throw new IllegalArgumentException("Caractere '" + c + "' invalide à la position : " + iterator.previousIndex() + " (caractere non gere)");
+								throw new IllegalArgumentException("Caractere '" + c + "' invalide à la position : " + iterator.previousIndex() + " (caractere non gere='" + c + "')");
 							}
 						} else {
 							throw new IllegalArgumentException("Caractere '" + c + "' invalide à la position : " + iterator.previousIndex() + " (caractere attendu= )");
@@ -159,6 +162,13 @@ public class NotationFEN implements INotation {
 					}
 				}
 			}
+		} else {
+			roqueNoirRoi = true;
+			roqueNoirDame = true;
+			roqueBlancRoi = true;
+			roqueBlancDame = true;
+			nbDemiCoup = 0;
+			nbCoup = 1;
 		}
 
 		ConfigurationPartie configurationPartie = new ConfigurationPartie(joueurCourant);
@@ -181,11 +191,14 @@ public class NotationFEN implements INotation {
 			if (Character.isDigit(c)) {
 				n = c - '0';
 				if (iterator.hasNext()) {
+					boolean fin = false;
 					do {
 						c = getChar(iterator);
-						n = n * 10 + c - '0';
+						if (Character.isDigit(c)) {
+							n = n * 10 + c - '0';
+						}
 					} while (Character.isDigit(c) && iterator.hasNext());
-					if (Character.isDigit(c)) {
+					if (!Character.isDigit(c)) {
 						iterator.previous();
 					}
 				}
@@ -264,6 +277,44 @@ public class NotationFEN implements INotation {
 				str.append('/');
 			}
 		}
+
+		str.append(' ');
+		if (partie.getJoueurCourant() == Couleur.Blanc) {
+			str.append('w');
+		} else {
+			str.append('b');
+		}
+
+		ConfigurationPartie config = partie.getConfigurationPartie();
+		str.append(' ');
+		if (!config.isRoqueBlancRoi()
+				&& !config.isRoqueBlancDame()
+				&& !config.isRoqueNoirRoi()
+				&& !config.isRoqueNoirDame()) {
+			str.append('-');
+		} else {
+			if (config.isRoqueBlancRoi()) {
+				str.append('K');
+			}
+			if (config.isRoqueBlancDame()) {
+				str.append('Q');
+			}
+			if (config.isRoqueNoirRoi()) {
+				str.append('k');
+			}
+			if (config.isRoqueNoirDame()) {
+				str.append('q');
+			}
+		}
+
+		str.append(' ');
+		str.append('-');
+
+		str.append(' ');
+		str.append(config.getNbDemiCoupSansCapture());
+
+		str.append(' ');
+		str.append(config.getNbCoup());
 
 		return str.toString();
 	}
