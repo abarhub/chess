@@ -6,6 +6,8 @@ import org.chess.chess.service.InformationPartieService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.chess.chess.utils.TestFixture.createConfigurationPartie;
+
 
 public class PartieFixture {
 
@@ -34,7 +36,8 @@ public class PartieFixture {
 	}
 
 	public static Partie createPartie(Plateau plateau) {
-		return new Partie(plateau, Couleur.Blanc, createInformationService());
+		return new Partie(plateau, Couleur.Blanc, createInformationService(),
+				createConfigurationPartie(Couleur.Blanc));
 	}
 
 	public static InformationPartie createInformationService() {

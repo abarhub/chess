@@ -2,24 +2,37 @@ package org.chess.chess.moteur;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.chess.chess.utils.TestFixture;
 import org.chess.chess.domain.*;
 import org.chess.chess.outils.PositionTools;
+import org.chess.chess.utils.TestFixture;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 @RunWith(JUnitParamsRunner.class)
 public class MouvementServiceTest {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MoteurTest.class);
+
+	private MouvementService mouvementService;
+
+	private CalculMouvementsService calculMouvementsService;
+
+	@Before
+	public void setup() {
+		calculMouvementsService = new CalculMouvementsService();
+
+		mouvementService = new MouvementService();
+		ReflectionTestUtils.setField(mouvementService, "calculMouvementsService", calculMouvementsService);
+	}
 
 	private Object[] listMoveRoiValues() {
 		return new Object[]{
@@ -56,8 +69,6 @@ public class MouvementServiceTest {
 		Plateau plateau = new Plateau(liste);
 
 		LOGGER.info("plateau={}", plateau.getRepresentation());
-
-		MouvementService mouvementService = new MouvementService();
 
 		Partie partie = TestFixture.createPartie(plateau);
 
@@ -106,8 +117,6 @@ public class MouvementServiceTest {
 		LOGGER.info("plateau={}", plateau.getRepresentation());
 
 		Partie partie = TestFixture.createPartie(plateau);
-
-		MouvementService mouvementService = new MouvementService();
 
 		// methode testée
 		List<Position> res = mouvementService.listMove(partie, createPosition(ligne, colonne), false, joueurCourant);

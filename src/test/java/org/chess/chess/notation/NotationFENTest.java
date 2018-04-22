@@ -4,10 +4,13 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.chess.chess.domain.Partie;
 import org.chess.chess.domain.Plateau;
+import org.chess.chess.service.InformationPartieService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -18,6 +21,13 @@ public class NotationFENTest {
 	public static final Logger LOGGER = LoggerFactory.getLogger(NotationFENTest.class);
 
 	private NotationFEN notationFEN = new NotationFEN();
+
+	private InformationPartieService informationPartieService = new InformationPartieService();
+
+	@Before
+	public void setup() {
+		ReflectionTestUtils.setField(notationFEN, "informationPartieService", informationPartieService);
+	}
 
 	private Object[] createSerialisationValues() {
 		return new Object[]{

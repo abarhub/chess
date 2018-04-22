@@ -2,11 +2,9 @@ package org.chess.chess.moteur;
 
 import com.google.common.base.Verify;
 import org.chess.chess.domain.*;
-import org.chess.chess.notation.NotationService;
 import org.chess.chess.outils.PositionTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -185,7 +183,8 @@ public class CalculMouvementsService {
 
 					boolean deplacementBloqueEchecs = false;
 
-					Partie partie2 = new Partie(new Plateau(partie.getPlateau()), couleurJoueurEchecs, new InformationPartie());
+					Partie partie2 = new Partie(new Plateau(partie.getPlateau()),
+							couleurJoueurEchecs, new InformationPartie(), new ConfigurationPartie(couleurJoueurEchecs));
 
 //					if (LOGGER.isInfoEnabled()) {
 //						LOGGER.info("partie={}", notationService.serialize(partie, NotationEnum.FEN));

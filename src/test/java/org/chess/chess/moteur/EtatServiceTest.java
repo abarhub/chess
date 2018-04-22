@@ -17,6 +17,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
+import static org.chess.chess.utils.TestFixture.createConfigurationPartie;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -60,7 +61,8 @@ public class EtatServiceTest {
 
 		Plateau plateau = getPlateau(nomFichier);
 
-		Partie partie = new Partie(plateau, joueurCourant, PartieFixture.createInformationService());
+		Partie partie = new Partie(plateau, joueurCourant, PartieFixture.createInformationService(),
+				createConfigurationPartie(joueurCourant));
 
 		// methode testée
 		final EtatJeux etatJeux = etatService.calculEtatJeux(partie);
@@ -92,7 +94,9 @@ public class EtatServiceTest {
 
 		Plateau plateau = partie2.getPlateau();
 
-		Partie partie = new Partie(plateau, joueurCourant, PartieFixture.createInformationService());
+		Partie partie = new Partie(plateau, joueurCourant,
+				PartieFixture.createInformationService(),
+				createConfigurationPartie(joueurCourant));
 
 		// methode testée
 		final EtatJeux etatJeux = etatService.calculEtatJeux(partie);

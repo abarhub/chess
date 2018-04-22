@@ -86,7 +86,9 @@ public class NotationPGN implements INotation {
 			Plateau plateau = new Plateau();
 			plateau.initialise();
 
-			Partie partie2 = new Partie(plateau, Couleur.Blanc, informationPartieService.createInformationPartie());
+			Partie partie2 = new Partie(plateau, Couleur.Blanc,
+					informationPartieService.createInformationPartie(),
+					new ConfigurationPartie(Couleur.Blanc));
 
 			for (int noCoup = 0; noCoup < listeBlancs.size(); noCoup++) {
 
@@ -311,7 +313,8 @@ public class NotationPGN implements INotation {
 		Plateau plateau = new Plateau();
 		plateau.initialise();
 
-		Partie partie2 = new Partie(plateau, Couleur.Blanc, new InformationPartie());
+		Partie partie2 = new Partie(plateau, Couleur.Blanc, new InformationPartie(),
+				new ConfigurationPartie(Couleur.Blanc));
 
 
 		for (int i = 0; i < coupBlancs.size(); i++) {

@@ -56,7 +56,7 @@ public class NotationCustom implements INotation {
 
 		Plateau plateau = new Plateau(listePieces);
 
-		return new Partie(plateau, Couleur.Blanc, informationPartieService.createInformationPartie());
+		return new Partie(plateau, Couleur.Blanc, informationPartieService.createInformationPartie(), new ConfigurationPartie(Couleur.Blanc));
 	}
 
 	@Override

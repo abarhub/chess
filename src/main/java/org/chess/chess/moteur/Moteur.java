@@ -76,7 +76,7 @@ public class Moteur {
 		this.joueurBlanc = joueurBlanc;
 		this.joueurNoir = joueurNoir;
 
-		partie = new Partie(plateau, joueur, informationPartieService.createInformationPartie());
+		partie = new Partie(plateau, joueur, informationPartieService.createInformationPartie(), new ConfigurationPartie(joueur));
 	}
 
 	public Plateau getPlateau() {

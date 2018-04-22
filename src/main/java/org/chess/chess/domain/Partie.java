@@ -16,22 +16,27 @@ public class Partie {
 	private final List<DemiCoup> listeCoupsBlancs;
 	private final List<DemiCoup> listeCoupsNoirs;
 	private final InformationPartie informationPartie;
+	private final ConfigurationPartie configurationPartie;
 	private Couleur joueurCourant;
 
 	public Partie(Plateau plateau,
-	              Couleur joueurCourant, InformationPartie informationPartie) {
-		Verify.verifyNotNull(plateau);
-		Verify.verifyNotNull(joueurCourant);
-		Verify.verifyNotNull(informationPartie);
+	              Couleur joueurCourant, InformationPartie informationPartie, ConfigurationPartie configurationPartie) {
+		Preconditions.checkNotNull(plateau);
+		Preconditions.checkNotNull(joueurCourant);
+		Preconditions.checkNotNull(informationPartie);
+		Preconditions.checkNotNull(configurationPartie);
+		Preconditions.checkArgument(joueurCourant == configurationPartie.getJoueurTrait());
 		this.plateau = plateau;
 		this.joueurCourant = joueurCourant;
 		listeCoupsBlancs = new ArrayList<>();
 		listeCoupsNoirs = new ArrayList<>();
 		this.informationPartie = informationPartie;
+		this.configurationPartie = configurationPartie;
 	}
 
 	public Partie(Partie partie) {
-		this(partie.getPlateau(), partie.getJoueurCourant(), partie.informationPartie);
+		this(new Plateau(partie.getPlateau()), partie.getJoueurCourant(),
+				partie.informationPartie, new ConfigurationPartie(partie.getConfigurationPartie()));
 	}
 
 	public Plateau getPlateau() {
@@ -176,5 +181,9 @@ public class Partie {
 
 	public InformationPartie getInformationPartie() {
 		return informationPartie;
+	}
+
+	public ConfigurationPartie getConfigurationPartie() {
+		return configurationPartie;
 	}
 }

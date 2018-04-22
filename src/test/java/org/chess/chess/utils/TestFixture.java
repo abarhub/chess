@@ -1,5 +1,6 @@
 package org.chess.chess.utils;
 
+import org.chess.chess.domain.ConfigurationPartie;
 import org.chess.chess.domain.Couleur;
 import org.chess.chess.domain.Partie;
 import org.chess.chess.domain.Plateau;
@@ -25,7 +26,12 @@ public class TestFixture {
 	}
 
 	public static Partie createPartie(Plateau plateau) {
-		return new Partie(plateau, Couleur.Blanc, PartieFixture.createInformationService());
+		return new Partie(plateau, Couleur.Blanc, PartieFixture.createInformationService(),
+				createConfigurationPartie(Couleur.Blanc));
+	}
+
+	public static ConfigurationPartie createConfigurationPartie(Couleur couleurJoueur) {
+		return new ConfigurationPartie(couleurJoueur);
 	}
 
 	public static Joueur createJoueurMock() {
@@ -38,6 +44,8 @@ public class TestFixture {
 	}
 
 	public static Partie createPartieFromPlateau(Plateau plateau) {
-		return new Partie(plateau, Couleur.Blanc, PartieFixture.createInformationService());
+		return new Partie(plateau, Couleur.Blanc,
+				PartieFixture.createInformationService(),
+				createConfigurationPartie(Couleur.Blanc));
 	}
 }
