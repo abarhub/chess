@@ -121,7 +121,7 @@ public class CalculMouvementsService {
 					if (listeMouvements.isRoiBlancEchecs()) {
 						LOGGER.info("echecs blanc");
 
-						Verify.verify(partie.getJoueurCourant() == Couleur.Noir);
+						Verify.verify(partie.getJoueurCourant() == Couleur.Blanc);
 
 						supprimeMouvementsPourEchecs(listeMouvements, Couleur.Blanc, partie);
 
@@ -132,7 +132,7 @@ public class CalculMouvementsService {
 					} else if (listeMouvements.isRoiNoirEchecs()) {
 						LOGGER.info("echecs noir");
 
-						Verify.verify(partie.getJoueurCourant() == Couleur.Blanc);
+						Verify.verify(partie.getJoueurCourant() == Couleur.Noir);
 
 						supprimeMouvementsPourEchecs(listeMouvements, Couleur.Noir, partie);
 
@@ -157,7 +157,7 @@ public class CalculMouvementsService {
 		Couleur couleurJoueurEchecs = couleurJoueur;
 		Couleur couleurJoueurAdverse = couleurContraire(couleurJoueur);
 
-		Verify.verify(partie.getJoueurCourant() == couleurJoueurAdverse);
+		Verify.verify(partie.getJoueurCourant() == couleurJoueur);
 
 		int i = 0;
 		int j = 0;
