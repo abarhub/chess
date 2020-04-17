@@ -5,6 +5,7 @@ import com.google.common.base.Verify;
 import org.chess.chess.domain.*;
 import org.chess.chess.dto.DemiCoupDTO;
 import org.chess.chess.dto.ListeDemiCoupDTO;
+import org.chess.chess.exception.NotImplementedException;
 import org.chess.chess.moteur.CalculMouvementsService;
 import org.chess.chess.moteur.Moteur;
 import org.chess.chess.moteur.MouvementService;
@@ -14,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

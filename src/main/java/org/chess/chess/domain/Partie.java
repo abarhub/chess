@@ -3,7 +3,7 @@ package org.chess.chess.domain;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.google.common.collect.ImmutableList;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.chess.chess.exception.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
