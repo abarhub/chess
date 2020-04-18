@@ -11,8 +11,8 @@ import java.util.Optional;
 public class CalculMouvementBaseService {
 
 
-    public List<Mouvement> getMouvements(IPlateau plateau, PieceCouleurPosition piece) {
-        List<Mouvement> list;
+    public List<IMouvement> getMouvements(IPlateau plateau, PieceCouleurPosition piece) {
+        List<IMouvement> list;
         list = null;
         switch (piece.getPiece()) {
             case PION:
@@ -37,12 +37,12 @@ public class CalculMouvementBaseService {
         return list;
     }
 
-    private List<Mouvement> calculRoi(PieceCouleurPosition piece, IPlateau plateau) {
+    private List<IMouvement> calculRoi(PieceCouleurPosition piece, IPlateau plateau) {
 
         Verify.verifyNotNull(piece);
         Verify.verify(piece.getPiece() == Piece.ROI);
 
-        List<Mouvement> mouvements = new ArrayList<>();
+        List<IMouvement> mouvements = new ArrayList<>();
 
         for (int ligne2 = -1; ligne2 <= 1; ligne2++) {
             for (int colonne2 = -1; colonne2 <= 1; colonne2++) {
@@ -60,15 +60,72 @@ public class CalculMouvementBaseService {
             }
         }
 
+        final RangeeEnum rangeRoi;
+        final Couleur couleurRoi=piece.getCouleur();
+
+        if(couleurRoi==Couleur.Blanc){
+            rangeRoi=RangeeEnum.RANGEE1;
+        } else {
+            rangeRoi=RangeeEnum.RANGEE8;
+        }
+
+        if(isPosition(piece,rangeRoi,ColonneEnum.COLONNEE,couleurRoi)){
+            // roque coté roi
+            Position posTour=new Position(rangeRoi, ColonneEnum.COLONNEH);
+            PieceCouleur tour=plateau.getCase(posTour);
+            if(tour!=null && tour.getPiece()==Piece.TOUR &&tour.getCouleur()==couleurRoi){
+                boolean caseNonVide=false;
+                for(int i=1;i<3;i++){
+                    ColonneEnum colonneEnum=ColonneEnum.get(ColonneEnum.COLONNEE.getNo()+i);
+                    PieceCouleur tmp=plateau.getCase(new Position(rangeRoi, colonneEnum));
+                    if(tmp!=null){
+                        caseNonVide=true;
+                        break;
+                    }
+                }
+                if(!caseNonVide){
+                    MouvementRoque mouvementRoque=new MouvementRoque(new Position(rangeRoi,ColonneEnum.COLONNEG),
+                            true,posTour,new Position(rangeRoi, ColonneEnum.COLONNEF));
+                    mouvements.add(mouvementRoque);
+                }
+            }
+
+            // roque cote reine
+            Position posTour2=new Position(rangeRoi, ColonneEnum.COLONNEA);
+            PieceCouleur tour2=plateau.getCase(posTour2);
+            if(tour2!=null && tour2.getPiece()==Piece.TOUR &&tour2.getCouleur()==couleurRoi){
+                boolean caseNonVide=false;
+                for(int i=1;i<4;i++){
+                    ColonneEnum colonneEnum=ColonneEnum.get(ColonneEnum.COLONNEA.getNo()+i);
+                    PieceCouleur tmp=plateau.getCase(new Position(rangeRoi, colonneEnum));
+                    if(tmp!=null){
+                        caseNonVide=true;
+                        break;
+                    }
+                }
+                if(!caseNonVide){
+                    MouvementRoque mouvementRoque=new MouvementRoque(new Position(rangeRoi,ColonneEnum.COLONNEB),
+                            false,posTour,new Position(rangeRoi, ColonneEnum.COLONNEC));
+                    mouvements.add(mouvementRoque);
+                }
+            }
+        }
+
         return mouvements;
     }
 
-    private List<Mouvement> calculReine(PieceCouleurPosition piece, IPlateau plateau) {
+    private boolean isPosition(PieceCouleurPosition piece, RangeeEnum rangeeEnum, ColonneEnum colonneEnum,Couleur couleur){
+        return piece.getPosition().getRangee()==rangeeEnum &&
+                piece.getPosition().getColonne()==colonneEnum &&
+                piece.getCouleur()==couleur;
+    }
+
+    private List<IMouvement> calculReine(PieceCouleurPosition piece, IPlateau plateau) {
 
         Verify.verifyNotNull(piece);
         Verify.verify(piece.getPiece() == Piece.REINE);
 
-        List<Mouvement> mouvements = new ArrayList<>();
+        List<IMouvement> mouvements = new ArrayList<>();
 
         for (int j = 0; j < 8; j++) {
             int decalageLigne, decalageColonne;
@@ -103,12 +160,12 @@ public class CalculMouvementBaseService {
         return mouvements;
     }
 
-    private List<Mouvement> calculTour(PieceCouleurPosition piece, IPlateau plateau) {
+    private List<IMouvement> calculTour(PieceCouleurPosition piece, IPlateau plateau) {
 
         Verify.verifyNotNull(piece);
         Verify.verify(piece.getPiece() == Piece.TOUR);
 
-        List<Mouvement> mouvements = new ArrayList<>();
+        List<IMouvement> mouvements = new ArrayList<>();
 
         for (int j = 0; j < 4; j++) {
             int decalageLigne, decalageColonne;
@@ -131,11 +188,11 @@ public class CalculMouvementBaseService {
         return mouvements;
     }
 
-    private List<Mouvement> calculFou(PieceCouleurPosition piece, IPlateau plateau) {
+    private List<IMouvement> calculFou(PieceCouleurPosition piece, IPlateau plateau) {
         Verify.verifyNotNull(piece);
         Verify.verify(piece.getPiece() == Piece.FOU);
 
-        List<Mouvement> mouvements = new ArrayList<>();
+        List<IMouvement> mouvements = new ArrayList<>();
 
         for (int j = 0; j < 4; j++) {
             int decalageLigne, decalageColonne;
@@ -159,7 +216,7 @@ public class CalculMouvementBaseService {
     }
 
 
-    private void ajouteDecalage(List<Mouvement> mouvements, Position position,
+    private void ajouteDecalage(List<IMouvement> mouvements, Position position,
                                 int decalageLigne, int decalageColonne,
                                 PieceCouleurPosition piece, IPlateau plateau) {
         Verify.verifyNotNull(mouvements);
@@ -177,11 +234,11 @@ public class CalculMouvementBaseService {
         }
     }
 
-    private List<Mouvement> calculCavalier(PieceCouleurPosition piece, IPlateau plateau) {
+    private List<IMouvement> calculCavalier(PieceCouleurPosition piece, IPlateau plateau) {
         Verify.verifyNotNull(piece);
         Verify.verify(piece.getPiece() == Piece.CAVALIER);
 
-        List<Mouvement> mouvements = new ArrayList<>();
+        List<IMouvement> mouvements = new ArrayList<>();
 
         Optional<Position> optPosition = PositionTools.getPosition(piece.getPosition(), -2, -1);
         if (optPosition.isPresent()) {
@@ -219,7 +276,7 @@ public class CalculMouvementBaseService {
         return mouvements;
     }
 
-    private boolean ajoutePositionPiece(List<Mouvement> mouvements, Position position,
+    private boolean ajoutePositionPiece(List<IMouvement> mouvements, Position position,
                                         PieceCouleurPosition piece, IPlateau plateau) {
         Verify.verifyNotNull(mouvements);
         Verify.verifyNotNull(piece);
@@ -227,11 +284,11 @@ public class CalculMouvementBaseService {
 
         PieceCouleur caseCible = plateau.getCase(position);
         if (caseCible == null) {
-            Mouvement mouvement = new Mouvement(position, false);
+            var mouvement = new MouvementSimple(position, false);
             mouvements.add(mouvement);
             return true;
         } else if (caseCible.getCouleur() != piece.getCouleur()) {
-            Mouvement mouvement = new Mouvement(position, true);
+            var mouvement = new MouvementSimple(position, true);
             mouvements.add(mouvement);
             return false;
         }
@@ -239,11 +296,11 @@ public class CalculMouvementBaseService {
         return false;
     }
 
-    private List<Mouvement> calculPion(PieceCouleurPosition piece, IPlateau plateau) {
+    private List<IMouvement> calculPion(PieceCouleurPosition piece, IPlateau plateau) {
         Verify.verifyNotNull(piece);
         Verify.verify(piece.getPiece() == Piece.PION);
 
-        List<Mouvement> mouvements = new ArrayList<>();
+        List<IMouvement> mouvements = new ArrayList<>();
 
         int decalage, decalage2 = 0;
         if (piece.getCouleur() == Couleur.Blanc) {
@@ -293,7 +350,7 @@ public class CalculMouvementBaseService {
         return mouvements;
     }
 
-    private void ajoutePositionPions(List<Mouvement> mouvements, Position position,
+    private void ajoutePositionPions(List<IMouvement> mouvements, Position position,
                                      PieceCouleurPosition piece, IPlateau plateau, boolean mangePiece) {
         Verify.verifyNotNull(mouvements);
         Verify.verifyNotNull(piece);
@@ -303,12 +360,12 @@ public class CalculMouvementBaseService {
         PieceCouleur caseCible = plateau.getCase(position);
         if (mangePiece) {
             if (caseCible != null && caseCible.getCouleur() != piece.getCouleur()) {
-                Mouvement mouvement = new Mouvement(position, true);
+                var mouvement = new MouvementSimple(position, true);
                 mouvements.add(mouvement);
             }
         } else {
             if (caseCible == null) {
-                Mouvement mouvement = new Mouvement(position, false);
+                var mouvement = new MouvementSimple(position, false);
                 mouvements.add(mouvement);
             }
         }

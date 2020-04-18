@@ -33,12 +33,12 @@ public class CalculMouvementBisService {
     private StopWatch stopWatchSupprEchecs=new StopWatch();
     private StopWatch stopWatchGenereDeplacement=new StopWatch();
 
-    public ListeMouvements calculMouvements(Partie partie) {
+    public ListeMouvements2 calculMouvements(Partie partie) {
         Preconditions.checkNotNull(partie);
         return calcul(partie.getPlateau(), partie.getJoueurCourant());
     }
 
-    public ListeMouvements calcul(Plateau plateau, Couleur joueurCourant) {
+    public ListeMouvements2 calcul(Plateau plateau, Couleur joueurCourant) {
         Preconditions.checkNotNull(plateau);
         Preconditions.checkNotNull(joueurCourant);
 
@@ -49,7 +49,7 @@ public class CalculMouvementBisService {
         } else {
             stopWatch2.resume();
         }
-        ListeMouvements resultat;
+        ListeMouvements2 resultat;
 
         //PlateauBis plateau=new PlateauBis(plateau2);
 
@@ -62,12 +62,12 @@ public class CalculMouvementBisService {
         if (roiEnEchec) {
             // si echec, recherche des coup pour stoper echec
 
-            ListeMouvements listeMouvement=rechercheMouvementStoperEchecRoi(plateau, joueurCourant, positionRoi);
+            var listeMouvement=rechercheMouvementStoperEchecRoi(plateau, joueurCourant, positionRoi);
 
             resultat=listeMouvement;
         } else {
             // si pas echec, recherche des coups possibles
-            ListeMouvements listeMouvement = getPieceJoueur(plateau, joueurCourant);
+            var listeMouvement = getPieceJoueur(plateau, joueurCourant);
 
             // pour chaque coup possible, verification si cela met le roi en echecs
             // la mise en echec, ne peut être fait que par tour (ligne, colonne), dame (ligne, colonne diagonale), fou (diagonale)
@@ -83,15 +83,15 @@ public class CalculMouvementBisService {
         return resultat;
     }
 
-    private ListeMouvements rechercheMouvementStoperEchecRoi(IPlateau plateau, Couleur joueurCourant, Position positionRoi) {
-        ListeMouvements listeMouvement = getPieceJoueur(plateau, joueurCourant);
+    private ListeMouvements2 rechercheMouvementStoperEchecRoi(IPlateau plateau, Couleur joueurCourant, Position positionRoi) {
+        var listeMouvement = getPieceJoueur(plateau, joueurCourant);
 
         suppressionMouvementMiseEnEchecsRoi(plateau,listeMouvement,positionRoi,joueurCourant);
 
         return listeMouvement;
     }
 
-    private void suppressionMouvementMiseEnEchecsRoi(IPlateau plateau, ListeMouvements listeMouvement,
+    private void suppressionMouvementMiseEnEchecsRoi(IPlateau plateau, ListeMouvements2 listeMouvement,
                                                      Position positionRoi, Couleur joueurCourant) {
         Preconditions.checkNotNull(plateau);
         Preconditions.checkNotNull(listeMouvement);
@@ -102,7 +102,7 @@ public class CalculMouvementBisService {
         start(stopWatchSupprEchecs);
 
         if(false) {
-            Map<PieceCouleurPosition, List<Mouvement>> map = listeMouvement.getMapMouvements();
+            Map<PieceCouleurPosition, List<IMouvement>> map = listeMouvement.getMapMouvements();
             var iter2 = map.entrySet().iterator();
             while (iter2.hasNext()) {
                 var tmp = iter2.next();
@@ -143,7 +143,7 @@ public class CalculMouvementBisService {
             CasesATester casesATester;
             casesATester = analyseCases(plateau, positionRoi, joueurCourant, tab);
             if(casesATester!=null){
-                Map<PieceCouleurPosition, List<Mouvement>> map = listeMouvement.getMapMouvements();
+                Map<PieceCouleurPosition, List<IMouvement>> map = listeMouvement.getMapMouvements();
                 var iter2 = map.entrySet().iterator();
                 while (iter2.hasNext()) {
                     var tmp = iter2.next();
@@ -369,19 +369,19 @@ public class CalculMouvementBisService {
         }
     }
 
-    public ListeMouvements getPieceJoueur(IPlateau plateau, Couleur joueur) {
+    public ListeMouvements2 getPieceJoueur(IPlateau plateau, Couleur joueur) {
         Preconditions.checkNotNull(plateau);
         Preconditions.checkNotNull(joueur);
 
         Instant debut=Instant.now();
         start(stopWatchListeDeplacement);
-        ListeMouvements res = new ListeMouvements();
+        var res = new ListeMouvements2();
 
-        Map<PieceCouleurPosition, List<Mouvement>> map = new HashMap<>();
+        Map<PieceCouleurPosition, List<IMouvement>> map = new HashMap<>();
         plateau.getStreamPosition()
                 .filter(x -> x.getCouleur() == joueur)
                 .forEach(pos -> {
-                    List<Mouvement> liste2 = ajoute(plateau, pos);
+                    List<IMouvement> liste2 = ajoute(plateau, pos);
                     if(!CollectionUtils.isEmpty(liste2)){
                         map.put(pos, liste2);
                     }
@@ -393,13 +393,13 @@ public class CalculMouvementBisService {
         return res;
     }
 
-    private List<Mouvement> ajoute(IPlateau plateau, PieceCouleurPosition pos) {
+    private List<IMouvement> ajoute(IPlateau plateau, PieceCouleurPosition pos) {
         Preconditions.checkNotNull(plateau);
         Preconditions.checkNotNull(pos);
 
         Instant debut=Instant.now();
         start(stopWatchGenereDeplacement);
-        List<Mouvement> liste = calculMouvementBaseService.getMouvements(plateau, pos);
+        List<IMouvement> liste = calculMouvementBaseService.getMouvements(plateau, pos);
 
         dureeListeMouvement2.add(Duration.between(debut,Instant.now()));
         stop(stopWatchGenereDeplacement);

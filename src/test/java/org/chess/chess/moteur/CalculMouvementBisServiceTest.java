@@ -46,7 +46,7 @@ class CalculMouvementBisServiceTest {
         Partie partie=notationFEN.createPlateau(plateau);
 
         // methode testée
-        ListeMouvements res = calculMouvementBisService.calculMouvements(partie);
+        var res = calculMouvementBisService.calculMouvements(partie);
         
         // vérifications
         LOGGER.info("res={}", res);
@@ -62,7 +62,7 @@ class CalculMouvementBisServiceTest {
         Partie partie=notationFEN.createPlateau(plateau);
 
         // methode testée
-        ListeMouvements res = calculMouvementBisService.calculMouvements(partie);
+        var res = calculMouvementBisService.calculMouvements(partie);
 
         // vérifications
         LOGGER.info("res={}", res);
@@ -87,7 +87,7 @@ class CalculMouvementBisServiceTest {
         Partie partie=notationFEN.createPlateau(plateau);
 
         // methode testée
-        ListeMouvements res = calculMouvementBisService.calculMouvements(partie);
+        var res = calculMouvementBisService.calculMouvements(partie);
 
         // vérifications
         LOGGER.info("res={}", res);
@@ -101,7 +101,10 @@ class CalculMouvementBisServiceTest {
         return Stream.of(
                 Arguments.of("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",1, 20),
                 Arguments.of("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",2, 400),
-                Arguments.of("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",3, 8902),
+                Arguments.of("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",3, 8_902),
+                Arguments.of("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",4, 197_281),
+                //Arguments.of("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",5, 4_865_609),
+                //Arguments.of("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",6, 119_060_324),
                 Arguments.of("8/PPP4k/8/8/8/8/4Kppp/8 w - - 0 1",1, 18)
 
                 //Arguments.of("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -", 48),
@@ -192,7 +195,7 @@ class CalculMouvementBisServiceTest {
 
         //for(int i=0;i<=max;i++) {
 
-            int depth=5;
+            int depth=4;
 
             LOGGER.info("depth={}", depth);
 
@@ -200,7 +203,7 @@ class CalculMouvementBisServiceTest {
 
             Plateau plateau2=partie.getPlateau();
 
-            if(true) {
+            if(false) {
                 plateau2 = new PlateauBis(partie.getPlateau());
             }
 
@@ -229,9 +232,9 @@ class CalculMouvementBisServiceTest {
 
     // methodes utilitaires
 
-    private long nbCoups(ListeMouvements listeMouvements){
+    private long nbCoups(ListeMouvements2 listeMouvements){
         long nb=0;
-        for(Entry<PieceCouleurPosition, List<Mouvement>> entry:listeMouvements.getMapMouvements().entrySet()){
+        for(Entry<PieceCouleurPosition, List<IMouvement>> entry:listeMouvements.getMapMouvements().entrySet()){
             nb+=entry.getValue().size();
         }
         return nb;
@@ -248,23 +251,31 @@ class CalculMouvementBisServiceTest {
         if(depth<=0){
             resultat= 1;
         } else {
-            ListeMouvements res = calculMouvementBisService.calcul(plateau, joueurCourant);
+            var res = calculMouvementBisService.calcul(plateau, joueurCourant);
 
             var map = res.getMapMouvements();
             assertNotNull(map);
             if (!map.isEmpty()) {
                 var iter = map.entrySet().iterator();
                 while (iter.hasNext()) {
-                    Entry<PieceCouleurPosition, List<Mouvement>> tmp = iter.next();
+                    Entry<PieceCouleurPosition, List<IMouvement>> tmp = iter.next();
                     if (!CollectionUtils.isEmpty(tmp.getValue())) {
                         for (var tmp2 : tmp.getValue()) {
-                            //Partie partie2 = new Partie(partie);
-                            Plateau plateau2=new Plateau(plateau);
-                            //assertEquals(joueurCourant, partie2.getJoueurCourant());
-                            plateau2.move(tmp.getKey().getPosition(), tmp2.getPosition());
-                            //partie2.setMove(tmp.getKey().getPosition(), tmp2.getPosition());
-                            //assertEquals(calculMouvementBisService.joueurAdversaire(joueurCourant), partie2.getJoueurCourant());
-                            resultat+=calculPerf(plateau2,calculMouvementBisService.joueurAdversaire(joueurCourant),depth-1);
+//                            if(plateau instanceof PlateauBis){
+//                                PlateauBis plateau2= (PlateauBis) plateau;
+//                                plateau2.move(tmp.getKey().getPosition(), tmp2.getPosition());
+//                                resultat += calculPerf(plateau2, calculMouvementBisService.joueurAdversaire(joueurCourant), depth - 1);
+//                                plateau2.undo();
+//                            } else {
+                                //Partie partie2 = new Partie(partie);
+                                Plateau plateau2 = new Plateau(plateau);
+                                //assertEquals(joueurCourant, partie2.getJoueurCourant());
+                                //plateau2.move(tmp.getKey().getPosition(), tmp2.getPosition());
+                            plateau2.move(tmp.getKey().getPosition(), tmp2);
+                                //partie2.setMove(tmp.getKey().getPosition(), tmp2.getPosition());
+                                //assertEquals(calculMouvementBisService.joueurAdversaire(joueurCourant), partie2.getJoueurCourant());
+                                resultat += calculPerf(plateau2, calculMouvementBisService.joueurAdversaire(joueurCourant), depth - 1);
+//                            }
                         }
                     }
                 }

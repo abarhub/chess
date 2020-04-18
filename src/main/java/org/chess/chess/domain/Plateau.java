@@ -1,6 +1,8 @@
 package org.chess.chess.domain;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
+import org.chess.chess.exception.NotImplementedException;
 import org.chess.chess.outils.Check;
 import org.chess.chess.outils.IteratorPlateau;
 
@@ -101,10 +103,12 @@ public class Plateau implements IPlateau {
 	}
 
 	protected void setCase(Position position, PieceCouleur pieceCouleur) {
+		Preconditions.checkNotNull(position);
 		setTableau(position.getRangee(), position.getColonne(), pieceCouleur);
 	}
 
 	public PieceCouleur getCase(Position position) {
+		Preconditions.checkNotNull(position);
 		return getTableau(position.getRangee(), position.getColonne());
 	}
 
@@ -117,6 +121,58 @@ public class Plateau implements IPlateau {
 		Verify.verifyNotNull(p, "La case source est vide");
 		setCase(positionSrc, null);
 		setCase(positionDest, p);
+	}
+
+	public void move(Position positionSrc, IMouvement mouvement) {
+		Preconditions.checkNotNull(mouvement);
+		Verify.verifyNotNull(positionSrc);
+		if(mouvement instanceof MouvementSimple) {
+			Position positionDest=mouvement.getPosition();
+			Verify.verifyNotNull(positionDest);
+			Verify.verify(!positionSrc.equals(positionDest));
+
+			PieceCouleur p = getCase(positionSrc);
+			Verify.verifyNotNull(p, "La case source est vide");
+			setCase(positionSrc, null);
+			setCase(positionDest, p);
+		} else if(mouvement instanceof MouvementRoque){
+			MouvementRoque mouvementRoque= (MouvementRoque) mouvement;
+			Position positionDest=mouvement.getPosition();
+			Verify.verifyNotNull(positionDest);
+			Verify.verify(!positionSrc.equals(positionDest));
+			Verify.verify(positionSrc.getRangee()==positionDest.getRangee());
+
+			Position posTourSrc = mouvementRoque.getPositionTourSrc();
+			Position posTourDest = mouvementRoque.getPositionTourDest();
+
+			Verify.verifyNotNull(posTourSrc);
+			Verify.verifyNotNull(posTourDest);
+			Verify.verify(!posTourSrc.equals(posTourDest));
+
+			Verify.verify(posTourSrc.getRangee()==posTourDest.getRangee());
+			Verify.verify(posTourSrc.getRangee()==positionSrc.getRangee());
+
+			final PieceCouleur p = getCase(positionSrc);
+			Verify.verifyNotNull(p, "La case source est vide");
+			Verify.verify(p.getPiece()==Piece.ROI);
+			final Couleur couleurRoi=p.getCouleur();
+			PieceCouleur tmp = getCase(positionDest);
+			Verify.verify(tmp==null);
+			final PieceCouleur pTour = getCase(posTourSrc);
+			Verify.verifyNotNull(pTour, "La case source est vide");
+			Verify.verify(pTour.getPiece()==Piece.TOUR);
+			Verify.verify(pTour.getCouleur()==couleurRoi);
+			PieceCouleur tmp2 = getCase(posTourDest);
+			Verify.verify(tmp2==null);
+
+			setCase(positionSrc, null);
+			setCase(positionDest, p);
+
+			setCase(posTourSrc, null);
+			setCase(posTourDest, pTour);
+		} else {
+			throw new NotImplementedException();
+		}
 	}
 
 	public void afficheConsole() {
