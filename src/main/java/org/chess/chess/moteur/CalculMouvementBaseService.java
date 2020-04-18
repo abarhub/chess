@@ -1,5 +1,6 @@
 package org.chess.chess.moteur;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import org.chess.chess.domain.*;
 import org.chess.chess.outils.PositionTools;
@@ -122,8 +123,8 @@ public class CalculMouvementBaseService {
 
     private List<IMouvement> calculReine(PieceCouleurPosition piece, IPlateau plateau) {
 
-        Verify.verifyNotNull(piece);
-        Verify.verify(piece.getPiece() == Piece.REINE);
+        Preconditions.checkNotNull(piece);
+        Preconditions.checkState(piece.getPiece() == Piece.REINE);
 
         List<IMouvement> mouvements = new ArrayList<>();
 
@@ -162,8 +163,8 @@ public class CalculMouvementBaseService {
 
     private List<IMouvement> calculTour(PieceCouleurPosition piece, IPlateau plateau) {
 
-        Verify.verifyNotNull(piece);
-        Verify.verify(piece.getPiece() == Piece.TOUR);
+        Preconditions.checkNotNull(piece);
+        Preconditions.checkState(piece.getPiece() == Piece.TOUR);
 
         List<IMouvement> mouvements = new ArrayList<>();
 
@@ -189,8 +190,8 @@ public class CalculMouvementBaseService {
     }
 
     private List<IMouvement> calculFou(PieceCouleurPosition piece, IPlateau plateau) {
-        Verify.verifyNotNull(piece);
-        Verify.verify(piece.getPiece() == Piece.FOU);
+        Preconditions.checkNotNull(piece);
+        Preconditions.checkState(piece.getPiece() == Piece.FOU);
 
         List<IMouvement> mouvements = new ArrayList<>();
 
@@ -219,9 +220,9 @@ public class CalculMouvementBaseService {
     private void ajouteDecalage(List<IMouvement> mouvements, Position position,
                                 int decalageLigne, int decalageColonne,
                                 PieceCouleurPosition piece, IPlateau plateau) {
-        Verify.verifyNotNull(mouvements);
-        Verify.verifyNotNull(piece);
-        Verify.verifyNotNull(plateau);
+        Preconditions.checkNotNull(mouvements);
+        Preconditions.checkNotNull(piece);
+        Preconditions.checkNotNull(plateau);
         for (int i = 1; i <= 8; i++) {
             boolean res = false;
             Optional<Position> optPosition = PositionTools.getPosition(position, decalageLigne * i, decalageColonne * i);
@@ -235,8 +236,8 @@ public class CalculMouvementBaseService {
     }
 
     private List<IMouvement> calculCavalier(PieceCouleurPosition piece, IPlateau plateau) {
-        Verify.verifyNotNull(piece);
-        Verify.verify(piece.getPiece() == Piece.CAVALIER);
+        Preconditions.checkNotNull(piece);
+        Preconditions.checkState(piece.getPiece() == Piece.CAVALIER);
 
         List<IMouvement> mouvements = new ArrayList<>();
 
@@ -278,9 +279,9 @@ public class CalculMouvementBaseService {
 
     private boolean ajoutePositionPiece(List<IMouvement> mouvements, Position position,
                                         PieceCouleurPosition piece, IPlateau plateau) {
-        Verify.verifyNotNull(mouvements);
-        Verify.verifyNotNull(piece);
-        Verify.verifyNotNull(plateau);
+        Preconditions.checkNotNull(mouvements);
+        Preconditions.checkNotNull(piece);
+        Preconditions.checkNotNull(plateau);
 
         PieceCouleur caseCible = plateau.getCase(position);
         if (caseCible == null) {
@@ -297,8 +298,8 @@ public class CalculMouvementBaseService {
     }
 
     private List<IMouvement> calculPion(PieceCouleurPosition piece, IPlateau plateau) {
-        Verify.verifyNotNull(piece);
-        Verify.verify(piece.getPiece() == Piece.PION);
+        Preconditions.checkNotNull(piece);
+        Preconditions.checkState(piece.getPiece() == Piece.PION);
 
         List<IMouvement> mouvements = new ArrayList<>();
 
@@ -352,10 +353,10 @@ public class CalculMouvementBaseService {
 
     private void ajoutePositionPions(List<IMouvement> mouvements, Position position,
                                      PieceCouleurPosition piece, IPlateau plateau, boolean mangePiece) {
-        Verify.verifyNotNull(mouvements);
-        Verify.verifyNotNull(piece);
-        Verify.verifyNotNull(plateau);
-        Verify.verifyNotNull(position);
+        Preconditions.checkNotNull(mouvements);
+        Preconditions.checkNotNull(piece);
+        Preconditions.checkNotNull(plateau);
+        Preconditions.checkNotNull(position);
 
         PieceCouleur caseCible = plateau.getCase(position);
         if (mangePiece) {
