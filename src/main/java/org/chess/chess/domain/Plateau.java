@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 import static org.chess.chess.outils.IteratorPlateau.getIterablePlateau;
 
-public class Plateau {
+public class Plateau implements IPlateau {
 
 	public static final int NB_LIGNES = 8;
 	public static final int NB_COLONNES = 8;
@@ -100,7 +100,7 @@ public class Plateau {
 		}
 	}
 
-	private void setCase(Position position, PieceCouleur pieceCouleur) {
+	protected void setCase(Position position, PieceCouleur pieceCouleur) {
 		setTableau(position.getRangee(), position.getColonne(), pieceCouleur);
 	}
 

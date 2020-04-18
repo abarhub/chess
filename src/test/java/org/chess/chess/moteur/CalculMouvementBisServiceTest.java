@@ -16,6 +16,7 @@ import org.springframework.util.CollectionUtils;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.LongSummaryStatistics;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
@@ -149,6 +150,81 @@ class CalculMouvementBisServiceTest {
             LOGGER.info("duree={}", Duration.between(debut, fin));
             //assertEquals(perfRef, res);
         }
+    }
+
+
+    @Test
+    void calculPerfTest2() {
+
+        String plateau="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+        final int max=4;
+
+        for(int i=0;i<=max;i++) {
+
+            int depth=i;
+
+            LOGGER.info("depth={}", depth);
+
+            Partie partie = notationFEN.createPlateau(plateau);
+
+            PlateauBis plateau2=new PlateauBis(partie.getPlateau());
+
+            // methode testée
+            Instant debut = Instant.now();
+            long res = calculPerf(plateau2, partie.getJoueurCourant(), depth);
+            Instant fin = Instant.now();
+
+            // vérifications
+
+            LOGGER.info("res={}", res);
+            LOGGER.info("duree={}", Duration.between(debut, fin));
+            //assertEquals(perfRef, res);
+        }
+    }
+
+    @Test
+    void calculPerfTest3() {
+
+        String plateau="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+        final int max=4;
+
+        //for(int i=0;i<=max;i++) {
+
+            int depth=5;
+
+            LOGGER.info("depth={}", depth);
+
+            Partie partie = notationFEN.createPlateau(plateau);
+
+            Plateau plateau2=partie.getPlateau();
+
+            if(true) {
+                plateau2 = new PlateauBis(partie.getPlateau());
+            }
+
+            // methode testée
+            Instant debut = Instant.now();
+            long res = calculPerf(plateau2, partie.getJoueurCourant(), depth);
+            Instant fin = Instant.now();
+
+            // vérifications
+
+            LOGGER.info("res={}", res);
+            LOGGER.info("duree={}", Duration.between(debut, fin));
+            //assertEquals(perfRef, res);
+        //}
+
+        LongSummaryStatistics res2 = calculMouvementBisService.getDureeTotal().stream().mapToLong(x -> x.toMillis()).summaryStatistics();
+        LOGGER.info("res2={}",res2);
+
+        //LOGGER.info("stopWatch={}",calculMouvementBisService.getStopWatch().prettyPrint());
+        LOGGER.info("stopWatch2={}",calculMouvementBisService.getStopWatch2());
+
+        LOGGER.info("stopWatch liste depl={}",calculMouvementBisService.getStopWatchListeDeplacement());
+        LOGGER.info("stopWatch genere mvt={}",calculMouvementBisService.getStopWatchGenereDeplacement());
+        LOGGER.info("stopWatch suppr echecs={}",calculMouvementBisService.getStopWatchSupprEchecs());
     }
 
     // methodes utilitaires

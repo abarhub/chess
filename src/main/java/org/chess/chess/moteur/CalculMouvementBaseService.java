@@ -11,7 +11,7 @@ import java.util.Optional;
 public class CalculMouvementBaseService {
 
 
-    public List<Mouvement> getMouvements(Plateau plateau, PieceCouleurPosition piece) {
+    public List<Mouvement> getMouvements(IPlateau plateau, PieceCouleurPosition piece) {
         List<Mouvement> list;
         list = null;
         switch (piece.getPiece()) {
@@ -37,7 +37,7 @@ public class CalculMouvementBaseService {
         return list;
     }
 
-    private List<Mouvement> calculRoi(PieceCouleurPosition piece, Plateau plateau) {
+    private List<Mouvement> calculRoi(PieceCouleurPosition piece, IPlateau plateau) {
 
         Verify.verifyNotNull(piece);
         Verify.verify(piece.getPiece() == Piece.ROI);
@@ -63,7 +63,7 @@ public class CalculMouvementBaseService {
         return mouvements;
     }
 
-    private List<Mouvement> calculReine(PieceCouleurPosition piece, Plateau plateau) {
+    private List<Mouvement> calculReine(PieceCouleurPosition piece, IPlateau plateau) {
 
         Verify.verifyNotNull(piece);
         Verify.verify(piece.getPiece() == Piece.REINE);
@@ -103,7 +103,7 @@ public class CalculMouvementBaseService {
         return mouvements;
     }
 
-    private List<Mouvement> calculTour(PieceCouleurPosition piece, Plateau plateau) {
+    private List<Mouvement> calculTour(PieceCouleurPosition piece, IPlateau plateau) {
 
         Verify.verifyNotNull(piece);
         Verify.verify(piece.getPiece() == Piece.TOUR);
@@ -131,7 +131,7 @@ public class CalculMouvementBaseService {
         return mouvements;
     }
 
-    private List<Mouvement> calculFou(PieceCouleurPosition piece, Plateau plateau) {
+    private List<Mouvement> calculFou(PieceCouleurPosition piece, IPlateau plateau) {
         Verify.verifyNotNull(piece);
         Verify.verify(piece.getPiece() == Piece.FOU);
 
@@ -161,7 +161,7 @@ public class CalculMouvementBaseService {
 
     private void ajouteDecalage(List<Mouvement> mouvements, Position position,
                                 int decalageLigne, int decalageColonne,
-                                PieceCouleurPosition piece, Plateau plateau) {
+                                PieceCouleurPosition piece, IPlateau plateau) {
         Verify.verifyNotNull(mouvements);
         Verify.verifyNotNull(piece);
         Verify.verifyNotNull(plateau);
@@ -177,7 +177,7 @@ public class CalculMouvementBaseService {
         }
     }
 
-    private List<Mouvement> calculCavalier(PieceCouleurPosition piece, Plateau plateau) {
+    private List<Mouvement> calculCavalier(PieceCouleurPosition piece, IPlateau plateau) {
         Verify.verifyNotNull(piece);
         Verify.verify(piece.getPiece() == Piece.CAVALIER);
 
@@ -220,7 +220,7 @@ public class CalculMouvementBaseService {
     }
 
     private boolean ajoutePositionPiece(List<Mouvement> mouvements, Position position,
-                                        PieceCouleurPosition piece, Plateau plateau) {
+                                        PieceCouleurPosition piece, IPlateau plateau) {
         Verify.verifyNotNull(mouvements);
         Verify.verifyNotNull(piece);
         Verify.verifyNotNull(plateau);
@@ -239,7 +239,7 @@ public class CalculMouvementBaseService {
         return false;
     }
 
-    private List<Mouvement> calculPion(PieceCouleurPosition piece, Plateau plateau) {
+    private List<Mouvement> calculPion(PieceCouleurPosition piece, IPlateau plateau) {
         Verify.verifyNotNull(piece);
         Verify.verify(piece.getPiece() == Piece.PION);
 
@@ -294,7 +294,7 @@ public class CalculMouvementBaseService {
     }
 
     private void ajoutePositionPions(List<Mouvement> mouvements, Position position,
-                                     PieceCouleurPosition piece, Plateau plateau, boolean mangePiece) {
+                                     PieceCouleurPosition piece, IPlateau plateau, boolean mangePiece) {
         Verify.verifyNotNull(mouvements);
         Verify.verifyNotNull(piece);
         Verify.verifyNotNull(plateau);
